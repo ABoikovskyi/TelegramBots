@@ -1,0 +1,58 @@
+﻿@model DataLayer.Models.News
+@{
+    var concerts = (Dictionary<int, string>)ViewBag.Concerts;
+}
+
+<form id="data-form" method="post" action="@Url.Action("PostSave", "PopCorn")">
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Date)
+    @Html.HiddenFor(m => m.IsPublished)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+
+    @if (Model.Id != 0 && !Model.IsPublished)
+    {
+        <br />
+        <a href="@Url.Action("PublishPost", "PopCorn", new { postId = Model.Id })">Опубликовать</a>
+        <div class="clear"></div>
+    }
+
+    <div class="data-field">
+        <label for="ConcertId" class="data-label">Концерт</label>
+        <select size="4" id="ConcertId" name="ConcertId">
+            <option value="null"></option>
+            @foreach (var concert in concerts)
+            {
+                <option value="@concert.Key" @(Model.ConcertId == concert.Key ? "selected" : "")>@concert.Value</option>
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="IsCommonPost" class="data-label">Общий пост</label>
+        @Html.EditorFor(m => m.IsCommonPost)
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Title" class="data-label">Заголовок</label>
+        <textarea id="Title" name="Title" type="text" class="data-input" autofocus>@Model.Title</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Desription" class="data-label">Текст</label>
+        <textarea id="Desription" name="Desription" type="text" class="data-input big-textarea">@Model.Desription</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Link" class="data-label">Ссылка</label>
+        <input id="Link" name="Link" value="@Model.Link" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

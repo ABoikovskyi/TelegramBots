@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TelegramBots/v15
+/.vs
+/TelegramBots/.vs/TelegramBots/v15
+/TelegramBots/DataLayer/bin
+/TelegramBots/DataLayer/obj
+/TelegramBots/TelegramBots/bin
+/TelegramBots/TelegramBots/obj
+*.json

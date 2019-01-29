@@ -1,0 +1,12 @@
+﻿@model List<DataLayer.Models.ShortConcertInfo>
+
+<form action="@Url.Action("Concert", "PopCorn")" class="create-button">
+    <input type="submit" value="Создать" />
+</form>
+
+<ul>
+    @foreach (var concert in Model)
+    {
+        <li>@concert.EventDate.ToString("yyyy-MM-dd") <a href="@Url.Action("Concert", "PopCorn", new {id = concert.Id})">@concert.Title</a></li>
+    }
+</ul>

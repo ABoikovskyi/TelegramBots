@@ -1,0 +1,39 @@
+﻿@using DataLayer.Helpers
+@using DataLayer.Models.Enums
+@model List<DataLayer.Models.UserRequest>
+
+<h2>Заявки</h2>
+<table id="requests" class="data-table table table-striped table-bordered" style="width:100%">
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Телефон</th>
+        <th>Игровая зона</th>
+        <th>Количество людей</th>
+        <th>Игровая консоль</th>
+        <th>Игра</th>
+        <th>Время</th>
+        <th>Статус</th>
+        <th>Изменить</th>
+        <th>Обновить статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var request in Model)
+    {
+        <tr>
+            <td>@request.UserName</td>
+            <td>@request.UserPhone</td>
+            <td>@request.ZoneId.GetDisplayName()</td>
+            <td>@request.NumberOfPeople.GetDisplayName()</td>
+            <td>@request.GameConsole.GetDisplayName()</td>
+            <td>@request.Game</td>
+            <td>@request.RequestDate.Value.ToString("dd-MM-yyyy HH:mm")</td>
+            <td>@request.Status.GetDisplayName()</td>
+            <td><a href="@Url.Action("EditRequest", "Home", new {id = request.Id})">Изменить</a></td>
+            <td><a href="@Url.Action("UpdateStatus", "Home", new {id = request.Id, status = RequestStatus.Approved})">Подтвердить</a><br/>
+                <a href="@Url.Action("UpdateStatus", "Home", new {id = request.Id, status = RequestStatus.Rejected})">Отклонить</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

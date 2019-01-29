@@ -1,0 +1,103 @@
+﻿@model DataLayer.Models.Concert
+
+<form id="data-form" method="post" action="@Url.Action("ConcertSave", "PopCorn")">
+    @Html.HiddenFor(m => m.Id)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Artist" class="data-label">Артист</label>
+        <input id="Artist" name="Artist" value="@Model.Artist" type="text" class="data-input" autofocus />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="EventDate" class="data-label">Дата концерта</label>
+        @{
+            var hasData = Model.EventDate != DateTime.MinValue;
+        }
+        <input id="EventDate" name="EventDate" value="@((hasData ? Model.EventDate : DateTime.Now).ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Venue" class="data-label">Место проведения</label>
+        <input id="Venue" name="Venue" value="@Model.Venue" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="TicketsLink" class="data-label">Ссылка на билеты</label>
+        <input id="TicketsLink" name="TicketsLink" value="@Model.TicketsLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="ShortDescription" class="data-label">Краткое описание</label>
+        <textarea id="ShortDescription" name="ShortDescription" type="text" class="data-input">@Model.ShortDescription</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="FullDescription" class="data-label">Полное описание</label>
+        <textarea id="FullDescription" name="FullDescription" type="text" class="data-input big-textarea">@Model.FullDescription</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="FacebookLink" class="data-label">Facebook link</label>
+        <input id="FacebookLink" name="FacebookLink" value="@Model.FacebookLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Poster" class="data-label">Афиша</label>
+        <input id="Poster" name="Poster" value="@Model.Poster" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="AppleMusicLink" class="data-label">Apple Music</label>
+        <input id="AppleMusicLink" name="AppleMusicLink" value="@Model.AppleMusicLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="YoutubeMusicLink" class="data-label">YouTube Music</label>
+        <input id="YoutubeMusicLink" name="YoutubeMusicLink" value="@Model.YoutubeMusicLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="GoogleMusicLink" class="data-label">Google Music</label>
+        <input id="GoogleMusicLink" name="GoogleMusicLink" value="@Model.GoogleMusicLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="SpotifyMusicLink" class="data-label">Spotify</label>
+        <input id="SpotifyMusicLink" name="SpotifyMusicLink" value="@Model.SpotifyMusicLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="DeezerMusicLink" class="data-label">Deezer</label>
+        <input id="DeezerMusicLink" name="DeezerMusicLink" value="@Model.DeezerMusicLink" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="VideoInfo" class="data-label">Видео</label>
+        <textarea id="VideoInfo" name="VideoInfo" type="text" class="data-input">@Model.VideoInfo</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="PhotoReport" class="data-label">Фото</label>
+        <textarea id="PhotoReport" name="PhotoReport" type="text" class="data-input">@Model.PhotoReport</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

@@ -1,0 +1,85 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 150px;
+    }
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.clear {
+    clear: both;
+}
+
+.nav.navbar-nav.navbar-nav-right {
+    float: right;
+}
+
+#main-wrapper, #data-form, .create-button {
+    margin: 20px 0;
+}
+
+a {
+    cursor: pointer;
+}
+
+.create-button {
+    margin-bottom: 10px;
+}
+
+.table-bordered>tfoot > tr > td.footer {
+    border-top: 1px solid #000;
+}
+
+.data-field {
+    margin: 5px 0;
+}
+
+.data-label {
+    width: 300px;
+    float: left;
+}
+
+.data-input {
+    width: 200px;
+    resize: none;
+}
+
+.data-checkbox {
+    resize: none;
+}
+
+textarea.data-input {
+    width: 400px;
+    height: 100px;
+}
+
+textarea.data-input.big-textarea {
+    width: 600px;
+    height: 400px;
+}
+
+thead input {
+    width: 100%;
+}
+
+input::placeholder {
+    color: #AAAAAA;
+    font-weight: normal;
+    font-size: 11pt;
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+.hint {
+    color: red;
+}

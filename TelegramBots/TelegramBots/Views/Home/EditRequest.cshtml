@@ -1,0 +1,87 @@
+﻿@using DataLayer.Helpers
+@using DataLayer.Models.Enums
+@model DataLayer.Models.UserRequest
+
+<form id="data-form" method="post" action="@Url.Action("RequestSave", "Home")">
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.UserId)
+    @Html.HiddenFor(m => m.ContactFirstName)
+    @Html.HiddenFor(m => m.ContactLastName)
+    @Html.HiddenFor(m => m.CreateDate)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+    <br/>
+    <input type="button" value="Отменить" onclick="location.href='@Url.Action("Requests","Home")';" />
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Status" class="data-label">Статус</label>
+        <select size="3" id="Status" name="Status">
+            @foreach (RequestStatus status in Enum.GetValues(typeof(RequestStatus)))
+            {
+                <option value="@((int)status)" @(Model.Status == status ? "selected" : "")>@status.GetDisplayName()</option>
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="UserName" class="data-label">Имя</label>
+        <input id="UserName" name="UserName" type="text" class="data-input" focused value="@Model.UserName" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="UserPhone" class="data-label">Телефон</label>
+        <input id="UserPhone" name="UserPhone" type="text" class="data-input" value="@Model.UserPhone" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="RequestDate" class="data-label">Дата концерта</label>
+        <input id="RequestDate" name="RequestDate" value="@(Model.RequestDate.Value.ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="ZoneId" class="data-label">Игровая зона</label>
+        <select size="3" id="ZoneId" name="ZoneId">
+            @foreach (PlayZone playZone in Enum.GetValues(typeof(PlayZone)))
+            {
+                <option value="@((int)playZone)" @(Model.ZoneId == playZone ? "selected" : "")>@playZone.GetDisplayName()</option>
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="numberOfPeople" class="data-label">Количество людей</label>
+        <select size="2" id="numberOfPeople" name="numberOfPeople">
+            @foreach (NumberOfPeople numberOfPeople in Enum.GetValues(typeof(NumberOfPeople)))
+            {
+                <option value="@((int)numberOfPeople)" @(Model.NumberOfPeople == numberOfPeople ? "selected" : "")>@numberOfPeople.GetDisplayName()</option>
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="GameConsole" class="data-label">Игровая консоль</label>
+        <select size="3" id="GameConsole" name="GameConsole">
+            @foreach (GameConsole gameConsole in Enum.GetValues(typeof(GameConsole)))
+            {
+                <option value="@((int)gameConsole)" @(Model.GameConsole == gameConsole ? "selected" : "")>@gameConsole.GetDisplayName()</option>
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Game" class="data-label">Игра</label>
+        <input id="Game" name="Game" type="text" class="data-input" value="@Model.Game" />
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

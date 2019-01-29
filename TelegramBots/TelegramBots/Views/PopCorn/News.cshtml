@@ -1,0 +1,12 @@
+﻿@model List<DataLayer.Models.News>
+
+<form action="@Url.Action("Post", "PopCorn")" class="create-button">
+    <input type="submit" value="Создать" />
+</form>
+
+<ul>
+    @foreach (var post in Model)
+    {
+        <li>@post.Date.ToString("yyyy-MM-dd") <a href="@Url.Action("Post", "PopCorn", new {id = post.Id})">@post.Title</a>@(Html.Raw(post.Concert != null ? $" (<a href=\"{Url.Action("Concert", "PopCorn", new { id = post.ConcertId })}\">{post.Concert.Artist}</a>)" : "")) @(post.IsPublished ? " - Опубликован" : "")</li>
+    }
+</ul>

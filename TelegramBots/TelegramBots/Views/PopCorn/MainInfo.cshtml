@@ -1,0 +1,47 @@
+﻿@model DataLayer.Models.MainInfo
+
+<form id="data-form" method="post" action="@Url.Action("MainInfoSave", "PopCorn")">
+    @Html.HiddenFor(m => m.Id)
+    <div class="data-field">
+        <label for="CompanyName" class="data-label">Название компании</label>
+        <input name="CompanyName" value="@Model.CompanyName" type="text" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="HelloText" class="data-label">Текст приветствия</label>
+        <textarea name="HelloText" type="text" class="data-input">@Model.HelloText</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="AboutText" class="data-label">Текст "О нас"</label>
+        <textarea name="AboutText" type="text" class="data-input big-textarea">@Model.AboutText</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="ContactsText" class="data-label">Текст контактов</label>
+        <textarea name="ContactsText" type="text" class="data-input">@Model.ContactsText</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="TicketsText" class="data-label">Текст билетов</label>
+        <textarea name="TicketsText" type="text" class="data-input">@Model.TicketsText</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="ConcertsText" class="data-label">Текст концертов</label>
+        <textarea name="ConcertsText" type="text" class="data-input">@Model.ConcertsText</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="SalesText" class="data-label">Текст акций</label>
+        <textarea name="SalesText" type="text" class="data-input">@Model.SalesText</textarea>
+    </div>
+    <div class="clear"></div>
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>
