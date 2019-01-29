@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TelegramBots.Context;
@@ -14,20 +13,18 @@ namespace TelegramBots.Controllers
 {
 	public class PopCornController : Controller
 	{
-		private readonly IHostingEnvironment _env;
 		private readonly PopCornDbContext _context;
 		private readonly ExportService _exportService;
 
-		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService)
+		public PopCornController(PopCornDbContext context, ExportService exportService)
 		{
-			_env = env;
 			_context = context;
 			_exportService = exportService;
 		}
 
-		public IActionResult Index()
+		public IActionResult StartPage()
 		{
-			return View();
+			return View("Index");
 		}
 
 		public IActionResult MainInfo()
@@ -96,10 +93,17 @@ namespace TelegramBots.Controllers
 			
 			if (postData != null)
 			{
-				if (data.ScheduleDate.HasValue && data.ScheduleDate != DateTime.MinValue &&
-				    data.ScheduleDate != postData.ScheduleDate)
+				if (data.ScheduleDate.HasValue)
 				{
 					data.Status = PostStatus.Scheduled;
+					if (!postData.ScheduleDate.HasValue)
+					{
+						SchedulerService.CreateTask(data.Id, data.ScheduleDate.Value);
+					}
+					else if (postData.ScheduleDate != data.ScheduleDate)
+					{
+						SchedulerService.UpdateTask(data.Id, data.ScheduleDate.Value);
+					}
 				}
 
 				postData = data;
@@ -125,19 +129,27 @@ namespace TelegramBots.Controllers
 			return RedirectToAction("Post", "PopCorn", new { id = data.Id });
 		}
 
-		public async Task<IActionResult> PublishPost(int postId)
+		public async Task<IActionResult> PublishPost(string postId)
 		{
-			var post = _context.Posts.First(p => p.Id == postId);
-			await PopCornBotService.SendNewPostAlert(post);
+			var postIdInt = StringCipher.DecryptPost(postId);
+			var post = _context.Posts.FirstOrDefault(p => p.Id == postIdInt);
+			if (post != null && post.Status != PostStatus.Published)
+			{
+				await PopCornBotService.SendNewPostAlert(post);
+				if (post.Status == PostStatus.Scheduled)
+				{
+					SchedulerService.DeleteTask(post.Id);
+				}
 
-			post.Status = PostStatus.Published;
-			post.PublishDate = DateTime.Now;
-			_context.Update(post);
-			_context.SaveChanges();
+				post.Status = PostStatus.Published;
+				post.PublishDate = DateTime.Now;
+				_context.Update(post);
+				_context.SaveChanges();
+			}
 
 			return RedirectToAction("Posts");
 		}
-	
+
 		public ActionResult GetUsersReport()
 		{
 			using (var ms = _exportService.GetUsersReport())
@@ -145,23 +157,6 @@ namespace TelegramBots.Controllers
 				return File(ms.ToArray(), System.Net.Mime.MediaTypeNames.Application.Octet,
 					$"UsersReport_{DateTime.UtcNow}.xlsx");
 			}
-		}
-
-		public string Scheduler()
-		{
-			try
-			{
-				var post = _context.Posts.First(p => p.Id == 1);
-				SchedulerService.CreateTask(post.Id, post.ScheduleDate.Value);
-				SchedulerService.UpdateTask(post.Id, post.ScheduleDate.Value.AddDays(1));
-				SchedulerService.DeleteTask(post.Id);
-			}
-			catch (Exception ex)
-			{
-				return $"{ex.Message}\r\n{ex.StackTrace}";
-			}
-
-			return "Okey";
 		}
 	}
 }

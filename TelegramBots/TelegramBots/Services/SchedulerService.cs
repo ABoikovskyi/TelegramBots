@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using Microsoft.Win32.TaskScheduler;
 
 namespace TelegramBots.Services
@@ -7,13 +8,14 @@ namespace TelegramBots.Services
 	{
 		public static void CreateTask(int id, DateTime scheduleTime)
 		{
-			TaskService.Instance.AddTask($"BotPublishTask{id}", new TimeTrigger {StartBoundary = scheduleTime},
-				new ExecAction("notepad.exe", ""));
+			TaskService.Instance.AddTask($"TelegramBotPublishTask{id}", new TimeTrigger {StartBoundary = scheduleTime},
+				new ExecAction("powershell.exe",
+					$"Invoke-WebRequest -UseBasicParsing -Uri {PopCornBotService.AppLink}/popcorn/PublishPost?postId={HttpUtility.UrlEncode(StringCipher.EncryptPost(id))}"));
 		}
 
 		public static void UpdateTask(int id, DateTime scheduleTime)
 		{
-			var task = TaskService.Instance.GetTask($"BotPublishTask{id}");
+			var task = TaskService.Instance.GetTask($"TelegramBotPublishTask{id}");
 			if (task == null)
 			{
 				CreateTask(id, scheduleTime);
@@ -26,7 +28,12 @@ namespace TelegramBots.Services
 
 		public static void DeleteTask(int id)
 		{
-			TaskService.Instance.RootFolder.DeleteTask($"BotPublishTask{id}");
+			var name = $"TelegramBotPublishTask{id}";
+			var task = TaskService.Instance.GetTask(name);
+			if (task != null)
+			{
+				TaskService.Instance.RootFolder.DeleteTask(name);
+			}
 		}
 	}
 }
