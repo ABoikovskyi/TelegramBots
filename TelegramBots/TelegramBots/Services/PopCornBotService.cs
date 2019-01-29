@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBots.Context;
 using TelegramBots.Helpers;
@@ -224,7 +225,7 @@ namespace TelegramBots.Services
 					}
 					case PhraseHelper.Contacts:
 					{
-						await Client.SendTextMessageAsync(chatId, mainInfo.ContactsText, replyMarkup: MainKeyboard,
+						await Client.SendTextMessageAsync(chatId, mainInfo.ContactsText, parseMode: ParseMode.Html, replyMarkup: MainKeyboard,
 							disableWebPagePreview: true);
 						return;
 					}
