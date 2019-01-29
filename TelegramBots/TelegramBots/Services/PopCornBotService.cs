@@ -271,6 +271,11 @@ namespace TelegramBots.Services
 						await Client.SendTextMessageAsync(chatId, mainInfo.TicketsText, replyMarkup: MainKeyboard);
 						return;
 					}
+					case PhraseHelper.Sales:
+					{
+						await Client.SendTextMessageAsync(chatId, mainInfo.SalesText, replyMarkup: MainKeyboard);
+						return;
+					}
 					default:
 					{
 						await Client.SendTextMessageAsync(chatId, PhraseHelper.InvalidCommand,

@@ -71,25 +71,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/03/2018 22:30:08</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>01/29/2019 13:13:02</publishTime>
+      <publishTime>01/29/2019 13:19:24</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>01/29/2019 13:12:52</publishTime>
+      <publishTime>01/29/2019 13:19:16</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>01/29/2019 13:12:52</publishTime>
+      <publishTime>01/29/2019 13:19:16</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
-      <publishTime>01/29/2019 13:13:02</publishTime>
+      <publishTime>01/29/2019 13:19:25</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>01/29/2019 13:13:00</publishTime>
+      <publishTime>01/29/2019 13:19:23</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>01/29/2019 13:13:00</publishTime>
+      <publishTime>01/29/2019 13:19:23</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>01/29/2019 13:13:02</publishTime>
+      <publishTime>01/29/2019 13:19:25</publishTime>
     </File>
     <File Include="wwwroot/css/jquery.datetimepicker.min.css">
       <publishTime>10/10/2018 11:21:08</publishTime>
