@@ -44,7 +44,7 @@ namespace TelegramBots.Controllers
 		public IActionResult Concerts()
 		{
 			return View(_context.Concerts.OrderByDescending(c => c.EventDate)
-				.Select(c => new ShortConcertInfo { Id = c.Id, Title = c.Artist, EventDate = c.EventDate }).ToList());
+				.Select(c => new ShortConcertInfo {Id = c.Id, Title = c.Artist, EventDate = c.EventDate}).ToList());
 		}
 
 		public IActionResult Concert(int? id)
@@ -81,7 +81,7 @@ namespace TelegramBots.Controllers
 
 		public IActionResult Post(int? id)
 		{
-			ViewBag.Concerts = _context.Concerts.Select(c => new { c.Id, c.Artist })
+			ViewBag.Concerts = _context.Concerts.Select(c => new {c.Id, c.Artist})
 				.ToDictionary(c => c.Id, c => c.Artist);
 			return View(id.HasValue ? _context.Posts.First(c => c.Id == id.Value) : new Post());
 		}
@@ -90,7 +90,7 @@ namespace TelegramBots.Controllers
 		{
 			var news = MemoryCacheHelper.GetNews();
 			var postData = news.FirstOrDefault(c => c.Id == data.Id);
-			
+
 			if (postData != null)
 			{
 				if (data.ScheduleDate.HasValue)
@@ -114,9 +114,10 @@ namespace TelegramBots.Controllers
 				data.Status = PostStatus.Created;
 				data.Date = DateTime.Now;
 
-				if (data.ScheduleDate.HasValue && data.ScheduleDate != DateTime.MinValue)
+				if (data.ScheduleDate.HasValue)
 				{
 					data.Status = PostStatus.Scheduled;
+					SchedulerService.CreateTask(data.Id, data.ScheduleDate.Value);
 				}
 
 				news.Add(data);
@@ -126,7 +127,7 @@ namespace TelegramBots.Controllers
 			await _context.SaveChangesAsync();
 			MemoryCacheHelper.SetNews(news);
 
-			return RedirectToAction("Post", "PopCorn", new { id = data.Id });
+			return RedirectToAction("Post", "PopCorn", new {id = data.Id});
 		}
 
 		public async Task<IActionResult> PublishPost(string postId)
@@ -156,6 +157,19 @@ namespace TelegramBots.Controllers
 			{
 				return File(ms.ToArray(), System.Net.Mime.MediaTypeNames.Application.Octet,
 					$"UsersReport_{DateTime.UtcNow}.xlsx");
+			}
+		}
+
+		public string GetTaskInfo(int id)
+		{
+			try
+			{
+				var task = SchedulerService.GetTask(id);
+				return $"{task.NextRunTime:dd-MM-yyyy HH:mm:ss}\r\n{task.Definition.Actions.Context}";
+			}
+			catch (Exception ex)
+			{
+				return $"{ex.Message}\r\n{ex.StackTrace}";
 			}
 		}
 	}

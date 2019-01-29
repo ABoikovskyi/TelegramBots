@@ -35,5 +35,11 @@ namespace TelegramBots.Services
 				TaskService.Instance.RootFolder.DeleteTask(name);
 			}
 		}
+
+		public static Task GetTask(int id)
+		{
+			var name = $"TelegramBotPublishTask{id}";
+			return TaskService.Instance.GetTask(name);
+		}
 	}
 }
