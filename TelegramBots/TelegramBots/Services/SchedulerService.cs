@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Web;
+using System.IO;
 using Microsoft.Win32.TaskScheduler;
 
 namespace TelegramBots.Services
 {
 	public static class SchedulerService
 	{
-		public static void CreateTask(int id, DateTime scheduleTime)
+		public static void CreateTask(string exeFilePath, int id, DateTime scheduleTime)
 		{
 			TaskService.Instance.AddTask($"TelegramBotPublishTask{id}", new TimeTrigger {StartBoundary = scheduleTime},
-				new ExecAction("powershell.exe",
-					$"Invoke-WebRequest -UseBasicParsing -Uri {PopCornBotService.AppLink}/popcorn/PublishPost?postId={HttpUtility.UrlEncode(StringCipher.EncryptPost(id))}"));
+				new ExecAction($"{Path.Combine(exeFilePath, "PostPublisher.exe")}", $"{id}"));
 		}
 
 		public static void UpdateTask(int id, DateTime scheduleTime)
@@ -18,7 +17,6 @@ namespace TelegramBots.Services
 			var task = TaskService.Instance.GetTask($"TelegramBotPublishTask{id}");
 			if (task == null)
 			{
-				CreateTask(id, scheduleTime);
 				return;
 			}
 

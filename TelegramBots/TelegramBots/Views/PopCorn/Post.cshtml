@@ -17,7 +17,7 @@
 
     @if (Model.Id != 0 && Model.Status != PostStatus.Published)
     {
-        <input type="button" value="Опубликовать" onclick="location.href = '@Url.Action("PublishPost", "PopCorn", new {postId = StringCipher.EncryptPost(Model.Id)})';"/>
+        <input type="button" value="Опубликовать" onclick="location.href = '@Url.Action("PublishPost", "PopCorn", new {postId = Model.Id})';"/>
         <div class="clear"></div>
         <br/>
     }

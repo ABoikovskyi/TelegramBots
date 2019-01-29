@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TelegramBots.Context;
@@ -13,11 +14,13 @@ namespace TelegramBots.Controllers
 {
 	public class PopCornController : Controller
 	{
+		private readonly IHostingEnvironment _env;
 		private readonly PopCornDbContext _context;
 		private readonly ExportService _exportService;
 
-		public PopCornController(PopCornDbContext context, ExportService exportService)
+		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService)
 		{
+			_env = env;
 			_context = context;
 			_exportService = exportService;
 		}
@@ -98,7 +101,7 @@ namespace TelegramBots.Controllers
 					data.Status = PostStatus.Scheduled;
 					if (!postData.ScheduleDate.HasValue)
 					{
-						SchedulerService.CreateTask(data.Id, data.ScheduleDate.Value);
+						SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 					}
 					else if (postData.ScheduleDate != data.ScheduleDate)
 					{
@@ -124,7 +127,7 @@ namespace TelegramBots.Controllers
 				_context.Add(data);
 				await _context.SaveChangesAsync();
 
-				SchedulerService.CreateTask(data.Id, data.ScheduleDate.Value);
+				SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 			}
 
 			MemoryCacheHelper.SetNews(news);
@@ -132,10 +135,9 @@ namespace TelegramBots.Controllers
 			return RedirectToAction("Post", "PopCorn", new {id = data.Id});
 		}
 
-		public async Task<IActionResult> PublishPost(string postId)
+		public async Task<IActionResult> PublishPost(int postId)
 		{
-			var postIdInt = StringCipher.DecryptPost(postId);
-			var post = _context.Posts.FirstOrDefault(p => p.Id == postIdInt);
+			var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
 			if (post != null && post.Status != PostStatus.Published)
 			{
 				await PopCornBotService.SendNewPostAlert(post);
@@ -167,7 +169,7 @@ namespace TelegramBots.Controllers
 			try
 			{
 				var task = SchedulerService.GetTask(id);
-				return $"{task.NextRunTime:dd-MM-yyyy HH:mm:ss}\r\n{task.Definition.Actions.Context}";
+				return $"{task.NextRunTime:dd-MM-yyyy HH:mm:ss}\r\n{task.Definition.Actions[0].ToString()}";
 			}
 			catch (Exception ex)
 			{

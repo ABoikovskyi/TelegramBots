@@ -10,3 +10,6 @@
 /TelegramBots/TelegramBots/bin
 /TelegramBots/TelegramBots/obj
 *.json
+/TelegramBots/packages/Microsoft.Net.Compilers.2.10.0
+/TelegramBots/PostPublisher/bin/Debug
+/TelegramBots/PostPublisher/obj/Debug
