@@ -108,6 +108,7 @@ namespace TelegramBots.Controllers
 
 				postData = data;
 				_context.Update(postData);
+				await _context.SaveChangesAsync();
 			}
 			else
 			{
@@ -117,14 +118,15 @@ namespace TelegramBots.Controllers
 				if (data.ScheduleDate.HasValue)
 				{
 					data.Status = PostStatus.Scheduled;
-					SchedulerService.CreateTask(data.Id, data.ScheduleDate.Value);
 				}
 
 				news.Add(data);
 				_context.Add(data);
+				await _context.SaveChangesAsync();
+
+				SchedulerService.CreateTask(data.Id, data.ScheduleDate.Value);
 			}
 
-			await _context.SaveChangesAsync();
 			MemoryCacheHelper.SetNews(news);
 
 			return RedirectToAction("Post", "PopCorn", new {id = data.Id});
@@ -171,6 +173,11 @@ namespace TelegramBots.Controllers
 			{
 				return $"{ex.Message}\r\n{ex.StackTrace}";
 			}
+		}
+
+		public void DeleteTask(int id)
+		{
+			SchedulerService.DeleteTask(id);
 		}
 	}
 }
