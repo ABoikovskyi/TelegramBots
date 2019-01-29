@@ -15,7 +15,7 @@ namespace TelegramBots.Helpers
         private static readonly MemoryCache Memory = MemoryCache.Default;
         private const string MainInfoKey = "MainInfo";
         private const string ConcertsKey = "Concerts";
-	    private const string NewsKey = "News";
+	    private const string PostsKey = "Posts";
 	    private const int CacheTimeout = 60;
 
 	    public static MainInfo GetMainInfo()
@@ -64,15 +64,15 @@ namespace TelegramBots.Helpers
             MemorySet(ConcertsKey, concerts);
         }
 
-	    public static List<News> GetNews()
+	    public static List<Post> GetNews()
 	    {
-		    var news = MemoryGet<List<News>>(NewsKey);
+		    var news = MemoryGet<List<Post>>(PostsKey);
 		    if (news == null)
 		    {
 			    using (var serviceScope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
 			    {
 				    var dbContext = serviceScope.ServiceProvider.GetService<PopCornDbContext>();
-				    news = dbContext.News.ToList();
+				    news = dbContext.Posts.ToList();
 			    }
 
 			    SetNews(news);
@@ -81,10 +81,10 @@ namespace TelegramBots.Helpers
 		    return news;
 	    }
 
-	    public static void SetNews(List<News> news)
+	    public static void SetNews(List<Post> news)
 	    {
-		    MemoryRemove(NewsKey);
-		    MemorySet(NewsKey, news);
+		    MemoryRemove(PostsKey);
+		    MemorySet(PostsKey, news);
 	    }
 
 	    private static void MemorySet<T>(string key, T model, int expMin = CacheTimeout)

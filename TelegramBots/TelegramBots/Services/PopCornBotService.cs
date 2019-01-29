@@ -369,7 +369,7 @@ namespace TelegramBots.Services
 			}
 		}
 
-		public static async Task SendNewPostAlert(News post)
+		public static async Task SendNewPostAlert(Post post)
 		{
 			List<User> neededUsers;
 			List<long> subscribedUsers;

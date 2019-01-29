@@ -23,7 +23,7 @@ namespace DataLayer.Models
 		public string PhotoReport { get; set; }
 		public virtual List<ConcertVisit> ConcertVisits { get; set; }
 		public virtual List<UserSubscription> Subscriptions { get; set; }
-		public virtual List<News> News { get; set; }
+		public virtual List<Post> Posts { get; set; }
 	}
 
 	public class ShortConcertInfo

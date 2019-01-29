@@ -61,8 +61,8 @@ namespace TelegramBots
 				    template: "{controller=Home}/{action=Index}/{id?}");
 		    });
 
-		    PlayZoneBotService.GetBotClientAsync(app.ApplicationServices).Wait();
-		    PopCornBotService.GetBotClientAsync(app.ApplicationServices).Wait();
+		    //PlayZoneBotService.GetBotClientAsync(app.ApplicationServices).Wait();
+		    //PopCornBotService.GetBotClientAsync(app.ApplicationServices).Wait();
 			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
 	    }
 	}

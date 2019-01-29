@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Models;
+using DataLayer.Models.Enums;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TelegramBots.Context;
@@ -12,11 +14,13 @@ namespace TelegramBots.Controllers
 {
 	public class PopCornController : Controller
 	{
+		private readonly IHostingEnvironment _env;
 		private readonly PopCornDbContext _context;
 		private readonly ExportService _exportService;
 
-		public PopCornController(PopCornDbContext context, ExportService exportService)
+		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService)
 		{
+			_env = env;
 			_context = context;
 			_exportService = exportService;
 		}
@@ -73,31 +77,44 @@ namespace TelegramBots.Controllers
 			return RedirectToAction("Concerts");
 		}
 
-		public IActionResult News()
+		public IActionResult Posts()
 		{
-			return View(_context.News.Include(n => n.Concert).ToList());
+			return View(_context.Posts.Include(n => n.Concert).ToList());
 		}
 
 		public IActionResult Post(int? id)
 		{
 			ViewBag.Concerts = _context.Concerts.Select(c => new { c.Id, c.Artist })
 				.ToDictionary(c => c.Id, c => c.Artist);
-			return View(id.HasValue ? _context.News.First(c => c.Id == id.Value) : new News());
+			return View(id.HasValue ? _context.Posts.First(c => c.Id == id.Value) : new Post());
 		}
 
-		public async Task<IActionResult> PostSave(News data)
+		public async Task<IActionResult> PostSave(Post data)
 		{
 			var news = MemoryCacheHelper.GetNews();
 			var postData = news.FirstOrDefault(c => c.Id == data.Id);
-
+			
 			if (postData != null)
 			{
+				if (data.ScheduleDate.HasValue && data.ScheduleDate != DateTime.MinValue &&
+				    data.ScheduleDate != postData.ScheduleDate)
+				{
+					data.Status = PostStatus.Scheduled;
+				}
+
 				postData = data;
 				_context.Update(postData);
 			}
 			else
 			{
+				data.Status = PostStatus.Created;
 				data.Date = DateTime.Now;
+
+				if (data.ScheduleDate.HasValue && data.ScheduleDate != DateTime.MinValue)
+				{
+					data.Status = PostStatus.Scheduled;
+				}
+
 				news.Add(data);
 				_context.Add(data);
 			}
@@ -110,16 +127,17 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> PublishPost(int postId)
 		{
-			var post = _context.News.First(p => p.Id == postId);
+			var post = _context.Posts.First(p => p.Id == postId);
 			await PopCornBotService.SendNewPostAlert(post);
 
-			post.IsPublished = true;
+			post.Status = PostStatus.Published;
+			post.PublishDate = DateTime.Now;
 			_context.Update(post);
 			_context.SaveChanges();
 
-			return RedirectToAction("News");
+			return RedirectToAction("Posts");
 		}
-
+	
 		public ActionResult GetUsersReport()
 		{
 			using (var ms = _exportService.GetUsersReport())
@@ -127,6 +145,11 @@ namespace TelegramBots.Controllers
 				return File(ms.ToArray(), System.Net.Mime.MediaTypeNames.Application.Octet,
 					$"UsersReport_{DateTime.UtcNow}.xlsx");
 			}
+		}
+
+		public string GetServerPath()
+		{
+			return _env.ContentRootPath;
 		}
 	}
 }
