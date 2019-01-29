@@ -20,13 +20,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/21/2017 13:01:08</publishTime>
     </File>
     <File Include="DataLayer.dll">
-      <publishTime>01/29/2019 13:12:24</publishTime>
+      <publishTime>01/29/2019 16:05:18</publishTime>
     </File>
     <File Include="DataLayer.pdb">
-      <publishTime>01/29/2019 13:12:24</publishTime>
+      <publishTime>01/29/2019 16:05:18</publishTime>
+    </File>
+    <File Include="de/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:12</publishTime>
     </File>
     <File Include="Dlls/Aspose.Cells.dll">
       <publishTime>08/21/2017 13:01:08</publishTime>
+    </File>
+    <File Include="es/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:12</publishTime>
+    </File>
+    <File Include="fr/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:12</publishTime>
+    </File>
+    <File Include="it/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:12</publishTime>
     </File>
     <File Include="Microsoft.EntityFrameworkCore.Abstractions.dll">
       <publishTime>09/20/2018 15:08:26</publishTime>
@@ -40,8 +52,17 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Microsoft.EntityFrameworkCore.SqlServer.dll">
       <publishTime>09/20/2018 15:08:26</publishTime>
     </File>
+    <File Include="Microsoft.Win32.TaskScheduler.dll">
+      <publishTime>01/02/2019 17:56:12</publishTime>
+    </File>
+    <File Include="pl/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:14</publishTime>
+    </File>
     <File Include="Remotion.Linq.dll">
       <publishTime>11/08/2018 11:46:37</publishTime>
+    </File>
+    <File Include="ru/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:14</publishTime>
     </File>
     <File Include="runtimes/unix/lib/netcoreapp2.0/System.Runtime.Caching.dll">
       <publishTime>05/15/2018 13:29:40</publishTime>
@@ -71,25 +92,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/03/2018 22:30:08</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>01/29/2019 13:39:40</publishTime>
+      <publishTime>01/29/2019 16:05:53</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>01/29/2019 13:39:29</publishTime>
+      <publishTime>01/29/2019 16:05:43</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>01/29/2019 13:39:29</publishTime>
+      <publishTime>01/29/2019 16:05:43</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
-      <publishTime>01/29/2019 13:39:40</publishTime>
+      <publishTime>01/29/2019 16:05:53</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>01/29/2019 13:39:38</publishTime>
+      <publishTime>01/29/2019 16:05:50</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>01/29/2019 13:39:38</publishTime>
+      <publishTime>01/29/2019 16:05:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>01/29/2019 13:39:40</publishTime>
+      <publishTime>01/29/2019 16:05:53</publishTime>
     </File>
     <File Include="wwwroot/css/jquery.datetimepicker.min.css">
       <publishTime>10/10/2018 11:21:08</publishTime>
@@ -630,6 +651,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="wwwroot/lib/jquery/LICENSE.txt">
       <publishTime>10/30/2018 11:21:09</publishTime>
+    </File>
+    <File Include="zh-CN/Microsoft.Win32.TaskScheduler.resources.dll">
+      <publishTime>01/02/2019 17:56:14</publishTime>
     </File>
   </ItemGroup>
 </Project>

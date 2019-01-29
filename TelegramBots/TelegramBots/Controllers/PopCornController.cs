@@ -147,9 +147,21 @@ namespace TelegramBots.Controllers
 			}
 		}
 
-		public string GetServerPath()
+		public string Scheduler()
 		{
-			return _env.ContentRootPath;
+			try
+			{
+				var post = _context.Posts.First(p => p.Id == 1);
+				SchedulerService.CreateTask(post.Id, post.ScheduleDate.Value);
+				SchedulerService.UpdateTask(post.Id, post.ScheduleDate.Value.AddDays(1));
+				SchedulerService.DeleteTask(post.Id);
+			}
+			catch (Exception ex)
+			{
+				return $"{ex.Message}\r\n{ex.StackTrace}";
+			}
+
+			return "Okey";
 		}
 	}
 }
