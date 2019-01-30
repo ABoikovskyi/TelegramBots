@@ -39,7 +39,7 @@ namespace TelegramBots
 
 	    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 	    {
-		    if (env.IsDevelopment())
+			/*if (env.IsDevelopment())
 		    {
 			    app.UseDeveloperExceptionPage();
 		    }
@@ -47,9 +47,10 @@ namespace TelegramBots
 		    {
 			    app.UseExceptionHandler("/Home/Error");
 			    app.UseHsts();
-		    }
+		    }*/
+		    app.UseDeveloperExceptionPage();
 
-		    app.UseHttpsRedirection();
+			app.UseHttpsRedirection();
 		    app.UseStaticFiles();
 		    app.UseCookiePolicy();
 		    app.UseAuthentication();

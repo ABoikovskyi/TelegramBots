@@ -79,6 +79,15 @@ namespace TelegramBots.Services
 
 				sb.AppendLine($"<h4>Всего осталось сидячих мест: {data.Seats.Count}</h4>");
 			}
+			
+			if (data.TicketTypes != null && data.TicketTypes.Count > 0)
+			{
+				sb.AppendLine("<h3>Типы билетов:</h3>");
+				foreach (var ticketType in data.TicketTypes)
+				{
+					sb.AppendLine($"{ticketType.TitlePrint}. Цена: {ticketType.Price} {ticketType.CurrencyCode}");
+				}
+			}
 
 			return sb.ToString();
 		}
@@ -115,7 +124,7 @@ namespace TelegramBots.Services
 			foreach (var line in lines)
 			{
 				var index = line.IndexOf("href=\"", StringComparison.CurrentCultureIgnoreCase);
-				result.Add("concert.ua" + line.Substring(index).Replace("href=\"", "").Replace("\">", ""));
+				result.Add("http://concert.ua" + line.Substring(index).Replace("href=\"", "").Replace("\">", ""));
 			}
 
 			return result;

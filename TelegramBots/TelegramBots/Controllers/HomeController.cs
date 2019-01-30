@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using TelegramBots.Context;
+using TelegramBots.Models;
 
 namespace TelegramBots.Controllers
 {
@@ -13,6 +15,12 @@ namespace TelegramBots.Controllers
 		public HomeController(PlayZoneDbContext context)
 		{
 			_context = context;
+		}
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Error()
+		{
+			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 
 		public ActionResult Index()

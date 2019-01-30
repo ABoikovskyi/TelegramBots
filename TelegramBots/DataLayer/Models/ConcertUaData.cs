@@ -66,7 +66,7 @@ namespace DataLayer.Models
 		public int ChildTypeId { get; set; }
 		public int ChildTypeMaxLimit { get; set; }
 		public int ChildTypeMinLimit { get; set; }
-		public string Colo { get; set; }
+		public string Color { get; set; }
 		public string CurrencyCode { get; set; }
 		public int GroupId { get; set; }
 		public double Price { get; set; }
