@@ -14,8 +14,8 @@ namespace TelegramBots.Services
 			td.Triggers.Add(new TimeTrigger {StartBoundary = scheduleTime});
 			td.Principal.UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 			td.Principal.LogonType = TaskLogonType.InteractiveToken;
-			ts.RootFolder.RegisterTaskDefinition($"TelegramBotPublishTask{id}", td, TaskCreation.CreateOrUpdate, "NET_",
-				"scores", TaskLogonType.Password);
+			ts.RootFolder.RegisterTaskDefinition($"TelegramBotPublishTask{id}", td, TaskCreation.CreateOrUpdate, "uh1131963",
+				"cu7rwa4RMX", TaskLogonType.Password);
 		}
 
 		public static void UpdateTask(string exeFilePath, int id, DateTime scheduleTime)
