@@ -1,0 +1,16 @@
+﻿@model string
+<form id="data-form" method="post" action="@Url.Action("GetConcertUaData", "PopCorn")">
+    <input type="submit" class="save-data" value="Получить" />
+    <div class="clear"></div>
+    <br/>
+    <div class="data-field">
+        <label for="url" class="data-label" style="width:100%">Url</label>
+        <input id="url" name="url" value="@((string)ViewBag.Url)" type="text" class="data-input" autofocus style="width:300px"/>
+    </div>
+    <div class="clear"></div>
+    @if (!string.IsNullOrEmpty(Model))
+    {
+        <h2>Данные:</h2>
+        @(Html.Raw(Model))
+    }
+</form>

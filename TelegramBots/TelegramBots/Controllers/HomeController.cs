@@ -17,11 +17,13 @@ namespace TelegramBots.Controllers
 
 		public ActionResult Index()
 		{
+			ViewBag.HideMenu = true;
 			return View(_context.UserRequests.ToList());
 		}
 
 		public ActionResult Requests()
 		{
+			ViewBag.HideMenu = true;
 			return View(_context.UserRequests.ToList());
 		}
 
@@ -36,6 +38,7 @@ namespace TelegramBots.Controllers
 
 		public ActionResult EditRequest(int id)
 		{
+			ViewBag.HideMenu = true;
 			return View(_context.UserRequests.First(r => r.Id == id));
 		}
 

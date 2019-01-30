@@ -1,6 +1,6 @@
 ﻿@using TelegramBots.Helpers
 @{
-    var hideMenu = ViewContext.RouteData.Values["controller"].ToString().ToLower() == "home";
+    var hideMenu = ViewBag.HideMenu != null && (bool)ViewBag.HideMenu;
 }
 <!DOCTYPE html>
 <html>
@@ -32,6 +32,7 @@
                         <li><a href="@Url.Action("Concerts", "PopCorn")">Концерты</a></li>
                         <li><a href="@Url.Action("Posts", "PopCorn")">Новости</a></li>
                         <li><a href="@Url.Action("GetUsersReport", "PopCorn")">Отчет по пользователям</a></li>
+                        <li><a href="@Url.Action("ConcertUaData", "PopCorn")">Данные ConcertUa</a></li>
                     </ul>
                 </div>
             </div>

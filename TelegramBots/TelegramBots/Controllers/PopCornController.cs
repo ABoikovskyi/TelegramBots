@@ -169,10 +169,7 @@ namespace TelegramBots.Controllers
 			try
 			{
 				var task = SchedulerService.GetTask(id);
-				return $"{Environment.OSVersion}" +
-				       $"{task.Definition.Settings.Compatibility.ToString()}" +
-					   $"{task.LastTaskResult}, {task.NumberOfMissedRuns}\r\n" +
-				       $"{task.Definition.Principal.LogonType}";
+				return $"{task.LastTaskResult}, {task.NumberOfMissedRuns}";
 			}
 			catch (Exception ex)
 			{
@@ -183,6 +180,17 @@ namespace TelegramBots.Controllers
 		public void DeleteTask(int id)
 		{
 			SchedulerService.DeleteTask(id);
+		}
+
+		public ActionResult ConcertUaData()
+		{
+			return View("ConcertUaData");
+		}
+
+		public async Task<ActionResult> GetConcertUaData(string url)
+		{
+			ViewBag.Url = url;
+			return View("ConcertUaData", await ConcertUaService.GetProcessedData(url));
 		}
 	}
 }

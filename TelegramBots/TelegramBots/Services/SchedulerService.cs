@@ -15,7 +15,7 @@ namespace TelegramBots.Services
 			td.Principal.UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 			td.Principal.RunLevel = TaskRunLevel.Highest;
 			td.Principal.LogonType = TaskLogonType.InteractiveToken;
-			//td.Settings.Compatibility = TaskCompatibility.V2_3;
+			td.Settings.Compatibility = TaskCompatibility.V2_2;
 			ts.RootFolder.RegisterTaskDefinition($"TelegramBotPublishTask{id}", td, TaskCreation.CreateOrUpdate,
 				"uh1131963", "cu7rwa4RMX", TaskLogonType.Password);
 			/*ts.RootFolder.RegisterTaskDefinition($"TelegramBotPublishTask{id}", td, TaskCreation.CreateOrUpdate,
