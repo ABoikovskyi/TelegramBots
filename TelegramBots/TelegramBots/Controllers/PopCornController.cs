@@ -169,8 +169,9 @@ namespace TelegramBots.Controllers
 			try
 			{
 				var task = SchedulerService.GetTask(id);
-				return $"{task.NextRunTime:dd-MM-yyyy HH:mm:ss}\r\n{task.Definition.Actions[0].ToString()}\r\n" +
-				       $"{task.LastTaskResult}, {task.NumberOfMissedRuns}\r\n{task.Definition.Principal.Account}\r\n{task.Definition.Principal.UserId}\r\n" +
+				return $"{Environment.OSVersion}" +
+				       $"{task.Definition.Settings.Compatibility.ToString()}" +
+					   $"{task.LastTaskResult}, {task.NumberOfMissedRuns}\r\n" +
 				       $"{task.Definition.Principal.LogonType}";
 			}
 			catch (Exception ex)
