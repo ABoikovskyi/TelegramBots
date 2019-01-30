@@ -63,7 +63,7 @@ namespace DataLayer.Models
 	public class TicketType
 	{
 		public long Id { get; set; }
-		public int ChildTypeId { get; set; }
+		public long ChildTypeId { get; set; }
 		public int ChildTypeMaxLimit { get; set; }
 		public int ChildTypeMinLimit { get; set; }
 		public string Color { get; set; }

@@ -40,8 +40,14 @@ namespace TelegramBots.Services
 				sb.AppendLine("<h3>Фан-зоны:</h3>");
 				foreach (var fanZone in data.FanZones)
 				{
+					var price = data.TicketTypes.First(t => t.Id == fanZone.TicketTypeId).Price;
+					if (price == 0)
+					{
+						price = data.TicketTypes.FirstOrDefault(tt =>
+							tt.Id == data.TicketTypes.First(t => t.Id == fanZone.TicketTypeId).ChildTypeId)?.Price ?? 0;
+					} 
 					sb.AppendLine(
-						$"{fanZone.Title}. Цена: {data.TicketTypes.First(t => t.Id == fanZone.TicketTypeId).Price}. Осталось билетов: {fanZone.NumAvailable}<br/>");
+						$"{fanZone.Title}. Цена: {price}. Осталось билетов: {fanZone.NumAvailable}<br/>");
 				}
 
 				sb.AppendLine($"<h4>Всего осталось в фан-зонах: {data.FanZones.Sum(sc => sc.NumAvailable)}</h4>");
@@ -79,13 +85,13 @@ namespace TelegramBots.Services
 
 				sb.AppendLine($"<h4>Всего осталось сидячих мест: {data.Seats.Count}</h4>");
 			}
-			
+
 			if (data.TicketTypes != null && data.TicketTypes.Count > 0)
 			{
 				sb.AppendLine("<h3>Типы билетов:</h3>");
-				foreach (var ticketType in data.TicketTypes)
+				foreach (var ticketType in data.TicketTypes.Where(t => t.ChildTypeId == 0))
 				{
-					sb.AppendLine($"{ticketType.TitlePrint}. Цена: {ticketType.Price} {ticketType.CurrencyCode}");
+					sb.AppendLine($"{ticketType.TitlePrint}. Цена: {ticketType.Price} {ticketType.CurrencyCode}<br>");
 				}
 			}
 
