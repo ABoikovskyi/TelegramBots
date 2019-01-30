@@ -13,3 +13,5 @@
 /TelegramBots/packages/Microsoft.Net.Compilers.2.10.0
 /TelegramBots/PostPublisher/bin/Debug
 /TelegramBots/PostPublisher/obj/Debug
+/TelegramBots/PostPublisher/bin/Release
+/TelegramBots/PostPublisher/obj/Release
