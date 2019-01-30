@@ -105,7 +105,7 @@ namespace TelegramBots.Controllers
 					}
 					else if (postData.ScheduleDate != data.ScheduleDate)
 					{
-						SchedulerService.UpdateTask(data.Id, data.ScheduleDate.Value);
+						SchedulerService.UpdateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 					}
 				}
 
