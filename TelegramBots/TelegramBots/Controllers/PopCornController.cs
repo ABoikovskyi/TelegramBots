@@ -144,7 +144,7 @@ namespace TelegramBots.Controllers
 			var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
 			if (post != null && post.Status != PostStatus.Published)
 			{
-				//await PopCornBotService.SendNewPostAlert(post);
+				await PopCornBotService.SendNewPostAlert(post);
 				if (post.Status == PostStatus.Scheduled)
 				{
 					await QuartzService.DeleteJob(postId);
