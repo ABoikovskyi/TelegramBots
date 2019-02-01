@@ -101,11 +101,14 @@ namespace TelegramBots.Controllers
 					data.Status = PostStatus.Scheduled;
 					if (!postData.ScheduleDate.HasValue)
 					{
-						SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
+						await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+						//SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 					}
 					else if (postData.ScheduleDate != data.ScheduleDate)
 					{
-						SchedulerService.UpdateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
+						await QuartzService.DeleteJob(data.Id);
+						await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+						//SchedulerService.UpdateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 					}
 				}
 
@@ -127,7 +130,8 @@ namespace TelegramBots.Controllers
 				_context.Add(data);
 				await _context.SaveChangesAsync();
 
-				SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
+				await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+				//SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 			}
 
 			MemoryCacheHelper.SetNews(news);
@@ -140,10 +144,11 @@ namespace TelegramBots.Controllers
 			var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
 			if (post != null && post.Status != PostStatus.Published)
 			{
-				await PopCornBotService.SendNewPostAlert(post);
+				//await PopCornBotService.SendNewPostAlert(post);
 				if (post.Status == PostStatus.Scheduled)
 				{
-					SchedulerService.DeleteTask(post.Id);
+					await QuartzService.DeleteJob(postId);
+					//SchedulerService.DeleteTask(post.Id);
 				}
 
 				post.Status = PostStatus.Published;
@@ -162,24 +167,6 @@ namespace TelegramBots.Controllers
 				return File(ms.ToArray(), System.Net.Mime.MediaTypeNames.Application.Octet,
 					$"UsersReport_{DateTime.UtcNow}.xlsx");
 			}
-		}
-
-		public string GetTaskInfo(int id)
-		{
-			try
-			{
-				var task = SchedulerService.GetTask(id);
-				return $"{task.LastTaskResult}, {task.NumberOfMissedRuns}";
-			}
-			catch (Exception ex)
-			{
-				return $"{ex.Message}\r\n{ex.StackTrace}";
-			}
-		}
-
-		public void DeleteTask(int id)
-		{
-			SchedulerService.DeleteTask(id);
 		}
 
 		public ActionResult ConcertUaData()

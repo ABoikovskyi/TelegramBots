@@ -65,6 +65,8 @@ namespace TelegramBots
 			PlayZoneBotService.GetBotClientAsync(app.ApplicationServices).Wait();
 		    PopCornBotService.GetBotClientAsync(app.ApplicationServices).Wait();
 			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
+		    QuartzService.StartSiteWorkJob().Wait();
+
 	    }
 	}
 }
