@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using TelegramBots.Services;
 
 namespace TelegramBots.Controllers
 {
+	[Authorize]
 	public class PopCornController : Controller
 	{
 		private readonly IHostingEnvironment _env;

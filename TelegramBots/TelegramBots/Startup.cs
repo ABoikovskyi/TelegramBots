@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,14 @@ namespace TelegramBots
 			    options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
 			services.AddScoped<ExportService, ExportService>();
 
-		    services.Configure<CookiePolicyOptions>(options =>
+		    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			    .AddCookie(options =>
+			    {
+				    options.LoginPath = new PathString("/Account/Login");
+				    options.AccessDeniedPath = new PathString("/Home/Error");
+			    });
+
+			services.Configure<CookiePolicyOptions>(options =>
 		    {
 			    options.CheckConsentNeeded = context => true;
 			    options.MinimumSameSitePolicy = SameSiteMode.None;
@@ -66,7 +74,6 @@ namespace TelegramBots
 		    PopCornBotService.GetBotClientAsync(app.ApplicationServices).Wait();
 			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
 		    QuartzService.StartSiteWorkJob().Wait();
-
 	    }
 	}
 }
