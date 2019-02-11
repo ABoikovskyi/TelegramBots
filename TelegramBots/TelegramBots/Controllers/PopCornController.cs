@@ -132,7 +132,10 @@ namespace TelegramBots.Controllers
 				_context.Add(data);
 				await _context.SaveChangesAsync();
 
-				await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                if (data.ScheduleDate.HasValue)
+                {
+                    await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                }
 				//SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 			}
 
