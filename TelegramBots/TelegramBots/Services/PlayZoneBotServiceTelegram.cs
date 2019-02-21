@@ -14,8 +14,8 @@ namespace TelegramBots.Services
 	{
 		public static TelegramBotClient Client;
 
-		//public const string AppLink = "https://playzone.ua";
-		public new const string AppLink = "https://84b65c6d.ngrok.io";
+		public new const string AppLink = "https://playzone.ua";
+		//public new const string AppLink = "https://84b65c6d.ngrok.io";
 
 		public static void Init(IServiceProvider serviceProvider)
 		{

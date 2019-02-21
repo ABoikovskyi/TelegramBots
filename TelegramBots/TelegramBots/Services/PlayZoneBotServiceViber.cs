@@ -13,8 +13,8 @@ namespace TelegramBots.Services
 	{
 		public static ViberBotClient Client;
 
-		//public const string AppLink = "https://playzone.ua";
-		public new const string AppLink = "https://84b65c6d.ngrok.io";
+		public new const string AppLink = "https://playzone.ua";
+		//public new const string AppLink = "https://84b65c6d.ngrok.io";
 		public static string ViberAdminId = "+EevijqQxF1RlnZCJvQsyQ==";
 
 		public static void Init(IServiceProvider serviceProvider)
