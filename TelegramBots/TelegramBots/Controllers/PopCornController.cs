@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using TelegramBots.Context;
 using TelegramBots.Helpers;
 using TelegramBots.Services;
+using Viber.Bot;
 
 namespace TelegramBots.Controllers
 {
@@ -30,6 +31,31 @@ namespace TelegramBots.Controllers
 		public IActionResult StartPage()
 		{
 			return View("Index");
+		}
+
+		public async void SendHelloMessage()
+		{
+			await PlayZoneBotServiceViber.Client.SendKeyboardMessageAsync(new KeyboardMessage
+			{
+				Receiver = PlayZoneBotServiceViber.ViberAdminId,
+				Sender = new UserBase
+				{
+					Name = "PlayZone"
+				},
+				Text = "Привет! Для начала работы нажмите кнопку \"Start\"",
+				Keyboard = new Keyboard
+				{
+					Buttons = new[]
+					{
+						new KeyboardButton
+						{
+							Text = "Start",
+							ActionBody = "/start"
+						}
+					}
+				},
+				TrackingData = "td"
+			});
 		}
 
 		public IActionResult MainInfo()

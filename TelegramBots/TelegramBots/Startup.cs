@@ -12,41 +12,44 @@ using TelegramBots.Services;
 
 namespace TelegramBots
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
-		
+		public IConfiguration Configuration { get; }
+
 		public void ConfigureServices(IServiceCollection services)
-	    {
-		    services.AddDbContext<PlayZoneDbContext>(options =>
-			    options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
-		    services.AddDbContext<PopCornDbContext>(options =>
-			    options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
+		{
+			services.AddDbContext<PlayZoneDbContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
+			services.AddDbContext<PopCornDbContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
 			services.AddScoped<ExportService, ExportService>();
+			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
+			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
+			services.AddScoped<PlayZoneBotServiceViber, PlayZoneBotServiceViber>();
 
-		    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-			    .AddCookie(options =>
-			    {
-				    options.LoginPath = new PathString("/Account/Login");
-				    options.AccessDeniedPath = new PathString("/Home/Error");
-			    });
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options =>
+				{
+					options.LoginPath = new PathString("/Account/Login");
+					options.AccessDeniedPath = new PathString("/Home/Error");
+				});
 
 			services.Configure<CookiePolicyOptions>(options =>
-		    {
-			    options.CheckConsentNeeded = context => true;
-			    options.MinimumSameSitePolicy = SameSiteMode.None;
-		    });
+			{
+				options.CheckConsentNeeded = context => true;
+				options.MinimumSameSitePolicy = SameSiteMode.None;
+			});
 
-		    services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-	    }
+			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+		}
 
-	    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-	    {
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		{
 			/*if (env.IsDevelopment())
 		    {
 			    app.UseDeveloperExceptionPage();
@@ -56,24 +59,25 @@ namespace TelegramBots
 			    app.UseExceptionHandler("/Home/Error");
 			    app.UseHsts();
 		    }*/
-		    app.UseDeveloperExceptionPage();
+			app.UseDeveloperExceptionPage();
 
 			app.UseHttpsRedirection();
-		    app.UseStaticFiles();
-		    app.UseCookiePolicy();
-		    app.UseAuthentication();
+			app.UseStaticFiles();
+			app.UseCookiePolicy();
+			app.UseAuthentication();
 
-		    app.UseMvc(routes =>
-		    {
-			    routes.MapRoute(
-				    name: "default",
-				    template: "{controller=Home}/{action=Index}/{id?}");
-		    });
+			app.UseMvc(routes =>
+			{
+				routes.MapRoute(
+					name: "default",
+					template: "{controller=Home}/{action=Index}/{id?}");
+			});
 
-			PlayZoneBotService.GetBotClientAsync(app.ApplicationServices).Wait();
-		    PopCornBotService.GetBotClientAsync(app.ApplicationServices).Wait();
 			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
-		    QuartzService.StartSiteWorkJob().Wait();
-	    }
+			QuartzService.StartSiteWorkJob().Wait();
+			PlayZoneBotServiceTelegram.Init(app.ApplicationServices);
+			PopCornBotService.Init(app.ApplicationServices);
+			PlayZoneBotServiceViber.Init(app.ApplicationServices);
+		}
 	}
 }

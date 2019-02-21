@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using TelegramBots.Context;
 using TelegramBots.Models;
+using TelegramBots.Services;
 
 namespace TelegramBots.Controllers
 {
@@ -57,6 +59,13 @@ namespace TelegramBots.Controllers
 			_context.SaveChanges();
 
 			return RedirectToAction("EditRequest", new { id = data.Id });
+		}
+		
+		public async Task SetWebHooks()
+		{
+			await PopCornBotService.SetWebHook();
+			await PlayZoneBotServiceTelegram.SetWebHook();
+			await PlayZoneBotServiceViber.SetWebHook();
 		}
 	}
 }
