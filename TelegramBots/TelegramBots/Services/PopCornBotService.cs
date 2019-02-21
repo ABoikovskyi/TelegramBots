@@ -18,7 +18,8 @@ namespace TelegramBots.Services
 	public static class PopCornBotService
 	{
 		public static TelegramBotClient Client;
-		public const string AppLink = "https://playzone.ua";
+		//public const string AppLink = "https://playzone.ua";
+		public const string AppLink = "https://84b65c6d.ngrok.io";
 		public static IServiceProvider ServiceProvider;
 		public static ReplyKeyboardMarkup MainKeyboard;
 		public static ReplyKeyboardMarkup ConcertsChoiceKeyboard;
@@ -64,18 +65,19 @@ namespace TelegramBots.Services
 			};
 		}
 
-		public static async Task<TelegramBotClient> GetBotClientAsync(IServiceProvider serviceProvider)
+		public static void Init(IServiceProvider serviceProvider)
 		{
-			if (Client != null)
+			if (Client == null)
 			{
-				return Client;
+				ServiceProvider = serviceProvider;
+				Client = new TelegramBotClient("723676644:AAE9j7lkkUdGnef3JMerwC6hHXVLkccdyLk");
 			}
+		}
 
-			ServiceProvider = serviceProvider;
-
-			Client = new TelegramBotClient("723676644:AAE9j7lkkUdGnef3JMerwC6hHXVLkccdyLk");
+		public static async Task SetWebHook()
+		{
+			await Client.DeleteWebhookAsync();
 			await Client.SetWebhookAsync($"{AppLink}/api/message/popcornupdate");
-			return Client;
 		}
 
 		public static async Task ProcessCallbackMessage(CallbackQuery callback)

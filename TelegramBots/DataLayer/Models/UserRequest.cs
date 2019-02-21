@@ -7,7 +7,7 @@ namespace DataLayer.Models
 	public class UserRequest
 	{
 		public int Id { get; set; }
-		public long UserId { get; set; }
+		public string UserId { get; set; }
 
 		[NotMapped]
 		public RequestStep Step { get; set; }
