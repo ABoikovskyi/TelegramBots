@@ -76,9 +76,10 @@ namespace TelegramBots.Services
 
 		private static ReplyKeyboardMarkup GetButtons<T>(List<T> data)
 		{
-			if (data.Count == 1)
+			var first = data.First();
+			if (data.Count == 1 && !first.GetType().IsEnum)
 			{
-				return new ReplyKeyboardMarkup(new KeyboardButton(data.First().ToString()));
+				return new ReplyKeyboardMarkup(new KeyboardButton(first.ToString()));
 			}
 
 			var structured = new List<KeyboardButton[]>();
