@@ -87,7 +87,8 @@ namespace TelegramBots.Helpers
 				{
 					Text = kk,
 					ActionBody = kk,
-					Columns = 6 / k.Length
+					Columns = 6 / k.Length,
+					BackgroundColor = "#2db9b9"
 				}).ToArray()).ToArray()
 			};
 		}

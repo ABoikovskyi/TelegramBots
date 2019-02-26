@@ -12,14 +12,19 @@ namespace TelegramBots.Helpers
 	{
 		public static async Task SendTextMessage(this TelegramBotClient client, AnswerMessageBase message)
 		{
+			if (string.IsNullOrEmpty(message.Text))
+			{
+				return;
+			}
+
 			if (message.IsHtml)
 			{
 				await client.SendTextMessageAsync(message.UserId, message.Text, ParseMode.Html,
 					replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard), disableWebPagePreview: true);
 			}
-			else if (!string.IsNullOrEmpty(message.Photo))
+			else if (message.IsPhoto)
 			{
-				await client.SendPhotoAsync(message.UserId, message.Photo,
+				await client.SendPhotoAsync(message.UserId, message.Text,
 					replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard));
 			}
 			else if (message.Keyboard != null)
@@ -52,7 +57,12 @@ namespace TelegramBots.Helpers
 
 		public static async Task SendTextMessage(this ViberBotClient client, AnswerMessageBase message, string sender)
 		{
-			if (!string.IsNullOrEmpty(message.Photo))
+			if (string.IsNullOrEmpty(message.Text))
+			{
+				return;
+			}
+
+			if (message.IsPhoto)
 			{
 				await client.SendPictureMessageAsync(new PictureMessage
 				{
@@ -61,7 +71,7 @@ namespace TelegramBots.Helpers
 					{
 						Name = sender
 					},
-					Media = message.Photo
+					Media = message.Text
 				});
 			}
 			else if (message.Keyboard != null)

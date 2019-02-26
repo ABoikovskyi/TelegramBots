@@ -8,6 +8,7 @@ namespace TelegramBots.Models
 	{
 		public AnswerMessageBase(string userId)
 		{
+			UserId = userId;
 		}
 
 		public AnswerMessageBase(string userId, string text)
@@ -39,7 +40,7 @@ namespace TelegramBots.Models
 
 		public string UserId { get; set; }
 		public string Text { get; set; }
-		public string Photo { get; set; }
+		public bool IsPhoto { get; set; }
 		public List<object> KeyboardList { get; set; }
 		public string[][] Keyboard { get; set; }
 		public bool IsForceReplyMarkup { get; set; }

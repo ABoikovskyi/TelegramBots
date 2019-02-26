@@ -133,8 +133,9 @@ namespace TelegramBots.Services
 						{
 							await SendTextMessage(new AnswerMessageBase(chatId)
 							{
-								Photo = concert.Poster,
-								Keyboard = ConcertKeyboard
+								Text = concert.Poster,
+								Keyboard = ConcertKeyboard,
+								IsPhoto = true
 							});
 							return;
 						}

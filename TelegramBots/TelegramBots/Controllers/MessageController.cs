@@ -68,14 +68,6 @@ namespace TelegramBots.Controllers
 			using (var reader = new StreamReader(Request.Body))
 			{
 				var body = reader.ReadToEnd();
-				var isSignatureValid =
-					PlayZoneBotServiceViber.Client.ValidateWebhookHash(
-						Request.Headers[ViberBotClient.XViberContentSignatureHeader], body);
-				if (!isSignatureValid)
-				{
-					throw new Exception("Invalid viber content signature");
-				}
-
 				var callbackData = JsonConvert.DeserializeObject<CallbackData>(body);
 				if (callbackData.Message is TextMessage)
 				{
@@ -146,14 +138,6 @@ namespace TelegramBots.Controllers
 			using (var reader = new StreamReader(Request.Body))
 			{
 				var body = reader.ReadToEnd();
-				var isSignatureValid =
-					PopCornBotServiceViber.Client.ValidateWebhookHash(
-						Request.Headers[ViberBotClient.XViberContentSignatureHeader], body);
-				if (!isSignatureValid)
-				{
-					throw new Exception("Invalid viber content signature");
-				}
-
 				var callbackData = JsonConvert.DeserializeObject<CallbackData>(body);
 				if (callbackData.Message is TextMessage)
 				{
