@@ -3,5 +3,6 @@
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>
     <NameOfLastUsedPublishProfile>PlayZone FTP</NameOfLastUsedPublishProfile>
+    <ActiveDebugProfile>IIS Express</ActiveDebugProfile>
   </PropertyGroup>
 </Project>

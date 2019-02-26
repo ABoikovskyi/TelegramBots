@@ -76,8 +76,8 @@ namespace TelegramBots
 			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
 			QuartzService.StartSiteWorkJob().Wait();
 			PlayZoneBotServiceTelegram.Init(app.ApplicationServices);
-			PopCornBotService.Init(app.ApplicationServices);
 			PlayZoneBotServiceViber.Init(app.ApplicationServices);
+			PopCornBotService.Init(app.ApplicationServices);
 		}
 	}
 }

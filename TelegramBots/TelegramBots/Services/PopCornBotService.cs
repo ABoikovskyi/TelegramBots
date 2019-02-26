@@ -18,8 +18,8 @@ namespace TelegramBots.Services
 	public static class PopCornBotService
 	{
 		public static TelegramBotClient Client;
-		//public const string AppLink = "https://playzone.ua";
-		public const string AppLink = "https://84b65c6d.ngrok.io";
+		public const string AppLink = "https://playzone.ua";
+		//public const string AppLink = "https://84b65c6d.ngrok.io";
 		public static IServiceProvider ServiceProvider;
 		public static ReplyKeyboardMarkup MainKeyboard;
 		public static ReplyKeyboardMarkup ConcertsChoiceKeyboard;
