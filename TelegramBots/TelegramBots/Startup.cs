@@ -31,6 +31,9 @@ namespace TelegramBots
 			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
 			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
 			services.AddScoped<PlayZoneBotServiceViber, PlayZoneBotServiceViber>();
+			services.AddScoped<PopCornBotServiceBase, PopCornBotServiceBase>();
+			services.AddScoped<PopCornBotServiceTelegram, PopCornBotServiceTelegram>();
+			services.AddScoped<PopCornBotServiceViber, PopCornBotServiceViber>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -75,9 +78,10 @@ namespace TelegramBots
 
 			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
 			QuartzService.StartSiteWorkJob().Wait();
+			PopCornBotServiceTelegram.Init(app.ApplicationServices);
+			PopCornBotServiceViber.Init(app.ApplicationServices);
 			PlayZoneBotServiceTelegram.Init(app.ApplicationServices);
 			PlayZoneBotServiceViber.Init(app.ApplicationServices);
-			PopCornBotService.Init(app.ApplicationServices);
 		}
 	}
 }

@@ -20,12 +20,14 @@ namespace TelegramBots.Controllers
 		private readonly IHostingEnvironment _env;
 		private readonly PopCornDbContext _context;
 		private readonly ExportService _exportService;
+		private readonly PopCornBotServiceTelegram _botService;
 
-		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService)
+		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService, PopCornBotServiceTelegram botService)
 		{
 			_env = env;
 			_context = context;
 			_exportService = exportService;
+			_botService = botService;
 		}
 
 		public IActionResult StartPage()
@@ -175,7 +177,7 @@ namespace TelegramBots.Controllers
 			var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
 			if (post != null && post.Status != PostStatus.Published)
 			{
-				await PopCornBotService.SendNewPostAlert(post);
+				await _botService.SendNewPostAlert(post);
 				if (post.Status == PostStatus.Scheduled)
 				{
 					await QuartzService.DeleteJob(postId);

@@ -8,6 +8,7 @@ using DataLayer.Models;
 using DataLayer.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using TelegramBots.Context;
+using TelegramBots.Helpers;
 using TelegramBots.Models;
 using Game = DataLayer.Models.Enums.Game;
 
@@ -15,7 +16,6 @@ namespace TelegramBots.Services
 {
 	public class PlayZoneBotServiceBase
 	{
-		public const string AppLink = "";
 		public static Dictionary<string, UserRequest> RequestsData = new Dictionary<string, UserRequest>();
 		public static IServiceProvider ServiceProvider;
 		public static Dictionary<string, PlayZone> PlayZones;
@@ -346,7 +346,7 @@ namespace TelegramBots.Services
 						$"Количество людей: {userData.NumberOfPeople.GetDisplayName()}\r\n" +
 						$"Консоль: {userData.GameConsole.GetDisplayName()}\r\n" +
 						$"Игра: {userData.Game}\r\n" +
-						$"{AppLink}/home/EditRequest?id={userData.Id}")
+						$"{Links.AppLink}/home/EditRequest?id={userData.Id}")
 					{
 						InlineKeyboard = new Dictionary<string, string>
 						{

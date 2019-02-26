@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DataLayer.Helpers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelegramBots.Helpers;
@@ -8,7 +7,7 @@ using TelegramBots.Models;
 
 namespace TelegramBots.Services
 {
-	public class PlayZoneBotServiceTelegram : PlayZoneBotServiceBase
+	public class PopCornBotServiceTelegram : PopCornBotServiceBase
 	{
 		public static TelegramBotClient Client;
 		
@@ -17,25 +16,28 @@ namespace TelegramBots.Services
 			if (Client == null)
 			{
 				ServiceProvider = serviceProvider;
-				Client = new TelegramBotClient("626205769:AAFc8pYf1QMiF0zQQQKbAJOz038VsL6T1aQ");
+				Client = new TelegramBotClient("723676644:AAE9j7lkkUdGnef3JMerwC6hHXVLkccdyLk");
 			}
 		}
 
 		public static async Task SetWebHook()
 		{
 			await Client.DeleteWebhookAsync();
-			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/playzoneupdate");
+			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/popcornupdate");
 		}
 
 		public async Task ProcessCallbackMessage(CallbackQuery callback)
 		{
 			var message = callback.Message;
-			var status = ProcessCallbackMessageBase(callback.Data, message.Chat.Id, message.MessageId, message.Text);
-			if (status != null)
+			var reply = ProcessCallbackMessageBase(callback.Data, message.Chat.Id, message.MessageId, message.Text);
+			if (!string.IsNullOrEmpty(reply))
 			{
-				await Client.EditMessageTextAsync(message.Chat.Id, message.MessageId,
-					message.Text + $"\r\n\r\nЗАЯВКА {status.GetDisplayName().ToUpper()}");
+				await Client.SendTextMessageAsync(message.Chat.Id, reply,
+					replyMarkup: KeyboardHelper.GetKeyboardTelegram(MainKeyboard));
 			}
+
+			message.Text = callback.Data;
+			await ProcessMessage(message);
 		}
 
 		public override async Task SendTextMessage(AnswerMessageBase message)
