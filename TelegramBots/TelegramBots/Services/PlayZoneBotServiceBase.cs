@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DataLayer.Helpers;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
-using Microsoft.Extensions.DependencyInjection;
 using TelegramBots.Context;
 using TelegramBots.Helpers;
 using TelegramBots.Models;
@@ -16,8 +15,8 @@ namespace TelegramBots.Services
 {
 	public class PlayZoneBotServiceBase
 	{
+		private readonly PlayZoneDbContext _context;
 		public static Dictionary<string, UserRequest> RequestsData = new Dictionary<string, UserRequest>();
-		public static IServiceProvider ServiceProvider;
 		public static Dictionary<string, PlayZone> PlayZones;
 		public static Dictionary<string, NumberOfPeople> NumberOfPeoples;
 		public static Dictionary<string, GameConsole> GameConsoles;
@@ -40,24 +39,25 @@ namespace TelegramBots.Services
 				.ToDictionary(s => s.GetDisplayName(), s => s);
 		}
 
-		public static object ProcessCallbackMessageBase(string callBackMessage, long chatIt, int messageId,
+		public PlayZoneBotServiceBase(PlayZoneDbContext context)
+		{
+			_context = context;
+		}
+
+		public object ProcessCallbackMessageBase(string callBackMessage, long chatIt, int messageId,
 			string messageText)
 		{
 			var parts = callBackMessage.Split("_");
 			if (parts.Length == 2 && Enum.TryParse(typeof(RequestStatus), parts[0], out var status))
 			{
 				var requestId = Convert.ToInt32(parts[1]);
-				using (var serviceScope =
-					ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-				{
-					var dbContext = serviceScope.ServiceProvider.GetService<PlayZoneDbContext>();
-					var request = dbContext.UserRequests.First(u => u.Id == requestId);
-					request.Status = (RequestStatus)status;
-					dbContext.Update(request);
-					dbContext.SaveChanges();
 
-					return status;
-				}
+				var request = _context.UserRequests.First(u => u.Id == requestId);
+				request.Status = (RequestStatus)status;
+				_context.Update(request);
+				_context.SaveChanges();
+
+				return status;
 			}
 
 			return null;
@@ -330,13 +330,8 @@ namespace TelegramBots.Services
 						"Круто! Ждем тебя в Play Zone!\r\nМы перезвоним для подтверждения бронирования.",
 						new List<object> {"Забронировать ещё"}));
 
-					using (var serviceScope =
-						ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-					{
-						var dbContext = serviceScope.ServiceProvider.GetService<PlayZoneDbContext>();
-						dbContext.UserRequests.Add(userData);
-						dbContext.SaveChanges();
-					}
+					_context.UserRequests.Add(userData);
+					_context.SaveChanges();
 
 					await SendTextMessage(new AnswerMessageBase(((int)userData.ZoneId).ToString(),
 						"Новая заявка:\r\n" +

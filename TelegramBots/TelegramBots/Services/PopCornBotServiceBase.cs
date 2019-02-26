@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using TelegramBots.Context;
 using TelegramBots.Helpers;
 using TelegramBots.Models;
@@ -13,7 +12,7 @@ namespace TelegramBots.Services
 {
 	public class PopCornBotServiceBase
 	{
-		public static IServiceProvider ServiceProvider;
+		private readonly PopCornDbContext _context;
 		public static string[][] MainKeyboard;
 		public static string[][] ConcertsChoiceKeyboard;
 		public static string[][] ConcertKeyboard;
@@ -46,7 +45,12 @@ namespace TelegramBots.Services
 			};
 		}
 
-		public static string ProcessCallbackMessageBase(string callBackMessage, long chatId, int messageId,
+		public PopCornBotServiceBase(PopCornDbContext context)
+		{
+			_context = context;
+		}
+
+		public string ProcessCallbackMessageBase(string callBackMessage, long chatId, int messageId,
 			string messageText)
 		{
 			if (callBackMessage.Contains(PhraseHelper.SubscribeCallBack))
@@ -254,31 +258,27 @@ namespace TelegramBots.Services
 			}
 		}
 
-		private static string SubscribeToConcert(string chatId, int concertId)
+		private string SubscribeToConcert(string chatId, int concertId)
 		{
-			using (var serviceScope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+			var user = _context.Users.First(u => u.ChatId == chatId);
+
+			if (!_context.UserSubscription.Any(s => s.UserId == user.Id && s.ConcertId == concertId))
 			{
-				var dbContext = serviceScope.ServiceProvider.GetService<PopCornDbContext>();
-				var user = dbContext.Users.First(u => u.ChatId == chatId);
-
-				if (!dbContext.UserSubscription.Any(s => s.UserId == user.Id && s.ConcertId == concertId))
+				_context.UserSubscription.Add(new UserSubscription
 				{
-					dbContext.UserSubscription.Add(new UserSubscription
-					{
-						UserId = user.Id,
-						ConcertId = concertId
-					});
-					dbContext.SaveChanges();
+					UserId = user.Id,
+					ConcertId = concertId
+				});
+				_context.SaveChanges();
 
-					return $"{user.FirstName}, теперь вы подписаны на новости концерта";
-				}
-
-				return $"{user.FirstName}, вы уже подписаны на новости концерта";
+				return $"{user.FirstName}, теперь вы подписаны на новости концерта";
 			}
+
+			return $"{user.FirstName}, вы уже подписаны на новости концерта";
 		}
 
 
-		private static void SetUserConcert(string chatId, int concertId)
+		private void SetUserConcert(string chatId, int concertId)
 		{
 			if (UserCurrentConcert.ContainsKey(chatId))
 			{
@@ -289,18 +289,14 @@ namespace TelegramBots.Services
 				UserCurrentConcert.Add(chatId, concertId);
 			}
 
-			using (var serviceScope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+			var user = _context.Users.First(u => u.ChatId == chatId);
+			_context.ConcertVisit.Add(new ConcertVisit
 			{
-				var dbContext = serviceScope.ServiceProvider.GetService<PopCornDbContext>();
-				var user = dbContext.Users.First(u => u.ChatId == chatId);
-				dbContext.ConcertVisit.Add(new ConcertVisit
-				{
-					UserId = user.Id,
-					ConcertId = concertId,
-					VisitDate = DateTime.Now
-				});
-				dbContext.SaveChanges();
-			}
+				UserId = user.Id,
+				ConcertId = concertId,
+				VisitDate = DateTime.Now
+			});
+			_context.SaveChanges();
 		}
 
 		private static void SetUserConcersType(string chatId, string concertsType)
@@ -330,42 +326,31 @@ namespace TelegramBots.Services
 			return structured.ToArray();
 		}
 
-		private static void InsertNewUser(string chatId, string userFirstName, string userLastName)
+		private void InsertNewUser(string chatId, string userFirstName, string userLastName)
 		{
-			using (var serviceScope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+			if (!_context.Users.Any(u => u.ChatId == chatId))
 			{
-				var dbContext = serviceScope.ServiceProvider.GetService<PopCornDbContext>();
-				if (!dbContext.Users.Any(u => u.ChatId == chatId))
+				_context.Add(new User
 				{
-					dbContext.Add(new User
-					{
-						ChatId = chatId,
-						FirstName = userFirstName,
-						LastName = userLastName
-					});
-					dbContext.SaveChanges();
-				}
+					ChatId = chatId,
+					FirstName = userFirstName,
+					LastName = userLastName
+				});
+				_context.SaveChanges();
 			}
 		}
 
 		public async Task SendNewPostAlert(Post post)
 		{
-			List<User> neededUsers;
-			List<string> subscribedUsers;
-			bool insertSubscriptionLink;
-			using (var serviceScope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-			{
-				var dbContext = serviceScope.ServiceProvider.GetService<PopCornDbContext>();
-				insertSubscriptionLink = post.ConcertId.HasValue && post.IsCommonPost;
-				neededUsers = post.ConcertId.HasValue && !post.IsCommonPost
-					? dbContext.UserSubscription.Include(s => s.User).Where(s => s.ConcertId == post.ConcertId.Value)
-						.Select(s => s.User).ToList()
-					: dbContext.Users.ToList();
-				subscribedUsers = insertSubscriptionLink
-					? dbContext.UserSubscription.Include(s => s.User).Where(s => s.ConcertId == post.ConcertId.Value)
-						.Select(s => s.User.ChatId).ToList()
-					: null;
-			}
+			var insertSubscriptionLink = post.ConcertId.HasValue && post.IsCommonPost;
+			var neededUsers = post.ConcertId.HasValue && !post.IsCommonPost
+				? _context.UserSubscription.Include(s => s.User).Where(s => s.ConcertId == post.ConcertId.Value)
+					.Select(s => s.User).ToList()
+				: _context.Users.ToList();
+			var subscribedUsers = insertSubscriptionLink
+				? _context.UserSubscription.Include(s => s.User).Where(s => s.ConcertId == post.ConcertId.Value)
+					.Select(s => s.User.ChatId).ToList()
+				: null;
 
 			var subscriptionLink = insertSubscriptionLink
 				? new Dictionary<string, string>

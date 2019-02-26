@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using TelegramBots.Context;
 using TelegramBots.Helpers;
 using TelegramBots.Models;
 
@@ -10,12 +11,14 @@ namespace TelegramBots.Services
 	public class PopCornBotServiceTelegram : PopCornBotServiceBase
 	{
 		public static TelegramBotClient Client;
-		
+		public PopCornBotServiceTelegram(PopCornDbContext context) : base(context)
+		{
+		}
+
 		public static void Init(IServiceProvider serviceProvider)
 		{
 			if (Client == null)
 			{
-				ServiceProvider = serviceProvider;
 				Client = new TelegramBotClient("723676644:AAE9j7lkkUdGnef3JMerwC6hHXVLkccdyLk");
 			}
 		}

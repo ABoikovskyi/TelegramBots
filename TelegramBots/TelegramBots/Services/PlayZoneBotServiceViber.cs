@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TelegramBots.Context;
 using TelegramBots.Helpers;
 using TelegramBots.Models;
 using Viber.Bot;
@@ -10,12 +11,14 @@ namespace TelegramBots.Services
 	{
 		public static ViberBotClient Client;
 		public static string ViberAdminId = "+EevijqQxF1RlnZCJvQsyQ==";
+		public PlayZoneBotServiceViber(PlayZoneDbContext context) : base(context)
+		{
+		}
 
 		public static void Init(IServiceProvider serviceProvider)
 		{
 			if (Client == null)
 			{
-				ServiceProvider = serviceProvider;
 				Client = new ViberBotClient("494050bd2f67d427-b0167b87f79c3f8e-323999acbc7b6097");
 			}
 		}
