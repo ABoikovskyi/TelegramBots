@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DataLayer.Models.Enums;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelegramBots.Context;
@@ -28,21 +29,7 @@ namespace TelegramBots.Services
 			await Client.DeleteWebhookAsync();
 			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/popcornupdate");
 		}
-
-		public async Task ProcessCallbackMessage(CallbackQuery callback)
-		{
-			var message = callback.Message;
-			var reply = ProcessCallbackMessageBase(callback.Data, message.Chat.Id, message.MessageId, message.Text);
-			if (!string.IsNullOrEmpty(reply))
-			{
-				await Client.SendTextMessageAsync(message.Chat.Id, reply,
-					replyMarkup: KeyboardHelper.GetKeyboardTelegram(MainKeyboard));
-			}
-
-			message.Text = callback.Data;
-			await ProcessMessage(message);
-		}
-
+		
 		public override async Task SendTextMessage(AnswerMessageBase message)
 		{
 			await Client.SendTextMessage(message);
@@ -50,7 +37,7 @@ namespace TelegramBots.Services
 
 		public async Task ProcessMessage(Message message)
 		{
-			await ProcessMessageBase(message.Chat.Id.ToString(), message.Chat.FirstName, message.Chat.LastName,
+			await ProcessMessageBase(message.Chat.Id.ToString(), Messenger.Telegram, message.Chat.FirstName, message.Chat.LastName,
 				message.Text);
 		}
 	}

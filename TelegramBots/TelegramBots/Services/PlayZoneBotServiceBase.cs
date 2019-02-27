@@ -333,7 +333,7 @@ namespace TelegramBots.Services
 					_context.UserRequests.Add(userData);
 					_context.SaveChanges();
 
-					await SendTextMessage(new AnswerMessageBase(((int)userData.ZoneId).ToString(),
+					await PlayZoneBotServiceTelegram.SendTextMessageStatic(new AnswerMessageBase(((int)userData.ZoneId).ToString(),
 						"Новая заявка:\r\n" +
 						$"Имя: {userData.UserName}\r\n" +
 						$"Телефон: {userData.UserPhone}\r\n" +

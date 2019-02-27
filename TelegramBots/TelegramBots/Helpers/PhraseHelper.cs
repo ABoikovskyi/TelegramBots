@@ -26,6 +26,5 @@
         public const string VideoPoster = "Видео-афиша";
         public const string Media = "Медиа";
 	    public const string Subscribe = "Подписаться на новости концерта";
-        public const string SubscribeCallBack = "/subscribe";
     }
 }

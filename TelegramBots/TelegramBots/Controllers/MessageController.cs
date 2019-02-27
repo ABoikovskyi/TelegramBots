@@ -102,14 +102,7 @@ namespace TelegramBots.Controllers
 				return Ok();
 			}
 
-			if (update.CallbackQuery != null)
-			{
-				await _botService.ProcessCallbackMessage(update.CallbackQuery);
-			}
-			else
-			{
-				await _botService.ProcessMessage(update.Message);
-			}
+			await _botService.ProcessMessage(update.Message);
 
 			return Ok();
 		}

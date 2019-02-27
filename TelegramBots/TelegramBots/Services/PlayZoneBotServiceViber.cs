@@ -10,7 +10,6 @@ namespace TelegramBots.Services
 	public class PlayZoneBotServiceViber : PlayZoneBotServiceBase
 	{
 		public static ViberBotClient Client;
-		public static string ViberAdminId = "+EevijqQxF1RlnZCJvQsyQ==";
 		public PlayZoneBotServiceViber(PlayZoneDbContext context) : base(context)
 		{
 		}

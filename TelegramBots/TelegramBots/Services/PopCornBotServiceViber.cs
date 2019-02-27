@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DataLayer.Models.Enums;
 using TelegramBots.Context;
 using TelegramBots.Helpers;
 using TelegramBots.Models;
@@ -10,7 +11,6 @@ namespace TelegramBots.Services
 	public class PopCornBotServiceViber : PopCornBotServiceBase
 	{
 		public static ViberBotClient Client;
-		public static string ViberAdminId = "+EevijqQxF1RlnZCJvQsyQ==";
 		public PopCornBotServiceViber(PopCornDbContext context) : base(context)
 		{
 		}
@@ -36,7 +36,7 @@ namespace TelegramBots.Services
 
 		public async Task ProcessMessage(CallbackData callbackData)
 		{
-			await ProcessMessageBase(callbackData.Sender.Id, callbackData.Sender.Name, "",
+			await ProcessMessageBase(callbackData.Sender.Id, Messenger.Viber, callbackData.Sender.Name, "",
 				((TextMessage)callbackData.Message).Text);
 		}
 	}

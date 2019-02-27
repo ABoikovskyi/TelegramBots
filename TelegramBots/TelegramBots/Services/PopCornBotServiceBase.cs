@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Models;
+using DataLayer.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using TelegramBots.Context;
 using TelegramBots.Helpers;
@@ -49,29 +50,30 @@ namespace TelegramBots.Services
 		{
 			_context = context;
 		}
-
-		public string ProcessCallbackMessageBase(string callBackMessage, long chatId, int messageId,
-			string messageText)
-		{
-			if (callBackMessage.Contains(PhraseHelper.SubscribeCallBack))
-			{
-				return SubscribeToConcert(chatId.ToString(),
-					Convert.ToInt32(callBackMessage.Replace(PhraseHelper.SubscribeCallBack, "")));
-			}
-
-			return null;
-		}
-
+		
 		public virtual Task SendTextMessage(AnswerMessageBase message)
 		{
 			return Task.FromResult(default(object));
 		}
 
-		public async Task ProcessMessageBase(string chatId, string userFirstName, string userLastName,
+		public async Task ProcessMessageBase(string chatId, Messenger messenger, string userFirstName, string userLastName,
 			string messageText)
 		{
 			try
 			{
+				if (messageText.Contains(PhraseHelper.Subscribe))
+				{
+					var artist = messageText.Replace(PhraseHelper.Subscribe, "");
+					artist = artist.Substring(2, artist.Length - 3);
+					var reply = SubscribeToConcert(chatId, null, artist);
+					if (string.IsNullOrEmpty(reply))
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, "", MainKeyboard));
+					}
+					await SendTextMessage(new AnswerMessageBase(chatId, reply, MainKeyboard));
+					return;
+				}
+
 				var mainInfo = MemoryCacheHelper.GetMainInfo();
 				var concerts = MemoryCacheHelper.GetConcerts();
 
@@ -176,7 +178,7 @@ namespace TelegramBots.Services
 					{
 						if (messageText == PhraseHelper.Start)
 						{
-							InsertNewUser(chatId, userFirstName, userLastName);
+							InsertNewUser(chatId, messenger, userFirstName, userLastName);
 						}
 
 						UserCurrentConcert.Remove(chatId);
@@ -258,16 +260,21 @@ namespace TelegramBots.Services
 			}
 		}
 
-		private string SubscribeToConcert(string chatId, int concertId)
+		private string SubscribeToConcert(string chatId, int? concertId, string artist = null)
 		{
 			var user = _context.Users.First(u => u.ChatId == chatId);
+			concertId = concertId ?? _context.Concerts.FirstOrDefault(c => c.Artist == artist)?.Id;
+			if (!concertId.HasValue)
+			{
+				return null;
+			}
 
 			if (!_context.UserSubscription.Any(s => s.UserId == user.Id && s.ConcertId == concertId))
 			{
 				_context.UserSubscription.Add(new UserSubscription
 				{
 					UserId = user.Id,
-					ConcertId = concertId
+					ConcertId = concertId.Value
 				});
 				_context.SaveChanges();
 
@@ -326,7 +333,7 @@ namespace TelegramBots.Services
 			return structured.ToArray();
 		}
 
-		private void InsertNewUser(string chatId, string userFirstName, string userLastName)
+		private void InsertNewUser(string chatId, Messenger messenger, string userFirstName, string userLastName)
 		{
 			if (!_context.Users.Any(u => u.ChatId == chatId))
 			{
@@ -334,30 +341,30 @@ namespace TelegramBots.Services
 				{
 					ChatId = chatId,
 					FirstName = userFirstName,
-					LastName = userLastName
+					LastName = userLastName,
+					Messenger = messenger
 				});
 				_context.SaveChanges();
 			}
 		}
 
-		public async Task SendNewPostAlert(Post post)
+		public async Task SendNewPostAlert(Post post, Messenger messenger)
 		{
 			var insertSubscriptionLink = post.ConcertId.HasValue && post.IsCommonPost;
 			var neededUsers = post.ConcertId.HasValue && !post.IsCommonPost
 				? _context.UserSubscription.Include(s => s.User).Where(s => s.ConcertId == post.ConcertId.Value)
-					.Select(s => s.User).ToList()
-				: _context.Users.ToList();
+					.Select(s => s.User).Where(u => u.Messenger == messenger).ToList()
+				: _context.Users.Where(u => u.Messenger == messenger).ToList();
 			var subscribedUsers = insertSubscriptionLink
 				? _context.UserSubscription.Include(s => s.User).Where(s => s.ConcertId == post.ConcertId.Value)
 					.Select(s => s.User.ChatId).ToList()
 				: null;
 
 			var subscriptionLink = insertSubscriptionLink
-				? new Dictionary<string, string>
+				? new[]
 				{
-					{
-						PhraseHelper.Subscribe, PhraseHelper.SubscribeCallBack + post.ConcertId
-					}
+					new[] {$"{PhraseHelper.Subscribe} ({post.Concert.Artist})"},
+					new[] {PhraseHelper.MainMenu}
 				}
 				: null;
 			foreach (var user in neededUsers)
@@ -365,9 +372,9 @@ namespace TelegramBots.Services
 				await SendTextMessage(
 					new AnswerMessageBase(user.ChatId, $"{post.Title}\r\n\r\n{post.Desription}\r\n\r\n{post.Link}")
 					{
-						InlineKeyboard = insertSubscriptionLink && !subscribedUsers.Contains(user.ChatId)
+						Keyboard = insertSubscriptionLink && !subscribedUsers.Contains(user.ChatId)
 							? subscriptionLink
-							: null
+							: MainKeyboard
 					});
 			}
 		}

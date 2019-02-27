@@ -100,13 +100,6 @@ namespace TelegramBots.Helpers
 					Keyboard = KeyboardHelper.GetKeyboardViber(message.KeyboardList)
 				});
 			}
-			else if (message.InlineKeyboard != null)
-			{
-				/*var inlineKeyboard = new InlineKeyboardMarkup(message.InlineKeyboard
-					.Select(d => InlineKeyboardButton.WithCallbackData(d.Key, d.Value)).ToArray());
-				await Client.SendTextMessageAsync(message.UserId, message.Text,
-					replyMarkup: inlineKeyboard);*/
-			}
 			else if (message.IsForceReplyMarkup)
 			{
 				await client.SendTextMessageAsync(new TextMessage

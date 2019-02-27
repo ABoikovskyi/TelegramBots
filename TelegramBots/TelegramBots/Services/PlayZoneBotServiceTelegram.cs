@@ -43,6 +43,11 @@ namespace TelegramBots.Services
 
 		public override async Task SendTextMessage(AnswerMessageBase message)
 		{
+			await SendTextMessageStatic(message);
+		}
+
+		public static async Task SendTextMessageStatic(AnswerMessageBase message)
+		{
 			await Client.SendTextMessage(message);
 		}
 
