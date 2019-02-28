@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Helpers;
+using BusinessLayer.Services;
+using BusinessLayer.Services.PopCorn;
+using DataLayer.Context;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TelegramBots.Context;
-using TelegramBots.Helpers;
-using TelegramBots.Services;
 
 namespace TelegramBots.Controllers
 {
@@ -109,13 +110,11 @@ namespace TelegramBots.Controllers
 					if (!postData.ScheduleDate.HasValue)
 					{
 						await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
-						//SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 					}
 					else if (postData.ScheduleDate != data.ScheduleDate)
 					{
 						await QuartzService.DeleteJob(data.Id);
 						await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
-						//SchedulerService.UpdateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 					}
 				}
 
@@ -141,7 +140,6 @@ namespace TelegramBots.Controllers
                 {
                     await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
                 }
-				//SchedulerService.CreateTask(_env.ContentRootPath, data.Id, data.ScheduleDate.Value);
 			}
 
 			MemoryCacheHelper.SetNews(news);
@@ -159,7 +157,6 @@ namespace TelegramBots.Controllers
 				if (post.Status == PostStatus.Scheduled)
 				{
 					await QuartzService.DeleteJob(postId);
-					//SchedulerService.DeleteTask(post.Id);
 				}
 
 				post.Status = PostStatus.Published;

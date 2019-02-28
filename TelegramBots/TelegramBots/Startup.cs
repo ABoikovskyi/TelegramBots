@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using BusinessLayer.Helpers;
+using BusinessLayer.Services;
+using BusinessLayer.Services.PlayZone;
+using BusinessLayer.Services.PopCorn;
+using DataLayer.Context;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,9 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TelegramBots.Context;
-using TelegramBots.Helpers;
-using TelegramBots.Services;
 
 namespace TelegramBots
 {

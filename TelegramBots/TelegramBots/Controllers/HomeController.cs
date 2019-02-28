@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Services.PlayZone;
+using BusinessLayer.Services.PopCorn;
+using DataLayer.Context;
 using DataLayer.Models;
 using DataLayer.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
-using TelegramBots.Context;
 using TelegramBots.Models;
-using TelegramBots.Services;
 
 namespace TelegramBots.Controllers
 {

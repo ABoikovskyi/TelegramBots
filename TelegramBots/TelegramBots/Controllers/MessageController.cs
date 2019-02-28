@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using BusinessLayer.Services.PlayZone;
+using BusinessLayer.Services.PopCorn;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Telegram.Bot.Types;
-using TelegramBots.Services;
 using Viber.Bot;
 
 namespace TelegramBots.Controllers

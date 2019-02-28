@@ -1,5 +1,4 @@
 ﻿@using DataLayer.Models.Enums
-@using TelegramBots.Services
 @model DataLayer.Models.Post
 @{
     var concerts = (Dictionary<int, string>)ViewBag.Concerts;
@@ -37,7 +36,14 @@
             <option value="null"></option>
             @foreach (var concert in concerts)
             {
-                <option value="@concert.Key" @(Model.ConcertId == concert.Key ? "selected" : "")>@concert.Value</option>
+                if (Model.ConcertId == concert.Key)
+                {
+                    <option value="@concert.Key" selected>@concert.Value</option>
+                }
+                else
+                {
+                    <option value="@concert.Key">@concert.Value</option>
+                }
             }
         </select>
     </div>
