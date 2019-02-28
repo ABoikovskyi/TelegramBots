@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DataLayer.Context;
 using DataLayer.Models.NBCocktailsBar;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace TelegramBots.Controllers
 {
@@ -15,19 +16,24 @@ namespace TelegramBots.Controllers
 			_context = context;
 		}
 
-		public IActionResult Flavors()
+		public IActionResult Index()
 		{
-			return View(_context.Flavors.OrderBy(f => f.Id).ToList());
+			return View();
 		}
 
-		public IActionResult Flavor(int? id)
+		public IActionResult IngredientCategories()
 		{
-			return View(id.HasValue ? _context.Flavors.First(c => c.Id == id.Value) : new Flavor());
+			return View(_context.IngredientCategories.OrderBy(f => f.Name).ToList());
+		}
+		
+		public IActionResult IngredientCategory(int? id)
+		{
+			return View(id.HasValue ? _context.IngredientCategories.First(c => c.Id == id.Value) : new IngredientCategory());
 		}
 
-		public async Task<IActionResult> FlavorSave(Flavor data)
+		public async Task<IActionResult> IngredientCategorySave(IngredientCategory data)
 		{
-			if (_context.Flavors.Any(c => c.Id == data.Id))
+			if (_context.IngredientCategories.Any(c => c.Id == data.Id))
 			{
 				_context.Update(data);
 			}
@@ -38,22 +44,22 @@ namespace TelegramBots.Controllers
 
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction("Flavors");
+			return RedirectToAction("IngredientCategories");
 		}
 
-		public IActionResult AlcoholDrinks()
+		public IActionResult Ingredients()
 		{
-			return View(_context.AlcoholDrinks.OrderBy(f => f.Id).ToList());
+			return View(_context.Ingredients.OrderBy(f => f.Name).ToList());
 		}
 
-		public IActionResult AlcoholDrink(int? id)
+		public IActionResult Ingredient(int? id)
 		{
-			return View(id.HasValue ? _context.AlcoholDrinks.First(c => c.Id == id.Value) : new AlcoholDrink());
+			return View(id.HasValue ? _context.Ingredients.First(c => c.Id == id.Value) : new Ingredient());
 		}
 
-		public async Task<IActionResult> AlcoholDrinkSave(AlcoholDrink data)
+		public async Task<IActionResult> IngredientSave(Ingredient data)
 		{
-			if (_context.AlcoholDrinks.Any(c => c.Id == data.Id))
+			if (_context.Ingredients.Any(c => c.Id == data.Id))
 			{
 				_context.Update(data);
 			}
@@ -64,22 +70,25 @@ namespace TelegramBots.Controllers
 
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction("AlcoholDrinks");
+			return RedirectToAction("Ingredients");
+		}
+		
+		public IActionResult Cocktails()
+		{
+			return View(_context.Cocktails.OrderBy(f => f.Name).ToList());
 		}
 
-		public IActionResult ABVs()
+		public IActionResult Cocktail(int? id)
 		{
-			return View(_context.ABVs.OrderBy(f => f.Id).ToList());
+			return View(id.HasValue
+				? _context.Cocktails.Include(c => c.Ingredients).ThenInclude(i => i.Ingredient)
+					.First(c => c.Id == id.Value)
+				: new Cocktail());
 		}
 
-		public IActionResult ABV(int? id)
+		public async Task<IActionResult> CocktailSave(Cocktail data)
 		{
-			return View(id.HasValue ? _context.ABVs.First(c => c.Id == id.Value) : new ABV());
-		}
-
-		public async Task<IActionResult> ABVSave(ABV data)
-		{
-			if (_context.ABVs.Any(c => c.Id == data.Id))
+			if (_context.Cocktails.Any(c => c.Id == data.Id))
 			{
 				_context.Update(data);
 			}
@@ -90,7 +99,7 @@ namespace TelegramBots.Controllers
 
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction("ABVs");
+			return RedirectToAction("Cocktails");
 		}
 	}
 }

@@ -9,8 +9,9 @@ namespace DataLayer.Context
 		{
 		}
 
-		public virtual DbSet<Flavor> Flavors { get; set; }
-		public virtual DbSet<AlcoholDrink> AlcoholDrinks { get; set; }
-		public virtual DbSet<ABV> ABVs { get; set; }
+		public virtual DbSet<IngredientCategory> IngredientCategories { get; set; }
+		public virtual DbSet<Ingredient> Ingredients { get; set; }
+		public virtual DbSet<Cocktail> Cocktails { get; set; }
+		public virtual DbSet<CocktailIngredient> CocktailIngredients { get; set; }
 	}
 }

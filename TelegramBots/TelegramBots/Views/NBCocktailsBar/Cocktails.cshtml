@@ -1,0 +1,15 @@
+﻿@model List<DataLayer.Models.NBCocktailsBar.Cocktail>
+@{
+    Layout = "NBLayout";
+}
+<h2>Коктейли</h2>
+<form action="@Url.Action("Cocktail", "NBCocktailsBar")" class="create-button">
+    <input type="submit" value="Добавить" />
+</form>
+
+<ul>
+    @foreach (var cocktail in Model)
+    {
+        <li><a href="@Url.Action("Cocktail", "NBCocktailsBar", new {id = cocktail.Id})">@cocktail.Name</a></li>
+    }
+</ul>

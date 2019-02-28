@@ -23,19 +23,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\NBCocktailsBar\ABVs.cshtml">
+    <Content Update="Views\NBCocktailsBar\Ingredients.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\NBCocktailsBar\AlcoholDrinks.cshtml">
+    <Content Update="Views\NBCocktailsBar\Ingredient.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\NBCocktailsBar\ABV.cshtml">
+    <Content Update="Views\NBCocktailsBar\Cocktail.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\NBCocktailsBar\AlcoholDrink.cshtml">
+    <Content Update="Views\NBCocktailsBar\IngredientCategory.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\NBCocktailsBar\Flavor.cshtml">
+    <Content Update="Views\NBCocktailsBar\Cocktails.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\NBLayout.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>

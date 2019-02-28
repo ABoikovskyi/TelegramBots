@@ -1,0 +1,24 @@
+﻿@model DataLayer.Models.NBCocktailsBar.Ingredient
+@{
+    Layout = "NBLayout";
+}
+<form id="data-form" method="post" action="@Url.Action("IngredientSave", "NBCocktailsBar")">
+    @Html.HiddenFor(m => m.Id)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Name" class="data-label">Наименование</label>
+        <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Description" class="data-label">Описание</label>
+        <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>
