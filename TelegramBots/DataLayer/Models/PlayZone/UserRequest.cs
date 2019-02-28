@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using DataLayer.Models.Enums;
 
-namespace DataLayer.Models
+namespace DataLayer.Models.PlayZone
 {
 	public class UserRequest
 	{
@@ -15,7 +15,7 @@ namespace DataLayer.Models
 		public string ContactFirstName { get; set; }
 		public string ContactLastName { get; set; }
 		public DateTime CreateDate { get; set; }
-		public PlayZone? ZoneId { get; set; }
+		public Enums.PlayZone? ZoneId { get; set; }
 		public NumberOfPeople? NumberOfPeople { get; set; }
 		public GameConsole? GameConsole { get; set; }
 		public string Game { get; set; }

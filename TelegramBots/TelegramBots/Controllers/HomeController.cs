@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using BusinessLayer.Services.PlayZone;
 using BusinessLayer.Services.PopCorn;
 using DataLayer.Context;
-using DataLayer.Models;
 using DataLayer.Models.Enums;
+using DataLayer.Models.PlayZone;
 using Microsoft.AspNetCore.Mvc;
 using TelegramBots.Models;
 

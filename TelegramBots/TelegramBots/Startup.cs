@@ -29,6 +29,8 @@ namespace TelegramBots
 				options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
 			services.AddDbContext<PopCornDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
+			services.AddDbContext<NBCocktailsBarDbContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
 			services.AddScoped<ExportService, ExportService>();
 			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
 			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();

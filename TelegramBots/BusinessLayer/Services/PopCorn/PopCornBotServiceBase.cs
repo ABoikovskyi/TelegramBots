@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
-using DataLayer.Models;
 using DataLayer.Models.Enums;
+using DataLayer.Models.PopCorn;
 using Microsoft.EntityFrameworkCore;
 using TelegramBots.Models;
 

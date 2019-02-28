@@ -1,4 +1,4 @@
-using DataLayer.Models;
+using DataLayer.Models.PlayZone;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Context

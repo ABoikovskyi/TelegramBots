@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataLayer.Models
+namespace DataLayer.Models.PopCorn
 {
     [Table("MainInfo")]
     public class MainInfo

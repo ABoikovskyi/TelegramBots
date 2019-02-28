@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using DataLayer.Context;
-using DataLayer.Models;
+using DataLayer.Models.PopCorn;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BusinessLayer.Helpers

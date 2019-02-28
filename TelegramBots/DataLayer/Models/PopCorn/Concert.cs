@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataLayer.Models
+namespace DataLayer.Models.PopCorn
 {
     public class Concert
     {

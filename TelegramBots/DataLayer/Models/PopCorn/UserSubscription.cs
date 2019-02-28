@@ -1,4 +1,4 @@
-﻿namespace DataLayer.Models
+﻿namespace DataLayer.Models.PopCorn
 {
 	public class UserSubscription
 	{

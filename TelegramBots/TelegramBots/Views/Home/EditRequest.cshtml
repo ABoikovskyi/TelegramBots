@@ -1,6 +1,7 @@
 ﻿@using DataLayer.Helpers
 @using DataLayer.Models.Enums
-@model DataLayer.Models.UserRequest
+@using DataLayer.Models.PlayZone
+@model UserRequest
 
 <form id="data-form" method="post" action="@Url.Action("RequestSave", "Home")">
     @Html.HiddenFor(m => m.Id)

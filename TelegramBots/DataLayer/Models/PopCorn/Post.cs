@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using DataLayer.Models.Enums;
 
-namespace DataLayer.Models
+namespace DataLayer.Models.PopCorn
 {
 	public class Post
 	{

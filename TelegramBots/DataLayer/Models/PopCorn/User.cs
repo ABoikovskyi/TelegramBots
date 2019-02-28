@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DataLayer.Models.Enums;
 
-namespace DataLayer.Models
+namespace DataLayer.Models.PopCorn
 {
 	public class User
 	{
