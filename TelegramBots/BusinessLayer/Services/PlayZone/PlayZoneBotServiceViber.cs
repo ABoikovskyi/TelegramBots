@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
-using TelegramBots.Models;
+using DataLayer.Models.DTO;
 using Viber.Bot;
 
 namespace BusinessLayer.Services.PlayZone
@@ -14,7 +14,7 @@ namespace BusinessLayer.Services.PlayZone
 		{
 		}
 
-		public static void Init(IServiceProvider serviceProvider)
+		public static void Init()
 		{
 			if (Client == null)
 			{

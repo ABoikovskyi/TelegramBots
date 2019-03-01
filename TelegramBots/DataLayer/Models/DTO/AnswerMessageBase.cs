@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TelegramBots.Models
+namespace DataLayer.Models.DTO
 {
 	public class AnswerMessageBase
 	{

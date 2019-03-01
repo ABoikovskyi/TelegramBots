@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
 using DataLayer.Helpers;
+using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
 using DataLayer.Models.PlayZone;
-using TelegramBots.Models;
 using Game = DataLayer.Models.Enums.Game;
 
 namespace BusinessLayer.Services.PlayZone

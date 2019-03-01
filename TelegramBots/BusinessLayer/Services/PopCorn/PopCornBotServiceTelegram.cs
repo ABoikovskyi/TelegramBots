@@ -2,21 +2,23 @@
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
+using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using TelegramBots.Models;
 
 namespace BusinessLayer.Services.PopCorn
 {
 	public class PopCornBotServiceTelegram : PopCornBotServiceBase
 	{
 		public static TelegramBotClient Client;
-		public PopCornBotServiceTelegram(PopCornDbContext context) : base(context)
+
+		public PopCornBotServiceTelegram(PopCornDbContext context, MemoryCacheHelper memoryCacheHelper) : base(context,
+			memoryCacheHelper)
 		{
 		}
 
-		public static void Init(IServiceProvider serviceProvider)
+		public static void Init()
 		{
 			if (Client == null)
 			{

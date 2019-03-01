@@ -1,18 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
-using DataLayer.Helpers;
 using DataLayer.Models.DTO;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace BusinessLayer.Services.PlayZone
+namespace BusinessLayer.Services.NBCocktailsBar
 {
-	public class PlayZoneBotServiceTelegram : PlayZoneBotServiceBase
+	public class NBCocktailsBarBotServiceTelegram : NBCocktailsBarBotServiceBase
 	{
 		public static TelegramBotClient Client;
-		public PlayZoneBotServiceTelegram(PlayZoneDbContext context) : base(context)
+
+		public NBCocktailsBarBotServiceTelegram(NBCocktailsBarDbContext context, MemoryCacheHelper memoryCacheHelper) :
+			base(context, memoryCacheHelper)
 		{
 		}
 
@@ -27,20 +27,9 @@ namespace BusinessLayer.Services.PlayZone
 		public static async Task SetWebHook()
 		{
 			await Client.DeleteWebhookAsync();
-			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/playzoneupdate");
+			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/nbbarupdate");
 		}
-
-		public async Task ProcessCallbackMessage(CallbackQuery callback)
-		{
-			var message = callback.Message;
-			var status = ProcessCallbackMessageBase(callback.Data, message.Chat.Id, message.MessageId, message.Text);
-			if (status != null)
-			{
-				await Client.EditMessageTextAsync(message.Chat.Id, message.MessageId,
-					message.Text + $"\r\n\r\nЗАЯВКА {status.GetDisplayName().ToUpper()}");
-			}
-		}
-
+		
 		public override async Task SendTextMessage(AnswerMessageBase message)
 		{
 			await SendTextMessageStatic(message);

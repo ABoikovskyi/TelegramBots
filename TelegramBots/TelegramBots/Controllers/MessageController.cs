@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using BusinessLayer.Services.NBCocktailsBar;
 using BusinessLayer.Services.PlayZone;
 using BusinessLayer.Services.PopCorn;
 using Microsoft.AspNetCore.Mvc;
@@ -141,4 +142,35 @@ namespace TelegramBots.Controllers
 			return Ok();
 		}
 	}
+
+	[Route("api/message/nbbarupdate")]
+	public class NBBarMessageController : Controller
+	{
+		private readonly NBCocktailsBarBotServiceTelegram _botService;
+
+		public NBBarMessageController(NBCocktailsBarBotServiceTelegram botService)
+		{
+			_botService = botService;
+		}
+
+		[HttpGet]
+		public string Get()
+		{
+			return "Method GET unuvalable";
+		}
+
+		[HttpPost]
+		public async Task<OkResult> Post([FromBody] Update update)
+		{
+			if (update == null)
+			{
+				return Ok();
+			}
+
+			await _botService.ProcessMessage(update.Message);
+
+			return Ok();
+		}
+	}
+
 }

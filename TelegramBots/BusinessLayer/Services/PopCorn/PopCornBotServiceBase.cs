@@ -4,16 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
+using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
 using DataLayer.Models.PopCorn;
 using Microsoft.EntityFrameworkCore;
-using TelegramBots.Models;
 
 namespace BusinessLayer.Services.PopCorn
 {
 	public class PopCornBotServiceBase
 	{
 		private readonly PopCornDbContext _context;
+		private readonly MemoryCacheHelper _memoryCacheHelper;
 		public static string[][] MainKeyboard;
 		public static string[][] ConcertsChoiceKeyboard;
 		public static string[][] ConcertKeyboard;
@@ -46,9 +47,10 @@ namespace BusinessLayer.Services.PopCorn
 			};
 		}
 
-		public PopCornBotServiceBase(PopCornDbContext context)
+		public PopCornBotServiceBase(PopCornDbContext context, MemoryCacheHelper memoryCacheHelper)
 		{
 			_context = context;
+			_memoryCacheHelper = memoryCacheHelper;
 		}
 		
 		public virtual Task SendTextMessage(AnswerMessageBase message)
@@ -74,8 +76,8 @@ namespace BusinessLayer.Services.PopCorn
 					return;
 				}
 
-				var mainInfo = MemoryCacheHelper.GetMainInfo();
-				var concerts = MemoryCacheHelper.GetConcerts();
+				var mainInfo = _memoryCacheHelper.GetMainInfo();
+				var concerts = _memoryCacheHelper.GetConcerts();
 
 				//concert message checking
 				var messageParts = messageText.Split(" ");
@@ -210,7 +212,7 @@ namespace BusinessLayer.Services.PopCorn
 					{
 						SetUserConcersType(chatId, PhraseHelper.FutureConcerts);
 						await SendTextMessage(new AnswerMessageBase(chatId, mainInfo.ConcertsText,
-							ConcertsKeyboard(MemoryCacheHelper.GetConcerts()
+							ConcertsKeyboard(_memoryCacheHelper.GetConcerts()
 								.Where(c => c.EventDate > DateTime.Now).OrderByDescending(c => c.EventDate).ToList())));
 						return;
 					}
@@ -218,7 +220,7 @@ namespace BusinessLayer.Services.PopCorn
 					{
 						SetUserConcersType(chatId, PhraseHelper.PastConcerts);
 						await SendTextMessage(new AnswerMessageBase(chatId, mainInfo.ConcertsText,
-							ConcertsKeyboard(MemoryCacheHelper.GetConcerts()
+							ConcertsKeyboard(_memoryCacheHelper.GetConcerts()
 								.Where(c => c.EventDate <= DateTime.Now).OrderByDescending(c => c.EventDate)
 								.ToList())));
 						return;
@@ -227,7 +229,7 @@ namespace BusinessLayer.Services.PopCorn
 					{
 						SetUserConcersType(chatId, PhraseHelper.AllConcerts);
 						await SendTextMessage(new AnswerMessageBase(chatId, mainInfo.ConcertsText,
-							ConcertsKeyboard(MemoryCacheHelper.GetConcerts()
+							ConcertsKeyboard(_memoryCacheHelper.GetConcerts()
 								.OrderByDescending(c => c.EventDate).ToList())));
 						return;
 					}

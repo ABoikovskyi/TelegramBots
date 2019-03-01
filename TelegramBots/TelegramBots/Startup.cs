@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Helpers;
 using BusinessLayer.Services;
+using BusinessLayer.Services.NBCocktailsBar;
 using BusinessLayer.Services.PlayZone;
 using BusinessLayer.Services.PopCorn;
 using DataLayer.Context;
@@ -31,6 +32,7 @@ namespace TelegramBots
 				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
 			services.AddDbContext<NBCocktailsBarDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
+			services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
 			services.AddScoped<ExportService, ExportService>();
 			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
 			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
@@ -38,6 +40,8 @@ namespace TelegramBots
 			services.AddScoped<PopCornBotServiceBase, PopCornBotServiceBase>();
 			services.AddScoped<PopCornBotServiceTelegram, PopCornBotServiceTelegram>();
 			services.AddScoped<PopCornBotServiceViber, PopCornBotServiceViber>();
+			services.AddScoped<NBCocktailsBarBotServiceBase, NBCocktailsBarBotServiceBase>();
+			services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -80,12 +84,12 @@ namespace TelegramBots
 					template: "{controller=Home}/{action=Index}/{id?}");
 			});
 
-			MemoryCacheHelper.ServiceProvider = app.ApplicationServices;
-			QuartzService.StartSiteWorkJob().Wait();
-			PopCornBotServiceTelegram.Init(app.ApplicationServices);
-			PopCornBotServiceViber.Init(app.ApplicationServices);
-			PlayZoneBotServiceTelegram.Init(app.ApplicationServices);
-			PlayZoneBotServiceViber.Init(app.ApplicationServices);
+			/*QuartzService.StartSiteWorkJob().Wait();
+			PopCornBotServiceTelegram.Init();
+			PopCornBotServiceViber.Init();
+			PlayZoneBotServiceTelegram.Init();
+			PlayZoneBotServiceViber.Init();
+			NBCocktailsBarBotServiceTelegram.Init()*/
 		}
 	}
 }

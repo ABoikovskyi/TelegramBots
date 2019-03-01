@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using DataLayer.Models.DTO;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBots.Models;
 using Viber.Bot;
 
 namespace BusinessLayer.Helpers

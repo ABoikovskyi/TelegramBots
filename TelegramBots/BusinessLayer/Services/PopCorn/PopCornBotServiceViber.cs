@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
 using DataLayer.Context;
+using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
-using TelegramBots.Models;
 using Viber.Bot;
 
 namespace BusinessLayer.Services.PopCorn
@@ -11,11 +11,13 @@ namespace BusinessLayer.Services.PopCorn
 	public class PopCornBotServiceViber : PopCornBotServiceBase
 	{
 		public static ViberBotClient Client;
-		public PopCornBotServiceViber(PopCornDbContext context) : base(context)
+
+		public PopCornBotServiceViber(PopCornDbContext context, MemoryCacheHelper memoryCacheHelper) : base(context,
+			memoryCacheHelper)
 		{
 		}
 
-		public static void Init(IServiceProvider serviceProvider)
+		public static void Init()
 		{
 			if (Client == null)
 			{

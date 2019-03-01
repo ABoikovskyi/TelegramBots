@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Helpers;
 using DataLayer.Context;
 using DataLayer.Models.NBCocktailsBar;
 using Microsoft.AspNetCore.Mvc;
@@ -43,13 +44,16 @@ namespace TelegramBots.Controllers
 			}
 
 			await _context.SaveChangesAsync();
+			MemoryCacheHelper.RemoveIngredientsData();
 
 			return RedirectToAction("IngredientCategories");
 		}
 
 		public IActionResult Ingredients()
 		{
-			return View(_context.Ingredients.OrderBy(f => f.Name).ToList());
+			return View(_context.Ingredients.Include(i => i.Category)
+				.GroupBy(i => i.Category).OrderBy(i=>i.Key.OrderNo)
+				.ToDictionary(g => g.Key.Name, g => g.OrderBy(i => i.Name).ToList()));
 		}
 
 		public IActionResult Ingredient(int? id)
@@ -70,6 +74,7 @@ namespace TelegramBots.Controllers
 			}
 
 			await _context.SaveChangesAsync();
+			MemoryCacheHelper.RemoveIngredientsData();
 
 			return RedirectToAction("Ingredients");
 		}

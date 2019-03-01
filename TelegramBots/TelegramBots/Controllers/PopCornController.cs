@@ -22,12 +22,15 @@ namespace TelegramBots.Controllers
 		private readonly ExportService _exportService;
 		private readonly PopCornBotServiceTelegram _telegramBotService;
 		private readonly PopCornBotServiceViber _viberBotService;
+		private readonly MemoryCacheHelper _memoryCacheHelper;
 
 		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService, 
-			PopCornBotServiceTelegram telegramBotService, PopCornBotServiceViber viberBotService)
+			PopCornBotServiceTelegram telegramBotService, PopCornBotServiceViber viberBotService,
+			MemoryCacheHelper memoryCacheHelper)
 		{
 			_env = env;
 			_context = context;
+			_memoryCacheHelper = memoryCacheHelper;
 			_exportService = exportService;
 			_telegramBotService = telegramBotService;
 			_viberBotService = viberBotService;
@@ -47,7 +50,7 @@ namespace TelegramBots.Controllers
 		{
 			_context.Update(data);
 			_context.SaveChanges();
-			MemoryCacheHelper.SetMemoryInfo(data);
+			MemoryCacheHelper.SetMainInfo(data);
 
 			return RedirectToAction("MainInfo");
 		}
@@ -65,7 +68,7 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> ConcertSave(Concert data)
 		{
-			var concerts = MemoryCacheHelper.GetConcerts();
+			var concerts = _memoryCacheHelper.GetConcerts();
 			var concertData = concerts.FirstOrDefault(c => c.Id == data.Id);
 
 			if (concertData != null)
@@ -99,7 +102,7 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> PostSave(Post data)
 		{
-			var news = MemoryCacheHelper.GetNews();
+			var news = _memoryCacheHelper.GetNews();
 			var postData = news.FirstOrDefault(c => c.Id == data.Id);
 
 			if (postData != null)

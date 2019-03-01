@@ -1,4 +1,4 @@
-﻿@model List<DataLayer.Models.NBCocktailsBar.Ingredient>
+﻿@model Dictionary<string, List<DataLayer.Models.NBCocktailsBar.Ingredient>>
 @{
     Layout = "NBLayout";
 }
@@ -7,9 +7,13 @@
     <input type="submit" value="Добавить" />
 </form>
 
-<ul>
-    @foreach (var ingredient in Model)
-    {
-        <li><a href="@Url.Action("Ingredient", "NBCocktailsBar", new {id = ingredient.Id})">@ingredient.Name</a></li>
-    }
-</ul>
+@foreach (var category in Model)
+{
+    <h3>@(category.Key)</h3>
+    <ul>
+        @foreach (var ingredient in category.Value)
+        {
+            <li><a href="@Url.Action("Ingredient", "NBCocktailsBar", new {id = ingredient.Id})">@ingredient.Name</a></li>
+        }
+    </ul>
+}

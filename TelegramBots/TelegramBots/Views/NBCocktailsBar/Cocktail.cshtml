@@ -3,6 +3,7 @@
 @{
     Layout = "NBLayout";
     var ingredientsByCategories = (Dictionary<IngredientCategory, List<Ingredient>>)ViewBag.IngredientsByCategories;
+    var hasIngredients = Model.Ingredients != null;
 }
 <form id="data-form" method="post" action="@Url.Action("CocktailSave", "NBCocktailsBar")">
     @Html.HiddenFor(m => m.Id)
@@ -24,7 +25,7 @@
                 <option value="null"></option>
                 @foreach (var ingredient in category.Value)
                 {
-                    if (Model.Ingredients.Any(i=>i.IngredientId == ingredient.Id))
+                    if (hasIngredients && Model.Ingredients.Any(i=>i.IngredientId == ingredient.Id))
                     {
                         <option value="@ingredient.Id" selected>@ingredient.Name</option>
                     }
