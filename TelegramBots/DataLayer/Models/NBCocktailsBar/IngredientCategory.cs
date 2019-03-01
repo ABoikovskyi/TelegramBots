@@ -10,6 +10,7 @@ namespace DataLayer.Models.NBCocktailsBar
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public int OrderNo { get; set; }
+		public int MaxIngredientInCocktail { get; set; }
 		public virtual List<Ingredient> Ingredients { get; set; }
 	}
 }

@@ -20,7 +20,7 @@ namespace BusinessLayer.Services.NBCocktailsBar
 		{
 			if (Client == null)
 			{
-				Client = new TelegramBotClient("626205769:AAFc8pYf1QMiF0zQQQKbAJOz038VsL6T1aQ");
+				Client = new TelegramBotClient("792424451:AAG5a28HxzD0hjBcXDktfbUyINGK8XrJmSU");
 			}
 		}
 

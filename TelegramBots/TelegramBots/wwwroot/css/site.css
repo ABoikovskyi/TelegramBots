@@ -5,7 +5,7 @@
 
 @media (max-width: 768px) {
     body {
-        padding-top: 250px;
+        padding-top: 300px;
     }
 }
 
@@ -16,6 +16,11 @@
 
 .clear {
     clear: both;
+}
+
+select[multiple], select[size] {
+    height: auto;
+    min-width: 200px;
 }
 
 .nav.navbar-nav.navbar-nav-right {

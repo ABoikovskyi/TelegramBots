@@ -81,7 +81,8 @@ namespace TelegramBots.Controllers
 		
 		public IActionResult Cocktails()
 		{
-			return View(_context.Cocktails.OrderBy(f => f.Name).ToList());
+			return View(_context.Cocktails.Include(c => c.Ingredients).ThenInclude(i => i.Ingredient)
+				.OrderBy(f => f.Name).ToList());
 		}
 
 		public IActionResult Cocktail(int? id)
@@ -110,12 +111,12 @@ namespace TelegramBots.Controllers
 
 			if (data.IngredientsInt.Length > 0)
 			{
-				foreach (var ingredient in data.IngredientsInt)
+				foreach (var ingredient in data.IngredientsInt.Where(i=>i.HasValue))
 				{
 					_context.Add(new CocktailIngredient
 					{
 						CocktailId = data.Id,
-						IngredientId = ingredient
+						IngredientId = ingredient.Value
 					});
 				}
 

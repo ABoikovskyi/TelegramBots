@@ -6,6 +6,7 @@ using BusinessLayer.Helpers;
 using DataLayer.Context;
 using DataLayer.Models.DTO;
 using DataLayer.Models.NBCocktailsBar;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Services.NBCocktailsBar
 {
@@ -34,7 +35,7 @@ namespace BusinessLayer.Services.NBCocktailsBar
 				var isNewUser = false;
 				UsersData.TryGetValue(userId, out var userData);
 
-				if (userData == null || messageText == "/start" || messageText == "Выбрать ещё")
+				if (userData == null || messageText == "/start" || messageText == PhraseHelper.ChooseMore)
 				{
 					userData = new NBBarUserData
 					{
@@ -50,46 +51,70 @@ namespace BusinessLayer.Services.NBCocktailsBar
 					isNewUser = true;
 				}
 
-				if (userData.StepId.HasValue)
+				if (!isNewUser && userData.StepId.HasValue)
 				{
-					if (!isNewUser)
+					var currentCategory = _ingredientsData.ElementAt(userData.StepId.Value);
+					var isSkip = messageText == PhraseHelper.Skip;
+					var choosenIngredient = isSkip
+						? null
+						: currentCategory.Value.FirstOrDefault(i => i.Name == messageText)?.Id;
+					if (choosenIngredient.HasValue || isSkip)
 					{
-						var currentCategory = _ingredientsData.ElementAt(userData.StepId.Value);
-						var choosenIngredient = currentCategory.Value.FirstOrDefault(i => i.Name == messageText)?.Id;
-						if (choosenIngredient.HasValue)
+						if (!isSkip)
 						{
 							userData.Ingredient.Add(choosenIngredient.Value);
-							if (userData.StepId.Value == _ingredientsData.Count - 1)
-							{
-								userData.StepId = null;
-							}
-							else
-							{
-								userData.StepId++;
-							}
+						}
+
+						if (userData.StepId.Value == _ingredientsData.Count - 1)
+						{
+							userData.StepId = null;
+							messageText = "";
 						}
 						else
 						{
-							await SendTextMessage(new AnswerMessageBase(userId, "Некорректная команда"));
+							userData.StepId++;
 						}
-					}
-
-					if (userData.StepId.HasValue)
-					{
-						var nextCategoryData = _ingredientsData.ElementAt(userData.StepId.Value);
-						await SendTextMessage(new AnswerMessageBase(userId,
-							$"Выберите, пожалуйста, ингридиенты категории {nextCategoryData.Key.Name}",
-							nextCategoryData.Value.Select(i => (object)i.Name).ToList()));
 					}
 					else
 					{
-						var recommendedCocktails = _context.Cocktails
-							.Where(c => c.Ingredients.All(i => userData.Ingredient.Contains(i.IngredientId)))
+						await SendTextMessage(new AnswerMessageBase(userId, "Некорректная команда"));
+					}
+				}
+
+				if (userData.StepId.HasValue)
+				{
+					var nextCategoryData = _ingredientsData.ElementAt(userData.StepId.Value);
+					var ingredients = nextCategoryData.Value.Select(i => (object)i.Name).ToList();
+					ingredients.Add(PhraseHelper.Skip);
+					await SendTextMessage(new AnswerMessageBase(userId,
+						$"Выберите, пожалуйста, ингредиенты категории {nextCategoryData.Key.Name}",
+						ingredients));
+				}
+				else
+				{
+					var cocktails = _context.Cocktails.Include(c => c.Ingredients).ToList();
+					var isEmptyMessage = string.IsNullOrEmpty(messageText);
+					if (isEmptyMessage || messageText == PhraseHelper.Back)
+					{
+						var recommendedCocktails = cocktails
+							.Where(c => userData.Ingredient.All(ui =>
+								c.Ingredients.Select(i => i.IngredientId).Contains(ui)))
 							.Select(c => c.Name).ToList();
-						recommendedCocktails.Add("Выбрать ещё");
+						recommendedCocktails.Add(PhraseHelper.ChooseMore);
 						await SendTextMessage(new AnswerMessageBase(userId,
-							"Мы вам рекомендуем следующие коктейли:",
+							recommendedCocktails.Count == 1
+								? "Увы, по вашим параметрам коктейлей не найдено"
+								: "Мы рекомендуем вам следующие коктейли:",
 							recommendedCocktails.Select(i => (object)i).ToList()));
+					}
+					else
+					{
+						var cocktail = cocktails.FirstOrDefault(c => c.Name == messageText);
+						if (cocktail != null)
+						{
+							await SendTextMessage(new AnswerMessageBase(userId, cocktail.Description ?? "Описание отсутствует",
+								new List<object> {PhraseHelper.Back, PhraseHelper.ChooseMore}));
+						}
 					}
 				}
 			}

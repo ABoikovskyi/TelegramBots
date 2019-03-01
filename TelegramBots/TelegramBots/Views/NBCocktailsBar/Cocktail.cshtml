@@ -19,24 +19,28 @@
     
     @foreach (var category in ingredientsByCategories)
     {
-        <div class="data-field">
-            <label for="Category@(category.Key.Id)" class="data-label">@(category.Key.Name)</label>
-            <select size="5" id="Category@(category.Key.Id)" name="IngredientsInt[]">
-                <option value="null"></option>
-                @foreach (var ingredient in category.Value)
-                {
-                    if (hasIngredients && Model.Ingredients.Any(i=>i.IngredientId == ingredient.Id))
+        var currentCategoryIngredients = hasIngredients ? Model.Ingredients.Where(i => i.Ingredient.CategoryId == category.Key.Id).ToList() : null;
+        for (var c = 0; c < category.Key.MaxIngredientInCocktail; c++)
+        {
+            <div class="data-field">
+                <label for="Category@(category.Key.Id)_@c" class="data-label">@(category.Key.Name)</label>
+                <select size="5" id="Category@(category.Key.Id)_@c" name="IngredientsInt[]">
+                    <option value="null"></option>
+                    @foreach (var ingredient in category.Value)
                     {
-                        <option value="@ingredient.Id" selected>@ingredient.Name</option>
+                        if (hasIngredients && c + 1 <= currentCategoryIngredients.Count && currentCategoryIngredients[c].IngredientId == ingredient.Id)
+                        {
+                            <option value="@ingredient.Id" selected>@ingredient.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@ingredient.Id">@ingredient.Name</option>
+                        }
                     }
-                    else
-                    {
-                        <option value="@ingredient.Id">@ingredient.Name</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="clear"></div>
+                </select>
+            </div>
+            <div class="clear"></div>
+        }
     }
 
     <div class="data-field">

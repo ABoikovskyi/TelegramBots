@@ -13,6 +13,6 @@ namespace DataLayer.Models.NBCocktailsBar
 		public virtual List<CocktailIngredient> Ingredients { get; set; }
 
 		[NotMapped]
-		public int[] IngredientsInt { get; set; }
+		public int?[] IngredientsInt { get; set; }
 	}
 }

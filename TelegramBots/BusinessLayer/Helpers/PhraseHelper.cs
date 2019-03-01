@@ -26,5 +26,8 @@
         public const string VideoPoster = "Видео-афиша";
         public const string Media = "Медиа";
 	    public const string Subscribe = "Подписаться на новости концерта";
-    }
+
+	    public const string Skip = "Пропустить";
+	    public const string ChooseMore = "Выбрать ещё";
+	}
 }

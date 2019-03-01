@@ -88,8 +88,8 @@ namespace TelegramBots
 			PopCornBotServiceTelegram.Init();
 			PopCornBotServiceViber.Init();
 			PlayZoneBotServiceTelegram.Init();
-			PlayZoneBotServiceViber.Init();
-			NBCocktailsBarBotServiceTelegram.Init()*/
+			PlayZoneBotServiceViber.Init();*/
+			NBCocktailsBarBotServiceTelegram.Init();
 		}
 	}
 }

@@ -68,22 +68,16 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> ConcertSave(Concert data)
 		{
-			var concerts = _memoryCacheHelper.GetConcerts();
-			var concertData = concerts.FirstOrDefault(c => c.Id == data.Id);
-
-			if (concertData != null)
+			if (_context.Concerts.Any(c => c.Id == data.Id))
 			{
-				concertData = data;
-				_context.Update(concertData);
+				_context.Update(data);
 			}
 			else
 			{
-				concerts.Add(data);
 				_context.Add(data);
 			}
 
 			await _context.SaveChangesAsync();
-			MemoryCacheHelper.SetConcerts(concerts);
 
 			return RedirectToAction("Concerts");
 		}
@@ -102,9 +96,7 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> PostSave(Post data)
 		{
-			var news = _memoryCacheHelper.GetNews();
-			var postData = news.FirstOrDefault(c => c.Id == data.Id);
-
+			var postData = _context.Posts.FirstOrDefault(c => c.Id == data.Id);
 			if (postData != null)
 			{
 				if (data.ScheduleDate.HasValue)
@@ -120,9 +112,8 @@ namespace TelegramBots.Controllers
 						await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
 					}
 				}
-
-				postData = data;
-				_context.Update(postData);
+				
+				_context.Update(data);
 				await _context.SaveChangesAsync();
 			}
 			else
@@ -134,8 +125,7 @@ namespace TelegramBots.Controllers
 				{
 					data.Status = PostStatus.Scheduled;
 				}
-
-				news.Add(data);
+				
 				_context.Add(data);
 				await _context.SaveChangesAsync();
 
@@ -144,8 +134,6 @@ namespace TelegramBots.Controllers
                     await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
                 }
 			}
-
-			MemoryCacheHelper.SetNews(news);
 
 			return RedirectToAction("Post", "PopCorn", new {id = data.Id});
 		}

@@ -12,7 +12,8 @@ namespace BusinessLayer.Helpers
 		public static ReplyKeyboardMarkup GetKeyboardTelegram<T>(List<T> data)
 		{
 			var first = data.First();
-			if (data.Count == 1 && !first.GetType().IsEnum)
+			var isEnum = first.GetType().IsEnum;
+			if (data.Count == 1 && !isEnum)
 			{
 				return new ReplyKeyboardMarkup(new KeyboardButton(first.ToString()));
 			}
@@ -22,7 +23,7 @@ namespace BusinessLayer.Helpers
 			for (var i = 0; i < data.Count; i = i + step)
 			{
 				structured.Add(data.Skip(i).Take(step)
-					.Select(c => new KeyboardButton(c.GetDisplayName())).ToArray());
+					.Select(c => new KeyboardButton(isEnum ? c.GetDisplayName() : c.ToString())).ToArray());
 			}
 
 			return new ReplyKeyboardMarkup
