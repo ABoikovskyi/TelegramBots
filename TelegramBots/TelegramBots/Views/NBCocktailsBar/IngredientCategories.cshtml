@@ -10,6 +10,6 @@
 <ul>
     @foreach (var category in Model)
     {
-        <li><a href="@Url.Action("Flavor", "NBCocktailsBar", new {id = category.Id})">@category.Name</a></li>
+        <li><a href="@Url.Action("IngredientCategory", "NBCocktailsBar", new {id = category.Id})">@category.OrderNo @category.Name</a></li>
     }
 </ul>

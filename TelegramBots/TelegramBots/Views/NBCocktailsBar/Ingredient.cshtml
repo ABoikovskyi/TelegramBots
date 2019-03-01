@@ -1,6 +1,8 @@
-﻿@model DataLayer.Models.NBCocktailsBar.Ingredient
+﻿@using DataLayer.Models.NBCocktailsBar
+@model Ingredient
 @{
     Layout = "NBLayout";
+    var categories = (List<IngredientCategory>)ViewBag.Categories;
 }
 <form id="data-form" method="post" action="@Url.Action("IngredientSave", "NBCocktailsBar")">
     @Html.HiddenFor(m => m.Id)
@@ -13,12 +15,30 @@
         <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
     </div>
     <div class="clear"></div>
+    
+    <div class="data-field">
+        <label for="CategoryId" class="data-label">Категория</label>
+        <select size="4" id="CategoryId" name="CategoryId">
+            @foreach (var category in categories)
+            {
+                if (Model.CategoryId == category.Id)
+                {
+                    <option value="@category.Id" selected>@category.Name</option>
+                }
+                else
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
 
     <div class="data-field">
         <label for="Description" class="data-label">Описание</label>
         <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
     </div>
     <div class="clear"></div>
-
+    
     <input type="submit" class="save-data" value="Сохранить" />
 </form>

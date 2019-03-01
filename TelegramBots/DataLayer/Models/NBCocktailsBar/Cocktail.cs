@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace DataLayer.Models.NBCocktailsBar
 {
@@ -10,5 +11,8 @@ namespace DataLayer.Models.NBCocktailsBar
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public virtual List<CocktailIngredient> Ingredients { get; set; }
+
+		[NotMapped]
+		public int[] IngredientsInt { get; set; }
 	}
 }

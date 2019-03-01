@@ -9,6 +9,7 @@ namespace DataLayer.Models.NBCocktailsBar
 		public int Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
+		public int OrderNo { get; set; }
 		public virtual List<Ingredient> Ingredients { get; set; }
 	}
 }

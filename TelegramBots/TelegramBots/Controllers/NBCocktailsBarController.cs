@@ -23,7 +23,7 @@ namespace TelegramBots.Controllers
 
 		public IActionResult IngredientCategories()
 		{
-			return View(_context.IngredientCategories.OrderBy(f => f.Name).ToList());
+			return View(_context.IngredientCategories.OrderBy(f => f.OrderNo).ToList());
 		}
 		
 		public IActionResult IngredientCategory(int? id)
@@ -54,6 +54,7 @@ namespace TelegramBots.Controllers
 
 		public IActionResult Ingredient(int? id)
 		{
+			ViewBag.Categories = _context.IngredientCategories.OrderBy(c => c.OrderNo).ToList();
 			return View(id.HasValue ? _context.Ingredients.First(c => c.Id == id.Value) : new Ingredient());
 		}
 
@@ -80,8 +81,10 @@ namespace TelegramBots.Controllers
 
 		public IActionResult Cocktail(int? id)
 		{
+			ViewBag.IngredientsByCategories = _context.Ingredients.Include(i => i.Category).GroupBy(i => i.Category)
+				.ToDictionary(g => g.Key, g => g.OrderBy(i => i.Name).ToList());
 			return View(id.HasValue
-				? _context.Cocktails.Include(c => c.Ingredients).ThenInclude(i => i.Ingredient)
+				? _context.Cocktails.Include(c => c.Ingredients)
 					.First(c => c.Id == id.Value)
 				: new Cocktail());
 		}
@@ -98,6 +101,21 @@ namespace TelegramBots.Controllers
 			}
 
 			await _context.SaveChangesAsync();
+			_context.Database.ExecuteSqlCommand($"DELETE FROM [CocktailIngredients] WHERE CocktailId = {data.Id}");
+
+			if (data.IngredientsInt.Length > 0)
+			{
+				foreach (var ingredient in data.IngredientsInt)
+				{
+					_context.Add(new CocktailIngredient
+					{
+						CocktailId = data.Id,
+						IngredientId = ingredient
+					});
+				}
+
+				await _context.SaveChangesAsync();
+			}
 
 			return RedirectToAction("Cocktails");
 		}
