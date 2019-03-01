@@ -84,11 +84,11 @@ namespace TelegramBots
 					template: "{controller=Home}/{action=Index}/{id?}");
 			});
 
-			/*QuartzService.StartSiteWorkJob().Wait();
+			QuartzService.StartSiteWorkJob().Wait();
 			PopCornBotServiceTelegram.Init();
 			PopCornBotServiceViber.Init();
 			PlayZoneBotServiceTelegram.Init();
-			PlayZoneBotServiceViber.Init();*/
+			PlayZoneBotServiceViber.Init();
 			NBCocktailsBarBotServiceTelegram.Init();
 		}
 	}

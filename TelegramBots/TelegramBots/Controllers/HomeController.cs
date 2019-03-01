@@ -65,10 +65,10 @@ namespace TelegramBots.Controllers
 		
 		public async Task SetWebHooks()
 		{
-			/*await PlayZoneBotServiceTelegram.SetWebHook();
+			await PlayZoneBotServiceTelegram.SetWebHook();
 			await PlayZoneBotServiceViber.SetWebHook();
 			await PopCornBotServiceTelegram.SetWebHook();
-			await PopCornBotServiceViber.SetWebHook();*/
+			await PopCornBotServiceViber.SetWebHook();
 			await NBCocktailsBarBotServiceTelegram.SetWebHook();
 		}
 	}
