@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Context;
+using DataLayer.Models.DTO;
 using DataLayer.Models.Festival;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -64,7 +65,7 @@ namespace TelegramBots.Controllers
 		public IActionResult Stages()
         {
             return View(_context.Stages.Include(i => i.Festival)
-                .GroupBy(i => i.Festival).OrderBy(i => i.Key)
+                .GroupBy(i => i.Festival).OrderBy(i => i.Key.Id)
                 .ToDictionary(g => g.Key.Name, g => g.OrderBy(i => i.Name).ToList()));
         }
 
@@ -127,5 +128,41 @@ namespace TelegramBots.Controllers
 
             return RedirectToAction("Artists");
         }
-	}
+
+
+        public IActionResult Schedule()
+        {
+            return View(_context.Schedule
+                .Select(s => new {s.Id, s.StartDate, s.EndDate, Stage = s.Stage.Name, Artist = s.Artist.Name}).ToList()
+                .GroupBy(s => s.StartDate.Day).OrderBy(i => i.Key)
+                .ToDictionary(g => g.Key,
+                    g => g.GroupBy(d => d.Stage).ToDictionary(s => s.Key,
+                        s => s.Select(a => new ArtistSchedule
+                        {
+                            Artist = a.Artist, StartTime = a.StartDate.ToString("hh:mm"), EndTime = a.EndDate.ToString("hh:mm")
+                        }).OrderBy(a => a.EndTime).ToList())));
+        }
+
+        public IActionResult ArtistSchedule(int? id)
+        {
+            ViewBag.Events = _context.Festivals.OrderBy(c => c.Id).ToList();
+            return View(id.HasValue ? _context.Stages.First(c => c.Id == id.Value) : new Stage());
+        }
+
+        public async Task<IActionResult> ScheduleSave(Stage data)
+        {
+            if (_context.Stages.Any(c => c.Id == data.Id))
+            {
+                _context.Update(data);
+            }
+            else
+            {
+                _context.Add(data);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Stages");
+        }
+    }
 }

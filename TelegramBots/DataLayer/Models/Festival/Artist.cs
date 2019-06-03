@@ -17,5 +17,6 @@ namespace DataLayer.Models.Festival
         public string Twitter { get; set; }
         public string Itunes { get; set; }
         public virtual List<Schedule> ScheduleData { get; set; }
+        public virtual List<UserSubscription> Subscriptions { get; set; }
     }
 }
