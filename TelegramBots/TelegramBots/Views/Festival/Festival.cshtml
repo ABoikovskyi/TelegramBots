@@ -1,0 +1,66 @@
+﻿@model DataLayer.Models.Festival.Festival
+@{
+    Layout = "FestivalLayout";
+}
+<form id="data-form" method="post" action="@Url.Action("EventSave", "Festival")">
+    @Html.HiddenFor(m => m.Id)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Name" class="data-label">Наименование</label>
+        <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Description" class="data-label">Описание</label>
+        <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="StartDate" class="data-label">Дата начала события</label>
+        @{
+            var hasData = Model.StartDate != DateTime.MinValue;
+        }
+        <input id="StartDate" name="StartDate" value="@((hasData ? Model.StartDate : DateTime.Now).ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="EndDate" class="data-label">Дата окончания события</label>
+        @{
+            hasData = Model.EndDate != DateTime.MinValue;
+        }
+        <input id="EndDate" name="EndDate" value="@((hasData ? Model.EndDate : DateTime.Now).ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="HowToGetTo" class="data-label">Как добраться</label>
+        <textarea id="HowToGetTo" name="HowToGetTo" type="text" class="data-input big-textarea">@Model.HowToGetTo</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="CampingInfo" class="data-label">Кэмпинг</label>
+        <textarea id="CampingInfo" name="CampingInfo" type="text" class="data-input big-textarea">@Model.CampingInfo</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Rules" class="data-label">Правила</label>
+        <textarea id="Rules" name="Rules" type="text" class="data-input big-textarea">@Model.Rules</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Contacts" class="data-label">Контакты</label>
+        <textarea id="Contacts" name="Contacts" type="text" class="data-input big-textarea">@Model.Contacts</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

@@ -1,0 +1,15 @@
+﻿@model List<DataLayer.Models.Festival.Festival>
+@{
+    Layout = "FestivalLayout";
+}
+<h2>Событие</h2>
+<form action="@Url.Action("Festival", "Festival")" class="create-button">
+    <input type="submit" value="Добавить" />
+</form>
+
+<ul>
+    @foreach (var festival in Model)
+    {
+    <li><a href="@Url.Action("Festival", "Festival", new {id = festival.Id})">@festival.Name</a></li>
+    }
+</ul>

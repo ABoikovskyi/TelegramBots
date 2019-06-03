@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using BusinessLayer.Helpers;
 using Quartz;
 using Quartz.Impl;
 
@@ -53,8 +54,7 @@ namespace BusinessLayer.Services
 		public async Task Execute(IJobExecutionContext context)
 		{
 			var postId = Convert.ToInt32(context.JobDetail.JobDataMap["postId"]);
-			var request = WebRequest.Create(
-					$"https://playzone.ua/popcorn/PublishPost?postId={postId}");
+            var request = WebRequest.Create($"{Links.AppLink}/popcorn/PublishPost?postId={postId}");
 			request.Method = "GET";
 			using (var response = (HttpWebResponse)await request.GetResponseAsync())
 			{
@@ -67,7 +67,7 @@ namespace BusinessLayer.Services
 	{
 		public async Task Execute(IJobExecutionContext context)
 		{
-			var request = WebRequest.Create("https://playzone.ua/popcorn/posts");
+			var request = WebRequest.Create($"{Links.AppLink}/popcorn/posts");
 			request.Method = "GET";
 			using (var response = (HttpWebResponse)await request.GetResponseAsync())
 			{

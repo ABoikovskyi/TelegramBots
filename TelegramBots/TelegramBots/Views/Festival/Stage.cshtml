@@ -1,0 +1,44 @@
+﻿@using DataLayer.Models.Festival
+@model DataLayer.Models.Festival.Stage
+@{
+    Layout = "FestivalLayout";
+    var festivals = (List<Festival>)ViewBag.Events;
+}
+<form id="data-form" method="post" action="@Url.Action("StageSave", "Festival")">
+    @Html.HiddenFor(m => m.Id)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Name" class="data-label">Наименование</label>
+        <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="Description" class="data-label">Описание</label>
+        <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="EventId" class="data-label">Категория</label>
+        <select size="4" id="EventId" name="EventId">
+            @foreach (var festival in festivals)
+            {
+                if (Model.FestivalId == festival.Id)
+                {
+                    <option value="@festival.Id" selected>@festival.Name</option>
+                }
+                else
+                {
+                    <option value="@festival.Id">@festival.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

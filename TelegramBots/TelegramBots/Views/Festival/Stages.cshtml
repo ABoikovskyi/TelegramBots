@@ -1,0 +1,19 @@
+﻿@model Dictionary<string, List<DataLayer.Models.Festival.Stage>>
+@{
+    Layout = "FestivalLayout";
+}
+<h2>Сцена</h2>
+<form action="@Url.Action("Stage", "Festival")" class="create-button">
+    <input type="submit" value="Добавить" />
+</form>
+
+@foreach (var festival in Model)
+{
+    <h3>@(festival.Key)</h3>
+    <ul>
+        @foreach (var stage in festival.Value)
+        {
+            <li><a href="@Url.Action("Stage", "Festival", new {id = stage.Id})">@stage.Name</a></li>
+        }
+    </ul>
+}

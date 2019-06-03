@@ -4,5 +4,7 @@
     <ShowAllFiles>false</ShowAllFiles>
     <NameOfLastUsedPublishProfile>PlayZone FTP</NameOfLastUsedPublishProfile>
     <ActiveDebugProfile>IIS Express</ActiveDebugProfile>
+    <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
+    <WebStackScaffolding_LayoutPageFile>~/Views/Shared/FestivalLayout.cshtml</WebStackScaffolding_LayoutPageFile>
   </PropertyGroup>
 </Project>

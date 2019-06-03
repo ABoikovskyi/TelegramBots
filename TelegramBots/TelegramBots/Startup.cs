@@ -26,13 +26,15 @@ namespace TelegramBots
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<PlayZoneDbContext>(options =>
+			/*services.AddDbContext<PlayZoneDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
 			services.AddDbContext<PopCornDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
 			services.AddDbContext<NBCocktailsBarDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
-			services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
+				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));*/
+            services.AddDbContext<FestivalDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));
+            services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
 			services.AddScoped<ExportService, ExportService>();
 			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
 			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
@@ -85,11 +87,11 @@ namespace TelegramBots
 			});
 
 			QuartzService.StartSiteWorkJob().Wait();
-			PopCornBotServiceTelegram.Init();
+			/*PopCornBotServiceTelegram.Init();
 			PopCornBotServiceViber.Init();
 			PlayZoneBotServiceTelegram.Init();
 			PlayZoneBotServiceViber.Init();
-			NBCocktailsBarBotServiceTelegram.Init();
+			NBCocktailsBarBotServiceTelegram.Init();*/
 		}
 	}
 }
