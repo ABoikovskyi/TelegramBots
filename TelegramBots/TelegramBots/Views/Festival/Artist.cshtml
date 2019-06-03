@@ -2,57 +2,68 @@
 @{
     Layout = "FestivalLayout";
 }
-<form id="data-form" method="post" action="@Url.Action("ArtistSave", "Festival")">
+<form asp-action="ArtistSave" asp-controller="Festival" id="data-form" enctype="multipart/form-data">
     @Html.HiddenFor(m => m.Id)
 
     <input type="submit" class="save-data" value="Сохранить" />
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Name" class="data-label">Наименование</label>
-        <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
+        <label asp-for="Name" class="data-label">Наименование</label>
+        <input asp-for="Name" class="data-input" autofocus />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Description" class="data-label">Описание</label>
-        <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
+        <label asp-for="Description" class="data-label">Описание</label>
+        <textarea asp-for="Description" class="data-input big-textarea"></textarea>
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Website" class="data-label">Сайт</label>
-        <input id="Website" name="Website" value="@Model.Website" type="text" class="data-input" />
+        @Html.HiddenFor(m => m.Image)
+        <label for="file" class="data-label">Фото</label>
+        <input type="file" id="file" name="file">
+        @if (Model.Image == null || Model.Image.Length == 0)
+        {
+        <span style="color:red;">Фото отсутствует</span>
+        }
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Facebook" class="data-label">Facebook</label>
-        <input id="Facebook" name="Facebook" value="@Model.Facebook" type="text" class="data-input" />
+        <label asp-for="Website" class="data-label">Сайт</label>
+        <input asp-for="Website" class="data-input" />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Youtube" class="data-label">Youtube</label>
-        <input id="Youtube" name="Youtube" value="@Model.Youtube" type="text" class="data-input" />
+        <label asp-for="Facebook" class="data-label">Facebook</label>
+        <input asp-for="Facebook" class="data-input" />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Instagram" class="data-label">Instagram</label>
-        <input id="Instagram" name="Instagram" value="@Model.Instagram" type="text" class="data-input" />
+        <label asp-for="Youtube" class="data-label">Youtube</label>
+        <input asp-for="Youtube" class="data-input" />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Twitter" class="data-label">Twitter</label>
-        <input id="Twitter" name="Twitter" value="@Model.Twitter" type="text" class="data-input" />
+        <label asp-for="Instagram" class="data-label">Instagram</label>
+        <input asp-for="Instagram" class="data-input" />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Itunes" class="data-label">Itunes</label>
-        <input id="Itunes" name="Itunes" value="@Model.Itunes" type="text" class="data-input" />
+        <label asp-for="Twitter" class="data-label">Twitter</label>
+        <input asp-for="Twitter" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="Itunes" class="data-label">Itunes</label>
+        <input asp-for="Itunes" class="data-input" />
     </div>
     <div class="clear"></div>
 

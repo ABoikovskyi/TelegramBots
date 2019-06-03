@@ -2,26 +2,27 @@
 @{
     Layout = "FestivalLayout";
 }
-<form id="data-form" method="post" action="@Url.Action("EventSave", "Festival")">
+
+<form asp-action="FestivalSave" asp-controller="Festival" id="data-form" enctype="multipart/form-data">
     @Html.HiddenFor(m => m.Id)
 
     <input type="submit" class="save-data" value="Сохранить" />
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Name" class="data-label">Наименование</label>
-        <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
+        <label asp-for="Name" class="data-label">Наименование</label>
+        <input asp-for="Name" class="data-input" autofocus />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Description" class="data-label">Описание</label>
-        <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
+        <label asp-for="Description" class="data-label">Описание</label>
+        <textarea asp-for="Description" class="data-input big-textarea"></textarea>
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="StartDate" class="data-label">Дата начала события</label>
+        <label asp-for="StartDate" class="data-label">Дата начала события</label>
         @{
             var hasData = Model.StartDate != DateTime.MinValue;
         }
@@ -30,7 +31,7 @@
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="EndDate" class="data-label">Дата окончания события</label>
+        <label asp-for="EndDate" class="data-label">Дата окончания события</label>
         @{
             hasData = Model.EndDate != DateTime.MinValue;
         }
@@ -39,26 +40,37 @@
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="HowToGetTo" class="data-label">Как добраться</label>
-        <textarea id="HowToGetTo" name="HowToGetTo" type="text" class="data-input big-textarea">@Model.HowToGetTo</textarea>
+        @Html.HiddenFor(m => m.Map)
+        <label for="file" class="data-label">Карта фестиваля</label>
+        <input type="file" id="file" name="file">
+        @if (Model.Map == null || Model.Map.Length == 0)
+        {
+            <span style="color:red;">Карта отсутствует</span>
+        }
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="CampingInfo" class="data-label">Кэмпинг</label>
-        <textarea id="CampingInfo" name="CampingInfo" type="text" class="data-input big-textarea">@Model.CampingInfo</textarea>
+        <label asp-for="HowToGetTo" class="data-label">Как добраться</label>
+        <textarea asp-for="HowToGetTo" class="data-input big-textarea"></textarea>
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Rules" class="data-label">Правила</label>
-        <textarea id="Rules" name="Rules" type="text" class="data-input big-textarea">@Model.Rules</textarea>
+        <label asp-for="CampingInfo"class="data-label">Кэмпинг</label>
+        <textarea asp-for="CampingInfo" class="data-input big-textarea"></textarea>
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Contacts" class="data-label">Контакты</label>
-        <textarea id="Contacts" name="Contacts" type="text" class="data-input big-textarea">@Model.Contacts</textarea>
+        <label asp-for="Rules" class="data-label">Правила</label>
+        <textarea asp-for="Rules" class="data-input big-textarea"></textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="Contacts" class="data-label">Контакты</label>
+        <textarea asp-for="Contacts" class="data-input big-textarea"></textarea>
     </div>
     <div class="clear"></div>
 

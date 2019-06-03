@@ -83,7 +83,7 @@ namespace TelegramBots
 			{
 				routes.MapRoute(
 					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
+					template: "{controller=Festival}/{action=Index}/{id?}");
 			});
 
 			QuartzService.StartSiteWorkJob().Wait();

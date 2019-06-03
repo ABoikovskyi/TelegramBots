@@ -4,27 +4,27 @@
     Layout = "FestivalLayout";
     var festivals = (List<Festival>)ViewBag.Events;
 }
-<form id="data-form" method="post" action="@Url.Action("StageSave", "Festival")">
+<form asp-action="StageSave" asp-controller="Festival" id="data-form">
     @Html.HiddenFor(m => m.Id)
 
     <input type="submit" class="save-data" value="Сохранить" />
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Name" class="data-label">Наименование</label>
-        <input id="Name" name="Name" value="@Model.Name" type="text" class="data-input" autofocus />
+        <label asp-for="Name" class="data-label">Наименование</label>
+        <input asp-for="Name" class="data-input" autofocus />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="Description" class="data-label">Описание</label>
-        <textarea id="Description" name="Description" type="text" class="data-input big-textarea">@Model.Description</textarea>
+        <label asp-for="Description" class="data-label">Описание</label>
+        <textarea asp-for="Description" class="data-input big-textarea"></textarea>
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="EventId" class="data-label">Категория</label>
-        <select size="4" id="EventId" name="EventId">
+        <label asp-for="FestivalId" class="data-label">Фестиваль</label>
+        <select asp-for="FestivalId" size="4">
             @foreach (var festival in festivals)
             {
                 if (Model.FestivalId == festival.Id)

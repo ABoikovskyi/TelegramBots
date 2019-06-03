@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Context;
 using DataLayer.Models.Festival;
-using DataLayer.Models.NBCocktailsBar;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,8 +34,20 @@ namespace TelegramBots.Controllers
 		}
 
 		public async Task<IActionResult> FestivalSave(Festival data)
-		{
-			if (_context.Festivals.Any(c => c.Id == data.Id))
+        {
+            foreach (var file in Request.Form.Files)
+            {
+                if (file.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        data.Map = ms.ToArray();
+                    }
+                }
+            }
+
+            if (_context.Festivals.Any(c => c.Id == data.Id))
 			{
 				_context.Update(data);
 			}
@@ -89,6 +102,18 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> ArtistSave(Artist data)
         {
+            foreach (var file in Request.Form.Files)
+            {
+                if (file.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        data.Image = ms.ToArray();
+                    }
+                }
+            }
+
             if (_context.Artists.Any(c => c.Id == data.Id))
             {
                 _context.Update(data);
