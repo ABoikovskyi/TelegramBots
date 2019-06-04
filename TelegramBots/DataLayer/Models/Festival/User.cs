@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataLayer.Models.Festival
 {
-	public class User
+    [Table("Users")]
+    public class User
 	{
 		public int Id { get; set; }
 		public string ChatId { get; set; }

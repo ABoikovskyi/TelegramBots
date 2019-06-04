@@ -1,0 +1,69 @@
+﻿@using DataLayer.Models.Festival
+@model DataLayer.Models.Festival.Schedule
+@{
+    Layout = "FestivalLayout";
+    var stages = (List<Stage>)ViewBag.Stages;
+    var artists = (Dictionary<int, string>)ViewBag.Artists;
+}
+<form asp-action="ScheduleSave" asp-controller="Festival" id="data-form">
+    @Html.HiddenFor(m => m.Id)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="StageId" class="data-label">Сцена</label>
+        <select asp-for="StageId" size="6">
+            @foreach (var stage in stages)
+            {
+                if (Model.StageId == stage.Id)
+                {
+                    <option value="@stage.Id" selected>@stage.Name</option>
+                }
+                else
+                {
+                    <option value="@stage.Id">@stage.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="ArtistId" class="data-label">Артист</label>
+        <select asp-for="ArtistId" size="20">
+            @foreach (var artist in artists)
+            {
+                if (Model.ArtistId == artist.Key)
+                {
+                    <option value="@artist.Key" selected>@artist.Value</option>
+                }
+                else
+                {
+                    <option value="@artist.Key">@artist.Value</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="StartDate" class="data-label">Начало выступления</label>
+        @{
+            var hasData = Model.StartDate != DateTime.MinValue;
+        }
+        <input id="StartDate" name="StartDate" value="@((hasData ? Model.StartDate : DateTime.Now).ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="EndDate" class="data-label">Конец выступления</label>
+        @{
+            hasData = Model.EndDate != DateTime.MinValue;
+        }
+        <input id="EndDate" name="EndDate" value="@((hasData ? Model.EndDate : DateTime.Now).ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

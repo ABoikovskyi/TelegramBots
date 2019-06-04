@@ -1,6 +1,9 @@
-﻿namespace DataLayer.Models.Festival
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.Models.Festival
 {
-	public class UserSubscription
+    [Table("UserSubscription")]
+    public class UserSubscription
 	{
 		public int Id { get; set; }
 		public int UserId { get; set; }

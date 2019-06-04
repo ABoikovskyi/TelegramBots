@@ -1,15 +1,27 @@
-﻿@model Dictionary<int, Dictionary<string, List<DataLayer.Models.DTO.ArtistSchedule>>>
+﻿@model Dictionary<DateTime, Dictionary<string, List<DataLayer.Models.DTO.ArtistSchedule>>>
 @{
     Layout = "FestivalLayout";
 }
-<h2>Фестивали</h2>
+<h2>Расписание</h2>
 <form action="@Url.Action("ArtistSchedule", "Festival")" class="create-button">
     <input type="submit" value="Добавить" />
 </form>
 
-<ul>
-    @foreach (var artistSchedule in Model)
+<ul style="list-style: none">
+    @foreach (var dayData in Model)
     {
-        //<li><a href="@Url.Action("ArtistSchedule", "Festival", new {id = artistSchedule.Id})">@artistSchedule.Name</a></li>
+        <li><h3>@dayData.Key.ToString("dd MMMM")</h3></li>
+        foreach (var stageData in dayData.Value)
+        {
+            <ul style="list-style: none">
+                <li><h4>@stageData.Key</h4></li>
+                @foreach (var scheduleData in stageData.Value)
+                {
+                    <ul>
+                        <li><a href="@Url.Action("ArtistSchedule", "Festival", new {id = scheduleData.Id})">@scheduleData.Artist</a></li>
+                    </ul>
+                }
+            </ul>
+        }
     }
 </ul>

@@ -1,0 +1,77 @@
+﻿@using DataLayer.Models.Enums
+@model DataLayer.Models.Festival.Post
+@{
+    var artists = (Dictionary<int, string>)ViewBag.Artists;
+}
+
+<form id="data-form" method="post" action="@Url.Action("PostSave", "Festival")">
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Date)
+    @Html.HiddenFor(m => m.Status)
+    @Html.HiddenFor(m => m.PublishDate)
+
+    <input type="submit" class="save-data" value="Сохранить" />
+    <div class="clear"></div>
+    <br />
+
+    @if (Model.Id != 0 && Model.Status != PostStatus.Published)
+    {   
+        <input type="button" value="Опубликовать" onclick="location.href = '@Url.Action("PublishPost", "Festival", new {postId = Model.Id})';"/>
+        <div class="clear"></div>
+        <br/>
+    }
+
+    @if (Model.Status != PostStatus.Published)
+    {
+        <div class="data-field">
+            <label for="ScheduleDate" class="data-label">Запланировать на:</label>
+            <input id="ScheduleDate" name="ScheduleDate" value="@(Model.ScheduleDate?.ToString("yyyy/MM/dd HH:mm"))" type="text" class="datetime-input data-input"/>
+        </div>
+        <div class="clear"></div>
+    }
+
+    <div class="data-field">
+        <label asp-for="ArtistId" class="data-label">Концерт</label>
+        <select asp-for="ArtistId" size="20">
+            <option value="null"></option>
+            @foreach (var artist in artists)
+            {
+                if (Model.ArtistId == artist.Key)
+                {
+                    <option value="@artist.Key" selected>@artist.Value</option>
+                }
+                else
+                {
+                    <option value="@artist.Key">@artist.Value</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="IsCommonPost" class="data-label">Общий пост</label>
+        @Html.EditorFor(m => m.IsCommonPost)
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="Title" class="data-label">Заголовок</label>
+        <textarea asp-for="Title" class="data-input" autofocus></textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="Desription" class="data-label">Текст</label>
+        <textarea asp-for="Desription" class="data-input big-textarea"></textarea>
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="Link" class="data-label">Ссылка</label>
+        <input asp-for="Link" class="data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Сохранить" />
+</form>

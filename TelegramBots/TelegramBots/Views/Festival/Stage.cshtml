@@ -2,7 +2,7 @@
 @model DataLayer.Models.Festival.Stage
 @{
     Layout = "FestivalLayout";
-    var festivals = (List<Festival>)ViewBag.Events;
+    var festivals = (List<Festival>)ViewBag.Festivals;
 }
 <form asp-action="StageSave" asp-controller="Festival" id="data-form">
     @Html.HiddenFor(m => m.Id)

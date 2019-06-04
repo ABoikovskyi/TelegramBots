@@ -2,8 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Services;
 using DataLayer.Context;
 using DataLayer.Models.DTO;
+using DataLayer.Models.Enums;
 using DataLayer.Models.Festival;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,7 +73,8 @@ namespace TelegramBots.Controllers
 
 		public IActionResult Stage(int? id)
 		{
-			ViewBag.Events = _context.Festivals.OrderBy(c => c.Id).ToList();
+			ViewBag.Festivals = _context.Festivals.OrderBy(c => c.Id).ToList();
+
 			return View(id.HasValue ? _context.Stages.First(c => c.Id == id.Value) : new Stage());
 		}
 
@@ -134,24 +137,30 @@ namespace TelegramBots.Controllers
         {
             return View(_context.Schedule
                 .Select(s => new {s.Id, s.StartDate, s.EndDate, Stage = s.Stage.Name, Artist = s.Artist.Name}).ToList()
-                .GroupBy(s => s.StartDate.Day).OrderBy(i => i.Key)
+                .GroupBy(s => new DateTime(s.StartDate.Year, s.StartDate.Month, s.StartDate.Day)).OrderBy(i => i.Key)
                 .ToDictionary(g => g.Key,
                     g => g.GroupBy(d => d.Stage).ToDictionary(s => s.Key,
                         s => s.Select(a => new ArtistSchedule
                         {
-                            Artist = a.Artist, StartTime = a.StartDate.ToString("hh:mm"), EndTime = a.EndDate.ToString("hh:mm")
+                            Id = a.Id,
+                            Artist = a.Artist,
+                            StartTime = a.StartDate.ToString("hh:mm"),
+                            EndTime = a.EndDate.ToString("hh:mm")
                         }).OrderBy(a => a.EndTime).ToList())));
         }
 
         public IActionResult ArtistSchedule(int? id)
         {
-            ViewBag.Events = _context.Festivals.OrderBy(c => c.Id).ToList();
-            return View(id.HasValue ? _context.Stages.First(c => c.Id == id.Value) : new Stage());
+            ViewBag.Stages = _context.Stages.OrderBy(c => c.Name).ToList();
+            ViewBag.Artists = _context.Artists.OrderBy(c => c.Name).Select(c => new { c.Id, c.Name })
+                .ToDictionary(c => c.Id, c => c.Name);
+
+            return View(id.HasValue ? _context.Schedule.First(c => c.Id == id.Value) : new Schedule());
         }
 
-        public async Task<IActionResult> ScheduleSave(Stage data)
+        public async Task<IActionResult> ScheduleSave(Schedule data)
         {
-            if (_context.Stages.Any(c => c.Id == data.Id))
+            if (_context.Schedule.Any(c => c.Id == data.Id))
             {
                 _context.Update(data);
             }
@@ -162,7 +171,83 @@ namespace TelegramBots.Controllers
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Stages");
+            return RedirectToAction("Schedule");
+        }
+
+        public IActionResult Posts()
+        {
+            return View(_context.Posts.Include(n => n.Artist).ToList());
+        }
+
+        public IActionResult Post(int? id)
+        {
+            ViewBag.Artists = _context.Artists.Select(c => new { c.Id, c.Name })
+                .ToDictionary(c => c.Id, c => c.Name);
+            return View(id.HasValue ? _context.Posts.First(c => c.Id == id.Value) : new Post());
+        }
+
+        public async Task<IActionResult> PostSave(Post data)
+        {
+            var postData = _context.Posts.FirstOrDefault(c => c.Id == data.Id);
+            if (postData != null)
+            {
+                if (data.ScheduleDate.HasValue)
+                {
+                    data.Status = PostStatus.Scheduled;
+                    if (!postData.ScheduleDate.HasValue)
+                    {
+                        await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                    }
+                    else if (postData.ScheduleDate != data.ScheduleDate)
+                    {
+                        await QuartzService.DeleteJob(data.Id);
+                        await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                    }
+                }
+
+                _context.Update(data);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                data.Status = PostStatus.Created;
+                data.Date = DateTime.Now;
+
+                if (data.ScheduleDate.HasValue)
+                {
+                    data.Status = PostStatus.Scheduled;
+                }
+
+                _context.Add(data);
+                await _context.SaveChangesAsync();
+
+                if (data.ScheduleDate.HasValue)
+                {
+                    await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                }
+            }
+
+            return RedirectToAction("Post", "PopCorn", new { id = data.Id });
+        }
+
+        public async Task<IActionResult> PublishPost(int postId)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+            if (post != null && post.Status != PostStatus.Published)
+            {
+                //await _telegramBotService.SendNewPostAlert(post, Messenger.Telegram);
+                if (post.Status == PostStatus.Scheduled)
+                {
+                    await QuartzService.DeleteJob(postId);
+                }
+
+                post.Status = PostStatus.Published;
+                post.PublishDate = DateTime.Now;
+                _context.Update(post);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Posts");
         }
     }
 }

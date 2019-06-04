@@ -13,5 +13,8 @@ namespace DataLayer.Context
         public virtual DbSet<Stage> Stages { get; set; }
         public virtual DbSet<Artist> Artists { get; set; }
         public virtual DbSet<Schedule> Schedule { get; set; }
+        public virtual DbSet<UserSubscription> UserSubscription { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Post> Posts { get; set; }
     }
 }
