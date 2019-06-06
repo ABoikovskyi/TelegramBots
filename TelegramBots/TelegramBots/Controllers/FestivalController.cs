@@ -241,7 +241,7 @@ namespace TelegramBots.Controllers
                 }
             }
 
-            return RedirectToAction("Post", "PopCorn", new { id = data.Id });
+            return RedirectToAction("Post", new { id = data.Id });
         }
 
         public async Task<IActionResult> PublishPost(int postId)

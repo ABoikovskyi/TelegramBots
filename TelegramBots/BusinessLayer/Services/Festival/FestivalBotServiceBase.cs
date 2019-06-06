@@ -88,7 +88,12 @@ namespace BusinessLayer.Services.Festival
                     var artistSchedule = _context.Schedule.FirstOrDefault(s => s.ArtistId == artist.Id);
                     var text = $"{artist.Name}\r\n" +
                                $"{(artistSchedule == null ? "Расписания еще нету" : $"{artistSchedule.StartDate:dd-MM HH:mm} - {artistSchedule.EndDate:HH:mm}")}";
-                    await SendTextMessage(new AnswerMessageBase(chatId, artist.Name, artist.Image, ArtistKeyboard) {IsPhoto = true});
+                    if (artist.Image != null)
+                    {
+                        await SendTextMessage(new AnswerMessageBase(chatId, artist.Name, artist.Image, ArtistKeyboard)
+                            {IsPhoto = true});
+                    }
+
                     await SendTextMessage(new AnswerMessageBase(chatId, text, ArtistKeyboard));
 
                     return;
