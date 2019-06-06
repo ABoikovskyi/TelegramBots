@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BusinessLayer.Helpers;
 using BusinessLayer.Services;
 using BusinessLayer.Services.PopCorn;
 using DataLayer.Context;
 using DataLayer.Models.Enums;
 using DataLayer.Models.PopCorn;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,20 +15,15 @@ namespace TelegramBots.Controllers
 	[Authorize]
 	public class PopCornController : Controller
 	{
-		private readonly IHostingEnvironment _env;
 		private readonly PopCornDbContext _context;
 		private readonly ExportService _exportService;
 		private readonly PopCornBotServiceTelegram _telegramBotService;
 		private readonly PopCornBotServiceViber _viberBotService;
-		private readonly MemoryCacheHelper _memoryCacheHelper;
 
-		public PopCornController(IHostingEnvironment env, PopCornDbContext context, ExportService exportService, 
-			PopCornBotServiceTelegram telegramBotService, PopCornBotServiceViber viberBotService,
-			MemoryCacheHelper memoryCacheHelper)
+		public PopCornController(PopCornDbContext context, ExportService exportService, 
+			PopCornBotServiceTelegram telegramBotService, PopCornBotServiceViber viberBotService)
 		{
-			_env = env;
 			_context = context;
-			_memoryCacheHelper = memoryCacheHelper;
 			_exportService = exportService;
 			_telegramBotService = telegramBotService;
 			_viberBotService = viberBotService;
@@ -50,7 +43,7 @@ namespace TelegramBots.Controllers
 		{
 			_context.Update(data);
 			_context.SaveChanges();
-			MemoryCacheHelper.SetMainInfo(data);
+			//MemoryCacheHelper.SetMainInfo(data);
 
 			return RedirectToAction("MainInfo");
 		}
@@ -108,7 +101,7 @@ namespace TelegramBots.Controllers
 					}
 					else if (postData.ScheduleDate != data.ScheduleDate)
 					{
-						await QuartzService.DeleteJob(data.Id);
+						await QuartzService.DeletePostPublishJob(data.Id);
 						await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
 					}
 				}
@@ -147,7 +140,7 @@ namespace TelegramBots.Controllers
 				await _viberBotService.SendNewPostAlert(post, Messenger.Viber);
 				if (post.Status == PostStatus.Scheduled)
 				{
-					await QuartzService.DeleteJob(postId);
+					await QuartzService.DeletePostPublishJob(postId);
 				}
 
 				post.Status = PostStatus.Published;

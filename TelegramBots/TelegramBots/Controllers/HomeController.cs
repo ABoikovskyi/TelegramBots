@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Services.Festival;
 using BusinessLayer.Services.NBCocktailsBar;
 using BusinessLayer.Services.PlayZone;
 using BusinessLayer.Services.PopCorn;
@@ -65,11 +66,12 @@ namespace TelegramBots.Controllers
 		
 		public async Task SetWebHooks()
 		{
-			await PlayZoneBotServiceTelegram.SetWebHook();
+            /*await PlayZoneBotServiceTelegram.SetWebHook();
 			await PlayZoneBotServiceViber.SetWebHook();
 			await PopCornBotServiceTelegram.SetWebHook();
 			await PopCornBotServiceViber.SetWebHook();
-			await NBCocktailsBarBotServiceTelegram.SetWebHook();
+			await NBCocktailsBarBotServiceTelegram.SetWebHook();*/
+            await FestivalBotServiceTelegram.SetWebHook();
 		}
 	}
 }

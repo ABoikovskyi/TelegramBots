@@ -29,18 +29,27 @@ namespace DataLayer.Models.DTO
 			UserId = userId;
 			Text = text;
 			KeyboardList = keyboardList;
-		}
+        }
 
-		public AnswerMessageBase(string userId, string text, string[][] keyboard)
+        public AnswerMessageBase(string userId, string text, string[][] keyboard)
 		{
 			UserId = userId;
 			Text = text;
 			Keyboard = keyboard;
-		}
+        }
 
-		public string UserId { get; set; }
+        public AnswerMessageBase(string userId, string text, byte[] image, string[][] keyboard)
+        {
+            UserId = userId;
+            Image = image;
+            Text = text;
+            Keyboard = keyboard;
+        }
+
+        public string UserId { get; set; }
 		public string Text { get; set; }
-		public bool IsPhoto { get; set; }
+        public byte[] Image { get; set; }
+        public bool IsPhoto { get; set; }
 		public List<object> KeyboardList { get; set; }
 		public string[][] Keyboard { get; set; }
 		public bool IsForceReplyMarkup { get; set; }

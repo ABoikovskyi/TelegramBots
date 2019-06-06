@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using BusinessLayer.Services.Festival;
 using BusinessLayer.Services.NBCocktailsBar;
 using BusinessLayer.Services.PlayZone;
 using BusinessLayer.Services.PopCorn;
@@ -173,4 +174,33 @@ namespace TelegramBots.Controllers
 		}
 	}
 
+    [Route("api/message/festivalupdate")]
+    public class FestivalMessageController : Controller
+    {
+        private readonly FestivalBotServiceTelegram _botService;
+
+        public FestivalMessageController(FestivalBotServiceTelegram botService)
+        {
+            _botService = botService;
+        }
+
+        [HttpGet]
+        public string Get()
+        {
+            return "Method GET unuvalable";
+        }
+
+        [HttpPost]
+        public async Task<OkResult> Post([FromBody] Update update)
+        {
+            if (update == null)
+            {
+                return Ok();
+            }
+
+            await _botService.ProcessMessage(update.Message);
+
+            return Ok();
+        }
+    }
 }

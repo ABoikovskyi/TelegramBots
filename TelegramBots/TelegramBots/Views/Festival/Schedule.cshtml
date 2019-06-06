@@ -18,7 +18,7 @@
                 @foreach (var scheduleData in stageData.Value)
                 {
                     <ul>
-                        <li><a href="@Url.Action("ArtistSchedule", "Festival", new {id = scheduleData.Id})">@scheduleData.Artist</a></li>
+                        <li><a href="@Url.Action("ArtistSchedule", "Festival", new {id = scheduleData.Id})">@scheduleData.Artist @scheduleData.StartTime - @scheduleData.EndTime</a></li>
                     </ul>
                 }
             </ul>

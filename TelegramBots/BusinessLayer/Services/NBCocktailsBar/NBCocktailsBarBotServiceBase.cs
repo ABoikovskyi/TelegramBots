@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BusinessLayer.Services.NBCocktailsBar
 {
 	public class NBCocktailsBarBotServiceBase
-	{
+    {
 		private readonly NBCocktailsBarDbContext _context;
 		private static readonly Dictionary<string, NBBarUserData> UsersData = new Dictionary<string, NBBarUserData>();
 		private readonly Dictionary<IngredientCategory, List<Ingredient>> _ingredientsData;

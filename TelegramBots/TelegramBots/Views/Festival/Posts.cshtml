@@ -1,5 +1,9 @@
 ﻿@model List<DataLayer.Models.Festival.Post>
+@{
+    Layout = "FestivalLayout";
+}
 
+<h2>Новости</h2>
 <form action="@Url.Action("Post", "Festival")" class="create-button">
     <input type="submit" value="Создать" />
 </form>

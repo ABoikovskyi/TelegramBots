@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using DataLayer.Context;
+using DataLayer.Models.Festival;
 using DataLayer.Models.NBCocktailsBar;
 using DataLayer.Models.PopCorn;
 using Microsoft.EntityFrameworkCore;
@@ -13,21 +14,67 @@ namespace BusinessLayer.Helpers
     {
 		private readonly PopCornDbContext _popCornContext;
 	    private readonly NBCocktailsBarDbContext _nbBarContext;
-		private static readonly object MemoryObj = new object();
+        private readonly FestivalDbContext _festivalContext;
+        private static readonly object MemoryObj = new object();
         private static readonly MemoryCache Memory = MemoryCache.Default;
         private const string MainInfoKey = "MainInfo";
         private const string ConcertsKey = "Concerts";
 	    private const string PostsKey = "Posts";
 	    private const string IngredientsDataKey = "IngredientsData";
-		private const int CacheTimeout = 60;
+        private const string FestivalInfoKey = "FestivalInfo";
+        private const string ArtistsKey = "Artists";
+        private const int CacheTimeout = 60;
 
-	    public MemoryCacheHelper(PopCornDbContext popCornContext, NBCocktailsBarDbContext nbBarContext)
+	    public MemoryCacheHelper(PopCornDbContext popCornContext, NBCocktailsBarDbContext nbBarContext,
+            FestivalDbContext festivalContext)
 	    {
-		    _popCornContext = popCornContext;
+            _popCornContext = popCornContext;
 		    _nbBarContext = nbBarContext;
-	    }
+            _festivalContext = festivalContext;
+        }
 
-	    public MainInfo GetMainInfo()
+        public Festival GetFestivalInfo()
+        {
+            var festivalInfo = MemoryGet<Festival>(FestivalInfoKey);
+            if (festivalInfo == null)
+            {
+                festivalInfo = _festivalContext.Festivals.First();
+                SetFestivalInfo(festivalInfo);
+            }
+
+            return festivalInfo;
+        }
+
+        public static void SetFestivalInfo(Festival festivalInfo)
+        {
+            MemoryRemove(FestivalInfoKey);
+            MemorySet(FestivalInfoKey, festivalInfo);
+        }
+
+        public List<Artist> GetArtists()
+        {
+            var artists = MemoryGet<List<Artist>>(ArtistsKey);
+            if (artists == null)
+            {
+                artists = _festivalContext.Artists.ToList();
+                SetArtists(artists);
+            }
+
+            return artists;
+        }
+
+        public static void SetArtists(List<Artist> artists)
+        {
+            MemoryRemove(ArtistsKey);
+            MemorySet(ArtistsKey, artists);
+        }
+
+        public static void RemoveArtists()
+        {
+            MemoryRemove(ArtistsKey);
+        }
+
+        public MainInfo GetMainInfo()
 	    {
 		    var mainInfo = MemoryGet<MainInfo>(MainInfoKey);
 		    if (mainInfo == null)
@@ -63,9 +110,9 @@ namespace BusinessLayer.Helpers
             MemorySet(ConcertsKey, concerts);
         }
 
-	    public List<Post> GetNews()
+	    public List<DataLayer.Models.PopCorn.Post> GetNews()
 	    {
-		    var news = MemoryGet<List<Post>>(PostsKey);
+		    var news = MemoryGet<List<DataLayer.Models.PopCorn.Post>>(PostsKey);
 		    if (news == null)
 		    {
 			    news = _popCornContext.Posts.ToList();
@@ -75,7 +122,7 @@ namespace BusinessLayer.Helpers
 		    return news;
 	    }
 
-	    public static void SetNews(List<Post> news)
+	    public static void SetNews(List<DataLayer.Models.PopCorn.Post> news)
 	    {
 		    MemoryRemove(PostsKey);
 		    MemorySet(PostsKey, news);
@@ -100,12 +147,12 @@ namespace BusinessLayer.Helpers
 			MemorySet(IngredientsDataKey, data);
 	    }
 
-		public static void RemoveIngredientsData()
+        public static void RemoveIngredientsData()
 	    {
 		    MemoryRemove(IngredientsDataKey);
 	    }
 
-		private static void MemorySet<T>(string key, T model, int expMin = CacheTimeout)
+        private static void MemorySet<T>(string key, T model, int expMin = CacheTimeout)
         {
             lock (MemoryObj)
             {

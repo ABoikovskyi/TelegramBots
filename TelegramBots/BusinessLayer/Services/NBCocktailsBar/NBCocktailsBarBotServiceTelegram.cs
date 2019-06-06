@@ -8,7 +8,7 @@ using Telegram.Bot.Types;
 namespace BusinessLayer.Services.NBCocktailsBar
 {
 	public class NBCocktailsBarBotServiceTelegram : NBCocktailsBarBotServiceBase
-	{
+    {
 		public static TelegramBotClient Client;
 
 		public NBCocktailsBarBotServiceTelegram(NBCocktailsBarDbContext context, MemoryCacheHelper memoryCacheHelper) :

@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Helpers;
 using BusinessLayer.Services;
+using BusinessLayer.Services.Festival;
 using BusinessLayer.Services.NBCocktailsBar;
 using BusinessLayer.Services.PlayZone;
 using BusinessLayer.Services.PopCorn;
@@ -26,12 +27,12 @@ namespace TelegramBots
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			/*services.AddDbContext<PlayZoneDbContext>(options =>
+			services.AddDbContext<PlayZoneDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
 			services.AddDbContext<PopCornDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
 			services.AddDbContext<NBCocktailsBarDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));*/
+				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
             services.AddDbContext<FestivalDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));
             services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
@@ -42,8 +43,10 @@ namespace TelegramBots
 			services.AddScoped<PopCornBotServiceBase, PopCornBotServiceBase>();
 			services.AddScoped<PopCornBotServiceTelegram, PopCornBotServiceTelegram>();
 			services.AddScoped<PopCornBotServiceViber, PopCornBotServiceViber>();
-			services.AddScoped<NBCocktailsBarBotServiceBase, NBCocktailsBarBotServiceBase>();
-			services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
+            services.AddScoped<NBCocktailsBarBotServiceBase, NBCocktailsBarBotServiceBase>();
+            services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
+            services.AddScoped<FestivalBotServiceBase, FestivalBotServiceBase>();
+			services.AddScoped<FestivalBotServiceTelegram, FestivalBotServiceTelegram>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -92,6 +95,7 @@ namespace TelegramBots
 			PlayZoneBotServiceTelegram.Init();
 			PlayZoneBotServiceViber.Init();
 			NBCocktailsBarBotServiceTelegram.Init();*/
+            FestivalBotServiceTelegram.Init();
 		}
 	}
 }

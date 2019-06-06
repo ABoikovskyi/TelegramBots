@@ -5,6 +5,7 @@
     var stages = (List<Stage>)ViewBag.Stages;
     var artists = (Dictionary<int, string>)ViewBag.Artists;
 }
+
 <form asp-action="ScheduleSave" asp-controller="Festival" id="data-form">
     @Html.HiddenFor(m => m.Id)
 

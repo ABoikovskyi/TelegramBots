@@ -2,7 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Helpers;
 using BusinessLayer.Services;
+using BusinessLayer.Services.Festival;
 using DataLayer.Context;
 using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
@@ -15,11 +17,13 @@ namespace TelegramBots.Controllers
 	public class FestivalController : Controller
 	{
 		private readonly FestivalDbContext _context;
+        private readonly FestivalBotServiceTelegram _telegramBotService;
 
-		public FestivalController(FestivalDbContext context)
+        public FestivalController(FestivalDbContext context, FestivalBotServiceTelegram telegramBotService)
 		{
 			_context = context;
-		}
+            _telegramBotService = telegramBotService;
+        }
 
 		public IActionResult Index()
 		{
@@ -60,8 +64,10 @@ namespace TelegramBots.Controllers
 			}
 
 			await _context.SaveChangesAsync();
+            MemoryCacheHelper.SetFestivalInfo(data);
 
-			return RedirectToAction("Festivals");
+
+            return RedirectToAction("Festivals");
 		}
 
 		public IActionResult Stages()
@@ -128,6 +134,7 @@ namespace TelegramBots.Controllers
             }
 
             await _context.SaveChangesAsync();
+            MemoryCacheHelper.RemoveArtists();
 
             return RedirectToAction("Artists");
         }
@@ -144,8 +151,8 @@ namespace TelegramBots.Controllers
                         {
                             Id = a.Id,
                             Artist = a.Artist,
-                            StartTime = a.StartDate.ToString("hh:mm"),
-                            EndTime = a.EndDate.ToString("hh:mm")
+                            StartTime = a.StartDate.ToString("HH:mm"),
+                            EndTime = a.EndDate.ToString("HH:mm")
                         }).OrderBy(a => a.EndTime).ToList())));
         }
 
@@ -162,6 +169,13 @@ namespace TelegramBots.Controllers
         {
             if (_context.Schedule.Any(c => c.Id == data.Id))
             {
+                foreach (var subscription in _context.UserSubscription.Where(s => s.ScheduleId == data.Id)
+                    .Select(s => s.Id))
+                {
+                    await QuartzService.DeleteFestivalPostPublishJob(subscription);
+                    await QuartzService.StartNotifyUserJob(subscription, data.StartDate.AddMinutes(-10));
+                }
+
                 _context.Update(data);
             }
             else
@@ -196,12 +210,12 @@ namespace TelegramBots.Controllers
                     data.Status = PostStatus.Scheduled;
                     if (!postData.ScheduleDate.HasValue)
                     {
-                        await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                        await QuartzService.StartFestivalPostPublisherJob(data.Id, data.ScheduleDate.Value);
                     }
                     else if (postData.ScheduleDate != data.ScheduleDate)
                     {
-                        await QuartzService.DeleteJob(data.Id);
-                        await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                        await QuartzService.DeleteFestivalPostPublishJob(data.Id);
+                        await QuartzService.StartFestivalPostPublisherJob(data.Id, data.ScheduleDate.Value);
                     }
                 }
 
@@ -223,7 +237,7 @@ namespace TelegramBots.Controllers
 
                 if (data.ScheduleDate.HasValue)
                 {
-                    await QuartzService.StartPostPublisherJob(data.Id, data.ScheduleDate.Value);
+                    await QuartzService.StartFestivalPostPublisherJob(data.Id, data.ScheduleDate.Value);
                 }
             }
 
@@ -235,10 +249,10 @@ namespace TelegramBots.Controllers
             var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
             if (post != null && post.Status != PostStatus.Published)
             {
-                //await _telegramBotService.SendNewPostAlert(post, Messenger.Telegram);
+                await _telegramBotService.SendNewPostAlert(post);
                 if (post.Status == PostStatus.Scheduled)
                 {
-                    await QuartzService.DeleteJob(postId);
+                    await QuartzService.DeleteFestivalPostPublishJob(postId);
                 }
 
                 post.Status = PostStatus.Published;
@@ -248,6 +262,12 @@ namespace TelegramBots.Controllers
             }
 
             return RedirectToAction("Posts");
+        }
+
+        public async Task NotifyUser(int notifyId)
+    {
+            await _telegramBotService.SendNotifyMeAlert(notifyId);
+            await QuartzService.DeleteFestivalPostPublishJob(notifyId);
         }
     }
 }
