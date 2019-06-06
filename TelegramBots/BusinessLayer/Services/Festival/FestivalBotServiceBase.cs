@@ -352,8 +352,7 @@ namespace BusinessLayer.Services.Festival
             }
 
             await SendTextMessage(new AnswerMessageBase(notifyInfo.ChatId,
-                $"Артист {notifyInfo.ArtistName} выйдет на {notifyInfo.StageName} в {notifyInfo.StartDate:HH:mm}",
-                MainKeyboard));
+                $"Артист {notifyInfo.ArtistName} выйдет на {notifyInfo.StageName} в {notifyInfo.StartDate:HH:mm}"));
         }
     }
 }
