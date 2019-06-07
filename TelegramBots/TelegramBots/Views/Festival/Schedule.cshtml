@@ -1,4 +1,5 @@
-﻿@model Dictionary<DateTime, Dictionary<string, List<DataLayer.Models.DTO.ArtistSchedule>>>
+﻿@using BusinessLayer.Services.Festival
+@model Dictionary<DateTime, Dictionary<string, List<DataLayer.Models.DTO.ArtistSchedule>>>
 @{
     Layout = "FestivalLayout";
 }
@@ -10,7 +11,7 @@
 <ul style="list-style: none">
     @foreach (var dayData in Model)
     {
-        <li><h3>@dayData.Key.ToString("dd MMMM")</h3></li>
+        <li><h3>@dayData.Key.ToString("dd MMMM", FestivalBotService.CurrentCultureInfo)</h3></li>
         foreach (var stageData in dayData.Value)
         {
             <ul style="list-style: none">

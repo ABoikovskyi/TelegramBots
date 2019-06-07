@@ -18,15 +18,13 @@ namespace TelegramBots.Controllers
 		private readonly PopCornDbContext _context;
 		private readonly ExportService _exportService;
 		private readonly PopCornBotServiceTelegram _telegramBotService;
-		private readonly PopCornBotServiceViber _viberBotService;
 
 		public PopCornController(PopCornDbContext context, ExportService exportService, 
-			PopCornBotServiceTelegram telegramBotService, PopCornBotServiceViber viberBotService)
+			PopCornBotServiceTelegram telegramBotService)
 		{
 			_context = context;
 			_exportService = exportService;
 			_telegramBotService = telegramBotService;
-			_viberBotService = viberBotService;
 		}
 
 		public IActionResult StartPage()
@@ -89,7 +87,7 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> PostSave(Post data)
 		{
-			var postData = _context.Posts.FirstOrDefault(c => c.Id == data.Id);
+			var postData = _context.Posts.AsNoTracking().FirstOrDefault(c => c.Id == data.Id);
 			if (postData != null)
 			{
 				if (data.ScheduleDate.HasValue)
@@ -137,7 +135,6 @@ namespace TelegramBots.Controllers
 			if (post != null && post.Status != PostStatus.Published)
 			{
 				await _telegramBotService.SendNewPostAlert(post, Messenger.Telegram);
-				await _viberBotService.SendNewPostAlert(post, Messenger.Viber);
 				if (post.Status == PostStatus.Scheduled)
 				{
 					await QuartzService.DeletePostPublishJob(postId);

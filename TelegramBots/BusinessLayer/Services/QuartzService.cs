@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
+using DataLayer.Context;
 using Quartz;
 using Quartz.Impl;
 
@@ -9,7 +10,7 @@ namespace BusinessLayer.Services
 {
 	public class QuartzService
 	{
-		public static async Task StartPostPublisherJob(int postId, DateTime dateToStart)
+        public static async Task StartPostPublisherJob(int postId, DateTime dateToStart)
 		{
 			var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
 			await scheduler.Start();
@@ -90,8 +91,13 @@ namespace BusinessLayer.Services
 				.Build();
 
 			await scheduler.ScheduleJob(job, trigger);
-		}
-	}
+        }
+
+        public static void ResetFestivalJobs()
+        {
+            //var context = new FestivalDbContext()
+        }
+    }
 
 	public class PostPublisherJob : IJob
 	{

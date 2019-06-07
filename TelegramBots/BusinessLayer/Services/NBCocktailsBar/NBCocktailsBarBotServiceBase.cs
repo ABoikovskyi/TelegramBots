@@ -13,7 +13,7 @@ namespace BusinessLayer.Services.NBCocktailsBar
 	public class NBCocktailsBarBotServiceBase
     {
 		private readonly NBCocktailsBarDbContext _context;
-		private static readonly Dictionary<string, NBBarUserData> UsersData = new Dictionary<string, NBBarUserData>();
+		private static readonly Dictionary<long, NBBarUserData> UsersData = new Dictionary<long, NBBarUserData>();
 		private readonly Dictionary<IngredientCategory, List<Ingredient>> _ingredientsData;
 
 		public NBCocktailsBarBotServiceBase(NBCocktailsBarDbContext context, MemoryCacheHelper memoryCacheHelper)
@@ -27,7 +27,7 @@ namespace BusinessLayer.Services.NBCocktailsBar
 			return Task.FromResult(default(object));
 		}
 
-		public async Task ProcessMessageBase(string userId, string userFirstName, string userLastName,
+		public async Task ProcessMessageBase(long userId, string userFirstName, string userLastName,
 			string messageText)
 		{
 			try

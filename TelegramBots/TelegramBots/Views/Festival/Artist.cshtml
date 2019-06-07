@@ -21,13 +21,8 @@
     <div class="clear"></div>
 
     <div class="data-field">
-        @Html.HiddenFor(m => m.Image)
-        <label for="file" class="data-label">Фото</label>
-        <input type="file" id="file" name="file">
-        @if (Model.Image == null || Model.Image.Length == 0)
-        {
-        <span style="color:red;">Фото отсутствует</span>
-        }
+        <label asp-for="Image" class="data-label">Фото</label>
+        <input asp-for="Image" class="data-input" />
     </div>
     <div class="clear"></div>
 

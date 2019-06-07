@@ -71,7 +71,7 @@ namespace TelegramBots.Controllers
 			await PopCornBotServiceTelegram.SetWebHook();
 			await PopCornBotServiceViber.SetWebHook();
 			await NBCocktailsBarBotServiceTelegram.SetWebHook();*/
-            await FestivalBotServiceTelegram.SetWebHook();
+            await FestivalBotService.SetWebHook();
 		}
 	}
 }

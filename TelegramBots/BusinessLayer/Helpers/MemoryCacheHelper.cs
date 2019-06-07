@@ -56,7 +56,7 @@ namespace BusinessLayer.Helpers
             var artists = MemoryGet<List<Artist>>(ArtistsKey);
             if (artists == null)
             {
-                artists = _festivalContext.Artists.ToList();
+                artists = _festivalContext.Artists.OrderBy(a => a.Name).ToList();
                 SetArtists(artists);
             }
 

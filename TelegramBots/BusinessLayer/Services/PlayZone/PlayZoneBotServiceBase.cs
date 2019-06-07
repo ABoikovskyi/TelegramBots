@@ -16,7 +16,7 @@ namespace BusinessLayer.Services.PlayZone
 	public class PlayZoneBotServiceBase
 	{
 		private readonly PlayZoneDbContext _context;
-		public static Dictionary<string, UserRequest> RequestsData = new Dictionary<string, UserRequest>();
+		public static Dictionary<long, UserRequest> RequestsData = new Dictionary<long, UserRequest>();
 		public static Dictionary<string, DataLayer.Models.Enums.PlayZone> PlayZones;
 		public static Dictionary<string, NumberOfPeople> NumberOfPeoples;
 		public static Dictionary<string, GameConsole> GameConsoles;
@@ -68,7 +68,7 @@ namespace BusinessLayer.Services.PlayZone
 			return Task.FromResult(default(object));
 		}
 
-		public async Task ProcessMessageBase(string userId, string userFirstName, string userLastName,
+		public async Task ProcessMessageBase(long userId, string userFirstName, string userLastName,
 			string messageText)
 		{
 			try
@@ -333,7 +333,7 @@ namespace BusinessLayer.Services.PlayZone
 					_context.UserRequests.Add(userData);
 					_context.SaveChanges();
 
-					await PlayZoneBotServiceTelegram.SendTextMessageStatic(new AnswerMessageBase(((int)userData.ZoneId).ToString(),
+					await PlayZoneBotServiceTelegram.SendTextMessageStatic(new AnswerMessageBase(((int)userData.ZoneId),
 						"Новая заявка:\r\n" +
 						$"Имя: {userData.UserName}\r\n" +
 						$"Телефон: {userData.UserPhone}\r\n" +

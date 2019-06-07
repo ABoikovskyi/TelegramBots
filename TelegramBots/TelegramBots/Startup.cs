@@ -39,14 +39,12 @@ namespace TelegramBots
 			services.AddScoped<ExportService, ExportService>();
 			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
 			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
-			services.AddScoped<PlayZoneBotServiceViber, PlayZoneBotServiceViber>();
 			services.AddScoped<PopCornBotServiceBase, PopCornBotServiceBase>();
 			services.AddScoped<PopCornBotServiceTelegram, PopCornBotServiceTelegram>();
-			services.AddScoped<PopCornBotServiceViber, PopCornBotServiceViber>();
             services.AddScoped<NBCocktailsBarBotServiceBase, NBCocktailsBarBotServiceBase>();
             services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
-            services.AddScoped<FestivalBotServiceBase, FestivalBotServiceBase>();
-			services.AddScoped<FestivalBotServiceTelegram, FestivalBotServiceTelegram>();
+            services.AddScoped<FestivalBotService, FestivalBotService>();
+			services.AddScoped<FestivalBotService, FestivalBotService>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -90,12 +88,12 @@ namespace TelegramBots
 			});
 
 			QuartzService.StartSiteWorkJob().Wait();
-			/*PopCornBotServiceTelegram.Init();
+            /*PopCornBotServiceTelegram.Init();
 			PopCornBotServiceViber.Init();
 			PlayZoneBotServiceTelegram.Init();
 			PlayZoneBotServiceViber.Init();
 			NBCocktailsBarBotServiceTelegram.Init();*/
-            FestivalBotServiceTelegram.Init();
+            FestivalBotService.Init();
 		}
 	}
 }

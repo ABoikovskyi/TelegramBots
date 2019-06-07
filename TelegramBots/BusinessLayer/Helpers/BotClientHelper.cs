@@ -34,7 +34,8 @@ namespace BusinessLayer.Helpers
             }
             else if (message.Image != null)
             {
-                await client.SendDocumentAsync(message.UserId, new MemoryStream(message.Image), "festival-map",
+                var iof = new InputOnlineFile(new MemoryStream(message.Image)) {FileName = "festival-map.jpg"};
+                await client.SendDocumentAsync(message.UserId, iof, "Карта фестиваля",
                     replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard));
             }
             else if (message.Keyboard != null)
@@ -50,7 +51,7 @@ namespace BusinessLayer.Helpers
             else if (message.InlineKeyboard != null)
             {
                 var inlineKeyboard = new InlineKeyboardMarkup(message.InlineKeyboard
-                    .Select(d => InlineKeyboardButton.WithCallbackData(d.Key, d.Value)).ToArray());
+                    .Select(d => new[] {InlineKeyboardButton.WithCallbackData(d.Key, d.Value)}).ToArray());
                 await client.SendTextMessageAsync(message.UserId, message.Text,
                     replyMarkup: inlineKeyboard);
             }
@@ -76,7 +77,7 @@ namespace BusinessLayer.Helpers
 			{
 				await client.SendPictureMessageAsync(new PictureMessage
 				{
-					Receiver = message.UserId,
+					Receiver = message.UserId.ToString(),
 					Sender = new UserBase
 					{
 						Name = sender
@@ -88,7 +89,7 @@ namespace BusinessLayer.Helpers
 			{
 				await client.SendKeyboardMessageAsync(new KeyboardMessage
 				{
-					Receiver = message.UserId,
+					Receiver = message.UserId.ToString(),
 					Sender = new UserBase
 					{
 						Name = sender
@@ -101,7 +102,7 @@ namespace BusinessLayer.Helpers
 			{
 				await client.SendKeyboardMessageAsync(new KeyboardMessage
 				{
-					Receiver = message.UserId,
+					Receiver = message.UserId.ToString(),
 					Sender = new UserBase
 					{
 						Name = sender
@@ -114,7 +115,7 @@ namespace BusinessLayer.Helpers
 			{
 				await client.SendTextMessageAsync(new TextMessage
 				{
-					Receiver = message.UserId,
+					Receiver = message.UserId.ToString(),
 					Sender = new UserBase
 					{
 						Name = sender
@@ -126,7 +127,7 @@ namespace BusinessLayer.Helpers
 			{
 				await client.SendTextMessageAsync(new TextMessage
 				{
-					Receiver = message.UserId,
+					Receiver = message.UserId.ToString(),
 					Sender = new UserBase
 					{
 						Name = sender

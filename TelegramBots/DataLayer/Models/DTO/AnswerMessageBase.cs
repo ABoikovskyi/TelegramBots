@@ -6,39 +6,39 @@ namespace DataLayer.Models.DTO
 {
 	public class AnswerMessageBase
 	{
-		public AnswerMessageBase(string userId)
+		public AnswerMessageBase(long userId)
 		{
 			UserId = userId;
 		}
 
-		public AnswerMessageBase(string userId, string text)
+		public AnswerMessageBase(long userId, string text)
 		{
 			UserId = userId;
 			Text = text;
 		}
 
-		public AnswerMessageBase(string userId, string text, Type keyboardEnum)
+		public AnswerMessageBase(long userId, string text, Type keyboardEnum)
 		{
 			UserId = userId;
 			Text = text;
 			KeyboardList = Enum.GetValues(keyboardEnum).Cast<object>().ToList();
 		}
 
-		public AnswerMessageBase(string userId, string text, List<object> keyboardList)
+		public AnswerMessageBase(long userId, string text, List<object> keyboardList)
 		{
 			UserId = userId;
 			Text = text;
 			KeyboardList = keyboardList;
         }
 
-        public AnswerMessageBase(string userId, string text, string[][] keyboard)
+        public AnswerMessageBase(long userId, string text, string[][] keyboard)
 		{
 			UserId = userId;
 			Text = text;
 			Keyboard = keyboard;
         }
 
-        public AnswerMessageBase(string userId, string text, byte[] image, string[][] keyboard)
+        public AnswerMessageBase(long userId, string text, byte[] image, string[][] keyboard)
         {
             UserId = userId;
             Image = image;
@@ -46,7 +46,7 @@ namespace DataLayer.Models.DTO
             Keyboard = keyboard;
         }
 
-        public string UserId { get; set; }
+        public long UserId { get; set; }
 		public string Text { get; set; }
         public byte[] Image { get; set; }
         public bool IsPhoto { get; set; }

@@ -9,7 +9,7 @@ namespace DataLayer.Models.Festival
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public byte[] Image { get; set; }
+        public string Image { get; set; }
         public string Website { get; set; }
         public string Facebook { get; set; }
         public string Youtube { get; set; }

@@ -42,7 +42,7 @@ namespace BusinessLayer.Services.NBCocktailsBar
 
 		public async Task ProcessMessage(Message message)
 		{
-			await ProcessMessageBase(message.Chat.Id.ToString(), message.Chat.FirstName, message.Chat.LastName,
+			await ProcessMessageBase(message.Chat.Id, message.Chat.FirstName, message.Chat.LastName,
 				message.Text);
 		}
 	}

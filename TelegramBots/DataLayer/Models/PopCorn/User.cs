@@ -6,7 +6,7 @@ namespace DataLayer.Models.PopCorn
 	public class User
 	{
 		public int Id { get; set; }
-		public string ChatId { get; set; }
+		public long ChatId { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public Messenger Messenger { get; set; }

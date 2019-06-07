@@ -4,14 +4,16 @@ using DataLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations.FestivalDb
 {
     [DbContext(typeof(FestivalDbContext))]
-    partial class FestivalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190607073715_ImageToLink")]
+    partial class ImageToLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,7 +158,7 @@ namespace DataLayer.Migrations.FestivalDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("ChatId");
+                    b.Property<string>("ChatId");
 
                     b.Property<string>("FirstName");
 

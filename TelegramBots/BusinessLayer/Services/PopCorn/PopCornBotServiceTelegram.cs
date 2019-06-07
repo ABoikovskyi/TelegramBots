@@ -39,7 +39,7 @@ namespace BusinessLayer.Services.PopCorn
 
 		public async Task ProcessMessage(Message message)
 		{
-			await ProcessMessageBase(message.Chat.Id.ToString(), Messenger.Telegram, message.Chat.FirstName, message.Chat.LastName,
+			await ProcessMessageBase(message.Chat.Id, Messenger.Telegram, message.Chat.FirstName, message.Chat.LastName,
 				message.Text);
 		}
 	}

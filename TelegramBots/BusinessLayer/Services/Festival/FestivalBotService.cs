@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
@@ -8,20 +9,25 @@ using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
 using DataLayer.Models.Festival;
 using Microsoft.EntityFrameworkCore;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using User = DataLayer.Models.Festival.User;
 
 namespace BusinessLayer.Services.Festival
 {
-	public class FestivalBotServiceBase
+	public class FestivalBotService
 	{
+        public static readonly CultureInfo CurrentCultureInfo = new CultureInfo("ru");
         private readonly FestivalDbContext _context;
         private readonly MemoryCacheHelper _memoryCacheHelper;
         public static string[][] MainKeyboard;
         public static string[][] StageKeyboard;
         public static string[][] ArtistKeyboard;
-        public static Dictionary<string, int> UserCurrentStage = new Dictionary<string, int>();
-        public static Dictionary<string, int> UserCurrentArtist = new Dictionary<string, int>();
+        public static Dictionary<long, int> UserCurrentStage = new Dictionary<long, int>();
+        public static Dictionary<long, int> UserCurrentArtist = new Dictionary<long, int>();
+        public static TelegramBotClient Client;
 
-        static FestivalBotServiceBase()
+        static FestivalBotService()
         {
             MainKeyboard = new[]
             {
@@ -45,18 +51,47 @@ namespace BusinessLayer.Services.Festival
             };
         }
 
-        public FestivalBotServiceBase(FestivalDbContext context, MemoryCacheHelper memoryCacheHelper)
+        public FestivalBotService(FestivalDbContext context, MemoryCacheHelper memoryCacheHelper)
         {
             _context = context;
             _memoryCacheHelper = memoryCacheHelper;
         }
 
-        public virtual Task SendTextMessage(AnswerMessageBase message)
+        public static void Init()
         {
-            return Task.FromResult(default(object));
+            if (Client == null)
+            {
+                QuartzService.ResetFestivalJobs();
+                Client = new TelegramBotClient("767658547:AAGHxb3XWihezv02gflFhy542ZclQR9HwA4");
+            }
         }
 
-        public async Task ProcessMessageBase(string chatId, string userFirstName, string userLastName,
+        public static async Task SetWebHook()
+        {
+            await Client.DeleteWebhookAsync();
+            await Client.SetWebhookAsync($"{Links.AppLink}/api/message/festivalupdate");
+        }
+
+        public async Task SendTextMessage(AnswerMessageBase message)
+        {
+            await Client.SendTextMessage(message);
+        }
+
+        public async Task ProcessCallbackMessage(CallbackQuery callback)
+        {
+            var message = callback.Message;
+
+            await ProcessMessageBase(message.Chat.Id, message.Chat.FirstName, message.Chat.LastName,
+                callback.Data);
+        }
+
+        public async Task ProcessMessage(Message message)
+        {
+            await ProcessMessageBase(message.Chat.Id, message.Chat.FirstName, message.Chat.LastName,
+                message.Text);
+        }
+
+        public async Task ProcessMessageBase(long chatId, string userFirstName, string userLastName,
             string messageText)
         {
             try
@@ -70,13 +105,15 @@ namespace BusinessLayer.Services.Festival
                 {
                     SetUserStage(chatId, stage.Id);
                     var currentSchedule = _context.Schedule
-                        .Where(d => /*d.StartDate.Date == DateTime.Now && */d.StageId == stage.Id)
+                        .Where(d => d.StartDate.Date == DateTime.Now && d.StageId == stage.Id)
                         .OrderBy(d => d.StartDate).Select(d => new {ArtistName = d.Artist.Name, d.StartDate, d.EndDate})
                         .ToList()
-                        .Select(d => (object)$"{d.ArtistName} {d.StartDate:HH:mm}-{d.EndDate:HH:mm}").ToList();
-                    currentSchedule.Add(PhraseHelper.BackToStages);
-                    currentSchedule.Add(PhraseHelper.MainMenu);
-                    await SendTextMessage(new AnswerMessageBase(chatId, "Расписание текущего дня", currentSchedule));
+                        .ToDictionary(d => $"{d.ArtistName} {d.StartDate:HH:mm}-{d.EndDate:HH:mm}", d => d.ArtistName);
+
+                    await SendTextMessage(new AnswerMessageBase(chatId, "Расписание текущего дня")
+                    {
+                        InlineKeyboard = currentSchedule
+                    });
                     return;
                 }
 
@@ -87,14 +124,41 @@ namespace BusinessLayer.Services.Festival
                     SetUserCurrentArtist(chatId, artist.Id);
                     var artistSchedule = _context.Schedule.FirstOrDefault(s => s.ArtistId == artist.Id);
                     var text = $"{artist.Name}\r\n" +
-                               $"{(artistSchedule == null ? "Расписания еще нету" : $"{artistSchedule.StartDate:dd-MM HH:mm} - {artistSchedule.EndDate:HH:mm}")}";
+                               $"{(artistSchedule == null ? "Расписания еще нету" : $"{artistSchedule.StartDate.ToString("dd MMMM HH:mm", CurrentCultureInfo)} - {artistSchedule.EndDate:HH:mm}")}";
                     if (artist.Image != null)
                     {
-                        await SendTextMessage(new AnswerMessageBase(chatId, artist.Name, artist.Image, ArtistKeyboard)
+                        await SendTextMessage(new AnswerMessageBase(chatId, artist.Image, ArtistKeyboard)
                             {IsPhoto = true});
                     }
 
                     await SendTextMessage(new AnswerMessageBase(chatId, text, ArtistKeyboard));
+
+                    return;
+                }
+
+                //date message checking
+                if (DateTime.TryParse(messageText, CurrentCultureInfo, DateTimeStyles.None, out var festivalDay))
+                {
+                    var daySchedule = _context.Schedule.Where(s =>
+                            s.StartDate.Day == festivalDay.Day && s.StartDate.Month == festivalDay.Month)
+                        .Select(s => new
+                        {
+                            StageId = s.Stage.Id,
+                            StageName = s.Stage.Name,
+                            ArtistName = s.Artist.Name,
+                            s.StartDate,
+                            s.EndDate
+                        }).ToList().OrderBy(s => s.StageId).GroupBy(s => s.StageName)
+                        .ToDictionary(g => g.Key, g => g.ToList());
+
+                    foreach (var stageSchedule in daySchedule)
+                    {
+                        await SendTextMessage(new AnswerMessageBase(chatId, stageSchedule.Key)
+                        {
+                            InlineKeyboard = stageSchedule.Value.OrderBy(v=>v.StartDate).ToDictionary(
+                                s => $"{s.ArtistName} {s.StartDate:HH:mm}-{s.EndDate:HH:mm}", s => s.ArtistName)
+                        });
+                    }
 
                     return;
                 }
@@ -198,13 +262,14 @@ namespace BusinessLayer.Services.Festival
                         await SendTextMessage(new AnswerMessageBase(chatId, "Выберите артиста", ArtistsKeyboard(artists)));
                         return;
                     }
-                    /*case PhraseHelper.Back:
-                        {
-                            UserCurrentConcert.Remove(chatId);
-                            UserCurrentConcertsType.Remove(chatId);
-                            await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.FestivalHelloText, MainKeyboard));
-                            return;
-                        }*/
+                    case PhraseHelper.Schedule:
+                    {
+                        var daysKeyboard = _context.Schedule.Select(s => s.StartDate.Date).OrderBy(d => d).ToList()
+                            .Select(d => (object)d.ToString("dd MMMM", CurrentCultureInfo)).Distinct().ToList();
+                        daysKeyboard.Add(PhraseHelper.MainMenu);
+                        await SendTextMessage(new AnswerMessageBase(chatId, "Выберите дату", daysKeyboard));
+                        return;
+                    }
                     default:
                     {
                         await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand, MainKeyboard));
@@ -217,7 +282,7 @@ namespace BusinessLayer.Services.Festival
             }
         }
 
-        private async Task<string> SubscribeToArtist(string chatId, SubscriptionType type, int? artistId = null, int? scheduleId = null)
+        private async Task<string> SubscribeToArtist(long chatId, SubscriptionType type, int? artistId = null, int? scheduleId = null)
         {
             var user = _context.Users.First(u => u.ChatId == chatId);
             if (!artistId.HasValue)
@@ -252,7 +317,7 @@ namespace BusinessLayer.Services.Festival
             return $"{user.FirstName}, теперь вы подписаны артиста";
         }
 
-        private void SetUserStage(string chatId, int stageId)
+        private void SetUserStage(long chatId, int stageId)
         {
             if (UserCurrentStage.ContainsKey(chatId))
             {
@@ -264,7 +329,7 @@ namespace BusinessLayer.Services.Festival
             }
         }
 
-        private static void SetUserCurrentArtist(string chatId, int artistId)
+        private static void SetUserCurrentArtist(long chatId, int artistId)
         {
             if (UserCurrentArtist.ContainsKey(chatId))
             {
@@ -291,7 +356,7 @@ namespace BusinessLayer.Services.Festival
             return structured.ToArray();
         }
 
-        private void InsertNewUser(string chatId, string userFirstName, string userLastName)
+        private void InsertNewUser(long chatId, string userFirstName, string userLastName)
         {
             if (!_context.Users.Any(u => u.ChatId == chatId))
             {

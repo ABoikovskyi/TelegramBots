@@ -18,8 +18,8 @@ namespace BusinessLayer.Services.PopCorn
 		public static string[][] MainKeyboard;
 		public static string[][] ConcertsChoiceKeyboard;
 		public static string[][] ConcertKeyboard;
-		public static Dictionary<string, int> UserCurrentConcert = new Dictionary<string, int>();
-		public static Dictionary<string, string> UserCurrentConcertsType = new Dictionary<string, string>();
+		public static Dictionary<long, int> UserCurrentConcert = new Dictionary<long, int>();
+		public static Dictionary<long, string> UserCurrentConcertsType = new Dictionary<long, string>();
 
 		static PopCornBotServiceBase()
 		{
@@ -58,7 +58,7 @@ namespace BusinessLayer.Services.PopCorn
 			return Task.FromResult(default(object));
 		}
 
-		public async Task ProcessMessageBase(string chatId, Messenger messenger, string userFirstName, string userLastName,
+		public async Task ProcessMessageBase(long chatId, Messenger messenger, string userFirstName, string userLastName,
 			string messageText)
 		{
 			try
@@ -262,7 +262,7 @@ namespace BusinessLayer.Services.PopCorn
 			}
 		}
 
-		private string SubscribeToConcert(string chatId, int? concertId, string artist = null)
+		private string SubscribeToConcert(long chatId, int? concertId, string artist = null)
 		{
 			var user = _context.Users.First(u => u.ChatId == chatId);
 			concertId = concertId ?? _context.Concerts.FirstOrDefault(c => c.Artist == artist)?.Id;
@@ -287,7 +287,7 @@ namespace BusinessLayer.Services.PopCorn
 		}
 
 
-		private void SetUserConcert(string chatId, int concertId)
+		private void SetUserConcert(long chatId, int concertId)
 		{
 			if (UserCurrentConcert.ContainsKey(chatId))
 			{
@@ -308,7 +308,7 @@ namespace BusinessLayer.Services.PopCorn
 			_context.SaveChanges();
 		}
 
-		private static void SetUserConcersType(string chatId, string concertsType)
+		private static void SetUserConcersType(long chatId, string concertsType)
 		{
 			if (UserCurrentConcertsType.ContainsKey(chatId))
 			{
@@ -335,7 +335,7 @@ namespace BusinessLayer.Services.PopCorn
 			return structured.ToArray();
 		}
 
-		private void InsertNewUser(string chatId, Messenger messenger, string userFirstName, string userLastName)
+		private void InsertNewUser(long chatId, Messenger messenger, string userFirstName, string userLastName)
 		{
 			if (!_context.Users.Any(u => u.ChatId == chatId))
 			{

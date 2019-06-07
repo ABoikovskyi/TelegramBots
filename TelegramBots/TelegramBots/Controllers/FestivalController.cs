@@ -17,9 +17,9 @@ namespace TelegramBots.Controllers
 	public class FestivalController : Controller
 	{
 		private readonly FestivalDbContext _context;
-        private readonly FestivalBotServiceTelegram _telegramBotService;
+        private readonly FestivalBotService _telegramBotService;
 
-        public FestivalController(FestivalDbContext context, FestivalBotServiceTelegram telegramBotService)
+        public FestivalController(FestivalDbContext context, FestivalBotService telegramBotService)
 		{
 			_context = context;
             _telegramBotService = telegramBotService;
@@ -112,18 +112,6 @@ namespace TelegramBots.Controllers
 
 		public async Task<IActionResult> ArtistSave(Artist data)
         {
-            foreach (var file in Request.Form.Files)
-            {
-                if (file.Length > 0)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        data.Image = ms.ToArray();
-                    }
-                }
-            }
-
             if (_context.Artists.Any(c => c.Id == data.Id))
             {
                 _context.Update(data);
@@ -195,14 +183,14 @@ namespace TelegramBots.Controllers
 
         public IActionResult Post(int? id)
         {
-            ViewBag.Artists = _context.Artists.Select(c => new { c.Id, c.Name })
+            ViewBag.Artists = _context.Artists.OrderBy(a => a.Name).Select(c => new {c.Id, c.Name})
                 .ToDictionary(c => c.Id, c => c.Name);
             return View(id.HasValue ? _context.Posts.First(c => c.Id == id.Value) : new Post());
         }
 
         public async Task<IActionResult> PostSave(Post data)
         {
-            var postData = _context.Posts.FirstOrDefault(c => c.Id == data.Id);
+            var postData = _context.Posts.AsNoTracking().FirstOrDefault(c => c.Id == data.Id);
             if (postData != null)
             {
                 if (data.ScheduleDate.HasValue)
@@ -267,7 +255,7 @@ namespace TelegramBots.Controllers
         public async Task NotifyUser(int notifyId)
     {
             await _telegramBotService.SendNotifyMeAlert(notifyId);
-            await QuartzService.DeleteFestivalPostPublishJob(notifyId);
+            await QuartzService.DeleteNotifyUserJob(notifyId);
         }
     }
 }
