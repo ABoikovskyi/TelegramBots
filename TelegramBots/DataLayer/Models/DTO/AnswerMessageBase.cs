@@ -53,7 +53,8 @@ namespace DataLayer.Models.DTO
 		public List<object> KeyboardList { get; set; }
 		public string[][] Keyboard { get; set; }
 		public bool IsForceReplyMarkup { get; set; }
-		public Dictionary<string, string> InlineKeyboard { get; set; }
+        public bool IsOneTimeKeyboard { get; set; }
+        public Dictionary<string, string> InlineKeyboard { get; set; }
 		public bool IsHtml { get; set; }
 	}
 }

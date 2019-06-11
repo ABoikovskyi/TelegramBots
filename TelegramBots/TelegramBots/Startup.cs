@@ -60,7 +60,9 @@ namespace TelegramBots
 			});
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-		}
+
+            QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
+        }
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{

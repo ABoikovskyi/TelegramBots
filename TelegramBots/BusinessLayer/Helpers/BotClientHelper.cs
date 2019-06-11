@@ -41,7 +41,7 @@ namespace BusinessLayer.Helpers
             else if (message.Keyboard != null)
             {
                 await client.SendTextMessageAsync(message.UserId, message.Text,
-                    replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard));
+                    replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard, message.IsOneTimeKeyboard));
             }
             else if (message.KeyboardList != null)
             {
@@ -65,76 +65,5 @@ namespace BusinessLayer.Helpers
                 await client.SendTextMessageAsync(message.UserId, message.Text);
             }
         }
-
-        public static async Task SendTextMessage(this ViberBotClient client, AnswerMessageBase message, string sender)
-		{
-			if (string.IsNullOrEmpty(message.Text))
-			{
-				return;
-			}
-
-			if (message.IsPhoto)
-			{
-				await client.SendPictureMessageAsync(new PictureMessage
-				{
-					Receiver = message.UserId.ToString(),
-					Sender = new UserBase
-					{
-						Name = sender
-					},
-					Media = message.Text
-				});
-			}
-			else if (message.Keyboard != null)
-			{
-				await client.SendKeyboardMessageAsync(new KeyboardMessage
-				{
-					Receiver = message.UserId.ToString(),
-					Sender = new UserBase
-					{
-						Name = sender
-					},
-					Text = message.Text,
-					Keyboard = KeyboardHelper.GetKeyboardViber(message.Keyboard)
-				});
-			}
-			else if (message.KeyboardList != null)
-			{
-				await client.SendKeyboardMessageAsync(new KeyboardMessage
-				{
-					Receiver = message.UserId.ToString(),
-					Sender = new UserBase
-					{
-						Name = sender
-					},
-					Text = message.Text,
-					Keyboard = KeyboardHelper.GetKeyboardViber(message.KeyboardList)
-				});
-			}
-			else if (message.IsForceReplyMarkup)
-			{
-				await client.SendTextMessageAsync(new TextMessage
-				{
-					Receiver = message.UserId.ToString(),
-					Sender = new UserBase
-					{
-						Name = sender
-					},
-					Text = message.Text
-				});
-			}
-			else
-			{
-				await client.SendTextMessageAsync(new TextMessage
-				{
-					Receiver = message.UserId.ToString(),
-					Sender = new UserBase
-					{
-						Name = sender
-					},
-					Text = message.Text
-				});
-			}
-		}
 	}
 }

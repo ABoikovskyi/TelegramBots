@@ -31,13 +31,14 @@
         public const string Information = "Информация";
         public const string SubscribeToArtist = "Подписаться на обновления";
         public const string NotifyMe = "Уведомить за 10 минут до выхода на сцену";
-        public const string BackToArtists = "Назад к концертам";
+        public const string BackToArtists = "Назад к артистам";
         public const string Stages = "Сцены";
         public const string Artists = "Артисты";
         public const string Schedule = "Расписание";
         public const string BackToStages = "Назад к сценам";
         public const string Map = "Карта фестиваля";
         public const string HowToGetTo = "Как добраться";
+        public const string AllArtists = "Все артисты";
 
         public const string Skip = "Пропустить";
 	    public const string ChooseMore = "Выбрать ещё";

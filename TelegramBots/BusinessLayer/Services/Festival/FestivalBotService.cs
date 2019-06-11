@@ -23,8 +23,8 @@ namespace BusinessLayer.Services.Festival
         public static string[][] MainKeyboard;
         public static string[][] StageKeyboard;
         public static string[][] ArtistKeyboard;
-        public static Dictionary<long, int> UserCurrentStage = new Dictionary<long, int>();
         public static Dictionary<long, int> UserCurrentArtist = new Dictionary<long, int>();
+        public static HashSet<long> UsersInSearch = new HashSet<long>();
         public static TelegramBotClient Client;
 
         static FestivalBotService()
@@ -61,7 +61,6 @@ namespace BusinessLayer.Services.Festival
         {
             if (Client == null)
             {
-                QuartzService.ResetFestivalJobs();
                 Client = new TelegramBotClient("767658547:AAGHxb3XWihezv02gflFhy542ZclQR9HwA4");
             }
         }
@@ -99,16 +98,53 @@ namespace BusinessLayer.Services.Festival
                 var festivalInfo = _memoryCacheHelper.GetFestivalInfo();
                 var artists = _memoryCacheHelper.GetArtists();
 
+                //in search user
+                if (UsersInSearch.Contains(chatId))
+                {
+                    UsersInSearch.Remove(chatId);
+                    if (messageText != PhraseHelper.MainMenu && messageText != PhraseHelper.Stages)
+                    {
+                        if (messageText.Length < 3)
+                        {
+                            UsersInSearch.Remove(chatId);
+                            messageText = PhraseHelper.Artists;
+                        }
+                        else
+                        {
+                            var foundedArtists = artists.Where(a =>
+                                    messageText == PhraseHelper.AllArtists || a.Name.ToLower().Contains(messageText.ToLower()))
+                                .ToDictionary(a => a.Name, a => a.Name);
+                            if (foundedArtists.Count != 0)
+                            {
+                                await SendTextMessage(new AnswerMessageBase(chatId, "Найденные артисты")
+                                {
+                                    InlineKeyboard = foundedArtists
+                                });
+
+                                return;
+                            }
+
+                            await SendTextMessage(new AnswerMessageBase(chatId, "Артисты не найдены"));
+                            messageText = PhraseHelper.Artists;
+                        }
+                    }
+                }
+
                 //stage message checking
                 var stage = _context.Stages.FirstOrDefault(c => c.Name == messageText);
                 if (stage != null)
                 {
-                    SetUserStage(chatId, stage.Id);
                     var currentSchedule = _context.Schedule
                         .Where(d => d.StartDate.Date == DateTime.Now && d.StageId == stage.Id)
                         .OrderBy(d => d.StartDate).Select(d => new {ArtistName = d.Artist.Name, d.StartDate, d.EndDate})
                         .ToList()
                         .ToDictionary(d => $"{d.ArtistName} {d.StartDate:HH:mm}-{d.EndDate:HH:mm}", d => d.ArtistName);
+
+                    if (currentSchedule.Count == 0)
+                    {
+                        await SendTextMessage(new AnswerMessageBase(chatId, "Сегодня на выбранной сцене никто не выступает", MainKeyboard));
+                        return;
+                    }
 
                     await SendTextMessage(new AnswerMessageBase(chatId, "Расписание текущего дня")
                     {
@@ -197,9 +233,7 @@ namespace BusinessLayer.Services.Festival
                         case PhraseHelper.BackToArtists:
                         {
                             UserCurrentArtist.Remove(chatId);
-                            messageText = UserCurrentStage.TryGetValue(chatId, out var stageId)
-                                ? _context.Stages.First(s => s.Id == stageId).Name
-                                : PhraseHelper.MainMenu;
+                            messageText = PhraseHelper.Artists;
                             break;
                         }
                     }
@@ -214,11 +248,10 @@ namespace BusinessLayer.Services.Festival
                         {
                             InsertNewUser(chatId, userFirstName, userLastName);
                         }
-
-                        UserCurrentStage.Remove(chatId);
+                        
                         UserCurrentArtist.Remove(chatId);
                         await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.FestivalHelloText,
-                            MainKeyboard));
+                            MainKeyboard) {IsOneTimeKeyboard = true});
                         return;
                     }
                     case PhraseHelper.HowToGetTo:
@@ -259,7 +292,20 @@ namespace BusinessLayer.Services.Festival
                     case PhraseHelper.Artists:
                     case PhraseHelper.BackToArtists:
                     {
-                        await SendTextMessage(new AnswerMessageBase(chatId, "Выберите артиста", ArtistsKeyboard(artists)));
+                        UsersInSearch.Add(chatId);
+                        await SendTextMessage(new AnswerMessageBase(chatId, "Артисты", MainKeyboard));
+                        //await
+                            await SendTextMessage(new AnswerMessageBase(chatId, "Укажите имя артиста (минимум 3 символа)")
+                        {
+                            InlineKeyboard =
+                                new Dictionary<string, string>
+                                {
+                                    {PhraseHelper.AllArtists, PhraseHelper.AllArtists},
+                                    {PhraseHelper.MainMenu, PhraseHelper.MainMenu}
+                                }
+                        });
+                        //await SendTextMessage(new AnswerMessageBase(chatId, "Выберите артиста", ArtistsKeyboard(artists)));
+
                         return;
                     }
                     case PhraseHelper.Schedule:
@@ -315,18 +361,6 @@ namespace BusinessLayer.Services.Festival
             }
 
             return $"{user.FirstName}, теперь вы подписаны артиста";
-        }
-
-        private void SetUserStage(long chatId, int stageId)
-        {
-            if (UserCurrentStage.ContainsKey(chatId))
-            {
-                UserCurrentStage[chatId] = stageId;
-            }
-            else
-            {
-                UserCurrentStage.Add(chatId, stageId);
-            }
         }
 
         private static void SetUserCurrentArtist(long chatId, int artistId)
