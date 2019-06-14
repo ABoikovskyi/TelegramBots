@@ -2,7 +2,6 @@
 @model DataLayer.Models.Festival.Stage
 @{
     Layout = "FestivalLayout";
-    var festivals = (List<Festival>)ViewBag.Festivals;
 }
 <form asp-action="StageSave" asp-controller="Festival" id="data-form">
     @Html.HiddenFor(m => m.Id)
@@ -24,18 +23,7 @@
 
     <div class="data-field">
         <label asp-for="FestivalId" class="data-label">Фестиваль</label>
-        <select asp-for="FestivalId" size="4">
-            @foreach (var festival in festivals)
-            {
-                if (Model.FestivalId == festival.Id)
-                {
-                    <option value="@festival.Id" selected>@festival.Name</option>
-                }
-                else
-                {
-                    <option value="@festival.Id">@festival.Name</option>
-                }
-            }
+        <select asp-for="FestivalId" asp-items="ViewBag.Festivals" size="4">
         </select>
     </div>
     <div class="clear"></div>

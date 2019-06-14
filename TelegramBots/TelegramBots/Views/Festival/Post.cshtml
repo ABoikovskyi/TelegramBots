@@ -2,7 +2,6 @@
 @model DataLayer.Models.Festival.Post
 @{
     Layout = "FestivalLayout";
-    var artists = (Dictionary<int, string>)ViewBag.Artists;
 }
 
 <form id="data-form" method="post" action="@Url.Action("PostSave", "Festival")">
@@ -33,19 +32,7 @@
 
     <div class="data-field">
         <label asp-for="ArtistId" class="data-label">Концерт</label>
-        <select asp-for="ArtistId" size="20">
-            <option value="null"></option>
-            @foreach (var artist in artists)
-            {
-                if (Model.ArtistId == artist.Key)
-                {
-                    <option value="@artist.Key" selected>@artist.Value</option>
-                }
-                else
-                {
-                    <option value="@artist.Key">@artist.Value</option>
-                }
-            }
+        <select asp-for="ArtistId" asp-items="ViewBag.Artists" size="20">
         </select>
     </div>
     <div class="clear"></div>

@@ -10,6 +10,7 @@ using DataLayer.Models.DTO;
 using DataLayer.Models.Enums;
 using DataLayer.Models.Festival;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace TelegramBots.Controllers
@@ -79,7 +80,8 @@ namespace TelegramBots.Controllers
 
 		public IActionResult Stage(int? id)
 		{
-			ViewBag.Festivals = _context.Festivals.OrderBy(c => c.Id).ToList();
+			ViewBag.Festivals = _context.Festivals.OrderBy(c => c.Id).Select(c =>
+				new SelectListItem {Value = c.Id.ToString(), Text = c.Name}).ToList();
 
 			return View(id.HasValue ? _context.Stages.First(c => c.Id == id.Value) : new Stage());
 		}
@@ -127,7 +129,6 @@ namespace TelegramBots.Controllers
             return RedirectToAction("Artists");
         }
 
-
         public IActionResult Schedule()
         {
             return View(_context.Schedule
@@ -146,9 +147,10 @@ namespace TelegramBots.Controllers
 
         public IActionResult ArtistSchedule(int? id)
         {
-            ViewBag.Stages = _context.Stages.OrderBy(c => c.Name).ToList();
-            ViewBag.Artists = _context.Artists.OrderBy(c => c.Name).Select(c => new { c.Id, c.Name })
-                .ToDictionary(c => c.Id, c => c.Name);
+	        ViewBag.Stages = _context.Stages.OrderBy(c => c.Name).Select(c =>
+		        new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
+	        ViewBag.Artists = _context.Artists.OrderBy(c => c.Name).Select(c =>
+		        new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
 
             return View(id.HasValue ? _context.Schedule.First(c => c.Id == id.Value) : new Schedule());
         }
@@ -183,9 +185,11 @@ namespace TelegramBots.Controllers
 
         public IActionResult Post(int? id)
         {
-            ViewBag.Artists = _context.Artists.OrderBy(a => a.Name).Select(c => new {c.Id, c.Name})
-                .ToDictionary(c => c.Id, c => c.Name);
-            return View(id.HasValue ? _context.Posts.First(c => c.Id == id.Value) : new Post());
+			var artists = _context.Artists.OrderBy(c => c.Name).Select(c =>
+				new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
+			artists.Insert(0, new SelectListItem(null, ""));
+			ViewBag.Artists = artists;
+			return View(id.HasValue ? _context.Posts.First(c => c.Id == id.Value) : new Post());
         }
 
         public async Task<IActionResult> PostSave(Post data)
