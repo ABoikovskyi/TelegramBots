@@ -9,7 +9,7 @@
             $('input', this).on('keyup',
                 function(e) {
                     var inputValue = this.value;
-                    if (e.keyCode == 13 && table.column(i).search() !== inputValue) {
+                    if (e.keyCode === 13 && table.column(i).search() !== inputValue) {
                         var isRegex = inputValue.includes("+");
                         if (isRegex) {
                             inputValue = inputValue.replace("+", "|");
