@@ -163,7 +163,7 @@ namespace BusinessLayer.Services.Idrink
 								? DateTime.Now.AddDays(-7).Date
 								: DateTime.Now.AddMonths(-1).Date;
 							data = _context.DrinkHistory
-								.Where(h => h.User.ChatId == chatId && h.DrinkTime.Date >= dateLimit).ToList();
+								.Where(h => h.User.ChatId == chatId && h.DrinkTime >= dateLimit).ToList();
 						}
 
 						foreach (var drink in data)
@@ -180,8 +180,8 @@ namespace BusinessLayer.Services.Idrink
 								await SendTextMessage(new AnswerMessageBase(chatId,
 									string.Format(PhraseHelper.YouDrinkAt,
 										drink.DrinkTime.ToString("dd-MM-yyyy HH:mm")), MainKeyboard));
-								await Client.SendLocationAsync(chatId, float.Parse(location.Split(new[] {';'})[0]),
-									float.Parse(location.Split(new[] {';'})[1]));
+								await Client.SendLocationAsync(chatId, float.Parse(location.Split(new[] {';'})[0].Replace(",",".")),
+									float.Parse(location.Split(new[] {';'})[1].Replace(",", ".")));
 							}
 						}
 

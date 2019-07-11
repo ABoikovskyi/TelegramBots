@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using BusinessLayer.Helpers;
 using BusinessLayer.Services.Idrink;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
@@ -149,8 +150,10 @@ namespace TelegramBots.Controllers
 		}
 
 		[HttpGet]
-		public string Get()
+		public async Task<string> Get()
 		{
+			await _botService.ProcessMessage(new Message
+				{Text = PhraseHelper.LastWeek, Chat = new Chat {Id = 117425216}});
 			return "Method GET unuvalable";
 		}
 
