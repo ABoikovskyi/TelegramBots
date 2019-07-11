@@ -17,7 +17,7 @@ namespace TelegramBots.Controllers
 
 		public ActionResult Index()
 		{
-			return View(_context.Users.ToList());
+			return View();
 		}
 
 		/*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
