@@ -39,7 +39,7 @@ namespace BusinessLayer.Services.Idrink
 		{
 			if (Client == null)
 			{
-				Client = new TelegramBotClient("740230403:AAEY_iB-EA_v63uiTXj7ohEq2rgqbqxeojc");
+				Client = new TelegramBotClient(Links.TelegramKey);
 			}
 		}
 

@@ -8,15 +8,31 @@
     <Compile Remove="Views\Festival\**" />
     <Compile Remove="Views\NBCocktailsBar\**" />
     <Compile Remove="Views\PopCorn\**" />
+    <Compile Remove="wwwroot\css\**" />
+    <Compile Remove="wwwroot\DataTables\**" />
+    <Compile Remove="wwwroot\js\**" />
+    <Compile Remove="wwwroot\lib\**" />
     <Content Remove="Views\Festival\**" />
     <Content Remove="Views\NBCocktailsBar\**" />
     <Content Remove="Views\PopCorn\**" />
+    <Content Remove="wwwroot\css\**" />
+    <Content Remove="wwwroot\DataTables\**" />
+    <Content Remove="wwwroot\js\**" />
+    <Content Remove="wwwroot\lib\**" />
     <EmbeddedResource Remove="Views\Festival\**" />
     <EmbeddedResource Remove="Views\NBCocktailsBar\**" />
     <EmbeddedResource Remove="Views\PopCorn\**" />
+    <EmbeddedResource Remove="wwwroot\css\**" />
+    <EmbeddedResource Remove="wwwroot\DataTables\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="wwwroot\lib\**" />
     <None Remove="Views\Festival\**" />
     <None Remove="Views\NBCocktailsBar\**" />
     <None Remove="Views\PopCorn\**" />
+    <None Remove="wwwroot\css\**" />
+    <None Remove="wwwroot\DataTables\**" />
+    <None Remove="wwwroot\js\**" />
+    <None Remove="wwwroot\lib\**" />
   </ItemGroup>
 
   <ItemGroup>

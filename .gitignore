@@ -18,3 +18,4 @@
 /TelegramBots/BusinessLayer/bin/Debug/netcoreapp2.1
 /TelegramBots/BusinessLayer/obj
 /TelegramBots/BusinessLayer/bin/Release/netcoreapp2.1
+/TelegramBots/BusinessLayer/Helpers/Links.cs
