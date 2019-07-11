@@ -1,4 +1,4 @@
-﻿body {
+﻿/*body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -7,11 +7,10 @@
     body {
         padding-top: 300px;
     }
-}
+}*/
 
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 100px 15px 0 15px;
 }
 
 .clear {
@@ -94,4 +93,9 @@ input::placeholder {
     top: 40%;
     width: 256px;
     height: 256px;
+}
+
+body {
+    min-height: 500px;
+    min-width: 500px;
 }
