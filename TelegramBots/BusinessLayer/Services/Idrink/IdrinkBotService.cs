@@ -122,9 +122,8 @@ namespace BusinessLayer.Services.Idrink
 						{
 							UserId = userId,
 							DrinkTime = currentDate,
-							Location = messageText == PhraseHelper.Location
-								? $"{message.Location.Latitude.ToString(CurrentCultureInfo)};{message.Location.Longitude.ToString(CurrentCultureInfo)}"
-								: null
+							Latitude = messageText == PhraseHelper.Location? message.Location.Latitude : (float?)null,
+							Longitude = messageText == PhraseHelper.Location ? message.Location.Longitude : (float?)null
 						});
 						_context.SaveChanges();
 
@@ -168,8 +167,8 @@ namespace BusinessLayer.Services.Idrink
 
 						foreach (var drink in data)
 						{
-							var location = drink.Location;
-							if (string.IsNullOrEmpty(location))
+							var latitude = drink.Latitude;
+							if (!latitude.HasValue)
 							{
 								await SendTextMessage(new AnswerMessageBase(chatId,
 									string.Format(PhraseHelper.YouDrinkAt,
@@ -180,8 +179,7 @@ namespace BusinessLayer.Services.Idrink
 								await SendTextMessage(new AnswerMessageBase(chatId,
 									string.Format(PhraseHelper.YouDrinkAt,
 										drink.DrinkTime.ToString("dd-MM-yyyy HH:mm")), MainKeyboard));
-								await Client.SendLocationAsync(chatId, float.Parse(location.Split(new[] {';'})[0].Replace(",","."), CurrentCultureInfo),
-									float.Parse(location.Split(new[] {';'})[1].Replace(",", "."), CurrentCultureInfo));
+								await Client.SendLocationAsync(chatId, drink.Latitude.Value, drink.Longitude.Value);
 							}
 						}
 

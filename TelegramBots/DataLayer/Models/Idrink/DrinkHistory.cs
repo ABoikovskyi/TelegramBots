@@ -8,7 +8,8 @@ namespace DataLayer.Models.Idrink
 		public int UserId { get; set; }
 		public User User { get; set; }
 		public DateTime DrinkTime { get; set; }
-		public string Location { get; set; }
+		public float? Latitude { get; set; }
+		public float? Longitude { get; set; }
 		public string Beverage { get; set; }
 		public string AdditionalInfo { get; set; }
 	}
