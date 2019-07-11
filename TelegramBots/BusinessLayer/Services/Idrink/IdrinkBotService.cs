@@ -123,7 +123,7 @@ namespace BusinessLayer.Services.Idrink
 							UserId = userId,
 							DrinkTime = currentDate,
 							Location = messageText == PhraseHelper.Location
-								? $"{message.Location.Latitude};{message.Location.Longitude}"
+								? $"{message.Location.Latitude.ToString(CurrentCultureInfo)};{message.Location.Longitude.ToString(CurrentCultureInfo)}"
 								: null
 						});
 						_context.SaveChanges();
@@ -180,8 +180,8 @@ namespace BusinessLayer.Services.Idrink
 								await SendTextMessage(new AnswerMessageBase(chatId,
 									string.Format(PhraseHelper.YouDrinkAt,
 										drink.DrinkTime.ToString("dd-MM-yyyy HH:mm")), MainKeyboard));
-								await Client.SendLocationAsync(chatId, float.Parse(location.Split(new[] {';'})[0].Replace(",",".")),
-									float.Parse(location.Split(new[] {';'})[1].Replace(",", ".")));
+								await Client.SendLocationAsync(chatId, float.Parse(location.Split(new[] {';'})[0].Replace(",","."), CurrentCultureInfo),
+									float.Parse(location.Split(new[] {';'})[1].Replace(",", "."), CurrentCultureInfo));
 							}
 						}
 
