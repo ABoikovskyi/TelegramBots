@@ -20,10 +20,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="BusinessLayer.dll">
-      <publishTime>07/11/2019 13:01:51</publishTime>
+      <publishTime>07/11/2019 15:14:05</publishTime>
     </File>
     <File Include="BusinessLayer.pdb">
-      <publishTime>07/11/2019 13:01:51</publishTime>
+      <publishTime>07/11/2019 15:14:05</publishTime>
     </File>
     <File Include="DataLayer.dll">
       <publishTime>07/11/2019 12:56:32</publishTime>
@@ -176,28 +176,31 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/03/2018 22:30:08</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>07/11/2019 13:01:58</publishTime>
+      <publishTime>07/11/2019 15:14:12</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>07/11/2019 13:01:52</publishTime>
+      <publishTime>07/11/2019 15:14:06</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>07/11/2019 13:01:52</publishTime>
+      <publishTime>07/11/2019 15:14:06</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
-      <publishTime>07/11/2019 13:01:58</publishTime>
+      <publishTime>07/11/2019 15:14:12</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>07/11/2019 13:01:56</publishTime>
+      <publishTime>07/11/2019 15:14:09</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>07/11/2019 13:01:56</publishTime>
+      <publishTime>07/11/2019 15:14:09</publishTime>
     </File>
     <File Include="Viber.Bot.dll">
       <publishTime>04/26/2018 18:13:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/11/2019 13:01:58</publishTime>
+      <publishTime>07/11/2019 15:14:12</publishTime>
+    </File>
+    <File Include="wwwroot/audio/audio.ogg">
+      <publishTime>07/11/2019 15:02:00</publishTime>
     </File>
     <File Include="wwwroot/css/jquery.datetimepicker.min.css">
       <publishTime>02/26/2019 12:56:33</publishTime>
@@ -646,11 +649,14 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="wwwroot/favicon.ico">
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
+    <File Include="wwwroot/images/telegram.png">
+      <publishTime>07/11/2019 14:56:19</publishTime>
+    </File>
     <File Include="wwwroot/js/datetimepicker.min.js">
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
-      <publishTime>02/26/2019 12:56:33</publishTime>
+      <publishTime>07/11/2019 15:13:07</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap-theme.css">
       <publishTime>02/26/2019 12:56:33</publishTime>

@@ -31,10 +31,6 @@
 
     $(document).click(function (e) {
         var player = $('.music')[0];
-        if (player.paused) {
-            player.play();
-        } else {
-            player.pause();
-        }
+        player.play();
     });
 });
