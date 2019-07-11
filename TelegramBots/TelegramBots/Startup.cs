@@ -1,9 +1,6 @@
 ﻿using BusinessLayer.Helpers;
 using BusinessLayer.Services;
-using BusinessLayer.Services.Festival;
-using BusinessLayer.Services.NBCocktailsBar;
-using BusinessLayer.Services.PlayZone;
-using BusinessLayer.Services.PopCorn;
+using BusinessLayer.Services.Idrink;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -27,24 +24,26 @@ namespace TelegramBots
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<PlayZoneDbContext>(options =>
+			/*services.AddDbContext<PlayZoneDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
 			services.AddDbContext<PopCornDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
 			services.AddDbContext<NBCocktailsBarDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
             services.AddDbContext<FestivalDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));
-            services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
-			services.AddScoped<ExportService, ExportService>();
-			services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
+                options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));*/
+            services.AddDbContext<IdrinkDbContext>(options =>
+	            options.UseSqlServer(Configuration.GetConnectionString("IdrinkConnection")));
+			/*services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
+			services.AddScoped<ExportService, ExportService>();*/
+			/*services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
 			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
 			services.AddScoped<PopCornBotServiceBase, PopCornBotServiceBase>();
 			services.AddScoped<PopCornBotServiceTelegram, PopCornBotServiceTelegram>();
             services.AddScoped<NBCocktailsBarBotServiceBase, NBCocktailsBarBotServiceBase>();
             services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
-            services.AddScoped<FestivalBotService, FestivalBotService>();
-			services.AddScoped<FestivalBotService, FestivalBotService>();
+            services.AddScoped<FestivalBotService, FestivalBotService>();*/
+			services.AddScoped<IdrinkBotService, IdrinkBotService>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -61,7 +60,7 @@ namespace TelegramBots
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
+            //QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
         }
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -86,7 +85,7 @@ namespace TelegramBots
 			{
 				routes.MapRoute(
 					name: "default",
-					template: "{controller=Festival}/{action=Index}/{id?}");
+					template: "{controller=Home}/{action=Index}/{id?}");
 			});
 
 			QuartzService.StartSiteWorkJob().Wait();
@@ -94,8 +93,9 @@ namespace TelegramBots
 			PopCornBotServiceViber.Init();
 			PlayZoneBotServiceTelegram.Init();
 			PlayZoneBotServiceViber.Init();
-			NBCocktailsBarBotServiceTelegram.Init();*/
-            FestivalBotService.Init();
+			NBCocktailsBarBotServiceTelegram.Init();
+            FestivalBotService.Init();*/
+            IdrinkBotService.Init();
 		}
 	}
 }

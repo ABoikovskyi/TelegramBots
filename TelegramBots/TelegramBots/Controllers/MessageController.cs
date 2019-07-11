@@ -1,14 +1,11 @@
 ﻿using System.Threading.Tasks;
-using BusinessLayer.Services.Festival;
-using BusinessLayer.Services.NBCocktailsBar;
-using BusinessLayer.Services.PlayZone;
-using BusinessLayer.Services.PopCorn;
+using BusinessLayer.Services.Idrink;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
 namespace TelegramBots.Controllers
 {
-	[Route("api/message/playzoneupdate")]
+	/*[Route("api/message/playzoneupdate")]
 	public class PlayZoneMessageController : Controller
 	{
 		private readonly PlayZoneBotServiceTelegram _botService;
@@ -140,5 +137,41 @@ namespace TelegramBots.Controllers
 
             return Ok();
         }
-    }
+    }*/
+	[Route("api/message/idrinkupdate")]
+	public class IdrinkMessageController : Controller
+	{
+		private readonly IdrinkBotService _botService;
+
+		public IdrinkMessageController(IdrinkBotService botService)
+		{
+			_botService = botService;
+		}
+
+		[HttpGet]
+		public string Get()
+		{
+			return "Method GET unuvalable";
+		}
+
+		[HttpPost]
+		public async Task<OkResult> Post([FromBody] Update update)
+		{
+			if (update == null)
+			{
+				return Ok();
+			}
+
+			if (update.CallbackQuery != null)
+			{
+				await _botService.ProcessCallbackMessage(update.CallbackQuery);
+			}
+			else
+			{
+				await _botService.ProcessMessage(update.Message);
+			}
+
+			return Ok();
+		}
+	}
 }

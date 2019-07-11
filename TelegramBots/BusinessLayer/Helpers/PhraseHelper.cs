@@ -42,5 +42,21 @@
 
         public const string Skip = "Пропустить";
 	    public const string ChooseMore = "Выбрать ещё";
+
+	    public const string IdrinkHelloText = "Вас приветствует telegram-бот \"Я пью\"";
+	    public const string Idrink = "Я пью";
+	    public const string DrinkHistory = "История выпиваний";
+	    public const string SubscribeToFriend = "Подписаться на друга";
+		public const string SetGeolocationQuestion = "Укажете геолокацию?";
+		public const string IdrinkCongrats = "Поздравляем! Вы пьёте впервые";
+		public const string IdrinkCongratsWithDate = "Поздравляем! Вы пьёте впервые за {0} дней {1} часов {2} минут";
+		public const string SetGeolocation = "Отправить геолокацию";
+		public const string NoLocation = "Не отправлять";
+		public const string Location = "Локация";
+		public const string DrinkHistoryQuestion = "Введите дату в формате 31-01-2000 или выберите период";
+		public const string LastWeek = "Последняя неделя";
+		public const string LastMonth = "Последний месяц";
+		public const string CustomDay = "Конкретный день";
+		public const string YouDrinkAt = "Употребление алкоголя началось в {0}";
 	}
 }

@@ -5,9 +5,49 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\FestivalDb\**" />
+    <Compile Remove="Migrations\NBCocktailsBarDb\**" />
+    <Compile Remove="Migrations\PopCornDb\**" />
+    <Compile Remove="Models\Festival\**" />
+    <Compile Remove="Models\NBCocktailsBar\**" />
+    <Compile Remove="Models\PlayZone\**" />
+    <Compile Remove="Models\PopCorn\**" />
+    <EmbeddedResource Remove="Migrations\FestivalDb\**" />
+    <EmbeddedResource Remove="Migrations\NBCocktailsBarDb\**" />
+    <EmbeddedResource Remove="Migrations\PopCornDb\**" />
+    <EmbeddedResource Remove="Models\Festival\**" />
+    <EmbeddedResource Remove="Models\NBCocktailsBar\**" />
+    <EmbeddedResource Remove="Models\PlayZone\**" />
+    <EmbeddedResource Remove="Models\PopCorn\**" />
+    <None Remove="Migrations\FestivalDb\**" />
+    <None Remove="Migrations\NBCocktailsBarDb\**" />
+    <None Remove="Migrations\PopCornDb\**" />
+    <None Remove="Models\Festival\**" />
+    <None Remove="Models\NBCocktailsBar\**" />
+    <None Remove="Models\PlayZone\**" />
+    <None Remove="Models\PopCorn\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Context\FestivalDbContext.cs" />
+    <Compile Remove="Context\NBCocktailsBarDbContext.cs" />
+    <Compile Remove="Context\PlayZoneDbContext.cs" />
+    <Compile Remove="Context\PopCornDbContext.cs" />
+    <Compile Remove="Migrations\20190129105705_Init.cs" />
+    <Compile Remove="Migrations\20190129105705_Init.Designer.cs" />
+    <Compile Remove="Migrations\20190221162932_Viber.cs" />
+    <Compile Remove="Migrations\20190221162932_Viber.Designer.cs" />
+    <Compile Remove="Migrations\PlayZoneDbContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
     <PackageReference Include="Microsoft.Net.Compilers" Version="2.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\IdrinkDbContext\" />
   </ItemGroup>
 
 </Project>

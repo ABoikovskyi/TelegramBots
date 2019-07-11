@@ -1,15 +1,8 @@
-﻿@{
-    Layout = "";
-}
+﻿@model List<DataLayer.Models.Idrink.User>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PlayZone</title>
-</head>
-<body>
-<div>
-      Главная страница
-</div>
-</body>
-</html>
+<ul>
+    @foreach (var user in Model)
+    {
+        <li>@user.FirstName @user.LastName</li>
+    }
+</ul>

@@ -97,7 +97,7 @@ namespace BusinessLayer.Services
             await scheduler.ScheduleJob(job, trigger);
         }
 
-        public static void ResetFestivalJobs(FestivalDbContext dbContext)
+        /*public static void ResetFestivalJobs(FestivalDbContext dbContext)
         {
             var now = DateTime.Now;
             var scheduledPosts = dbContext.Posts
@@ -115,7 +115,7 @@ namespace BusinessLayer.Services
             {
                 Task.Run(() => StartNotifyUserJob(notify.Id, notify.ScheduleDate.AddMinutes(-10))).Wait();
             }
-        }
+        }*/
     }
 
     public class PostPublisherJob : IJob
@@ -164,7 +164,7 @@ namespace BusinessLayer.Services
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            var request = WebRequest.Create($"{Links.AppLink}/popcorn/posts");
+            var request = WebRequest.Create($"{Links.AppLink}/home/index");
             request.Method = "GET";
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {

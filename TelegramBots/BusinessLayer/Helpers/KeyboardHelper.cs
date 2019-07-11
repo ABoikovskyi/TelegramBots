@@ -2,7 +2,6 @@
 using System.Linq;
 using DataLayer.Helpers;
 using Telegram.Bot.Types.ReplyMarkups;
-using Viber.Bot;
 using KeyboardButton = Telegram.Bot.Types.ReplyMarkups.KeyboardButton;
 
 namespace BusinessLayer.Helpers
@@ -22,8 +21,8 @@ namespace BusinessLayer.Helpers
             var step = data.Count > 3 ? 2 : 1;
             for (var i = 0; i < data.Count; i = i + step)
             {
-                structured.Add(data.Skip(i).Take(step)
-                    .Select(c => new KeyboardButton(isEnum ? c.GetDisplayName() : c.ToString())).ToArray());
+	            structured.Add(data.Skip(i).Take(step)
+		            .Select(c => new KeyboardButton(isEnum ? c.GetDisplayName() : c.ToString())).ToArray());
             }
 
             return new ReplyKeyboardMarkup
@@ -36,12 +35,13 @@ namespace BusinessLayer.Helpers
 
         public static ReplyKeyboardMarkup GetKeyboardTelegram(string[][] keyboard, bool isOneTimeKeyboard = false)
         {
-            return new ReplyKeyboardMarkup
-            {
-                Keyboard = keyboard.Select(k => k.Select(kk => (KeyboardButton)kk).ToArray()).ToArray(),
-                ResizeKeyboard = true,
-                OneTimeKeyboard = isOneTimeKeyboard
-            };
+	        return new ReplyKeyboardMarkup
+	        {
+		        Keyboard = keyboard.Select(k => k.Select(kk => new KeyboardButton(kk)
+			        {RequestLocation = kk.ToString() == PhraseHelper.SetGeolocation}).ToArray()).ToArray(),
+		        ResizeKeyboard = true,
+		        OneTimeKeyboard = isOneTimeKeyboard
+	        };
         }
     }
 }

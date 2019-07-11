@@ -5,6 +5,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Festival\**" />
+    <Compile Remove="Services\NBCocktailsBar\**" />
+    <Compile Remove="Services\PlayZone\**" />
+    <Compile Remove="Services\PopCorn\**" />
+    <EmbeddedResource Remove="Services\Festival\**" />
+    <EmbeddedResource Remove="Services\NBCocktailsBar\**" />
+    <EmbeddedResource Remove="Services\PlayZone\**" />
+    <EmbeddedResource Remove="Services\PopCorn\**" />
+    <None Remove="Services\Festival\**" />
+    <None Remove="Services\NBCocktailsBar\**" />
+    <None Remove="Services\PlayZone\**" />
+    <None Remove="Services\PopCorn\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Helpers\MemoryCacheHelper.cs" />
+    <Compile Remove="Services\ConcertUaService.cs" />
+    <Compile Remove="Services\ExportService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Net.Compilers" Version="2.10.0" />
     <PackageReference Include="Quartz" Version="3.0.7" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />

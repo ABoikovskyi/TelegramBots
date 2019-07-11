@@ -6,7 +6,6 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
-using Viber.Bot;
 
 namespace BusinessLayer.Helpers
 {

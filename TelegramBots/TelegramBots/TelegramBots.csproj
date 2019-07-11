@@ -5,6 +5,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Festival\**" />
+    <Compile Remove="Views\NBCocktailsBar\**" />
+    <Compile Remove="Views\PopCorn\**" />
+    <Content Remove="Views\Festival\**" />
+    <Content Remove="Views\NBCocktailsBar\**" />
+    <Content Remove="Views\PopCorn\**" />
+    <EmbeddedResource Remove="Views\Festival\**" />
+    <EmbeddedResource Remove="Views\NBCocktailsBar\**" />
+    <EmbeddedResource Remove="Views\PopCorn\**" />
+    <None Remove="Views\Festival\**" />
+    <None Remove="Views\NBCocktailsBar\**" />
+    <None Remove="Views\PopCorn\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\FestivalController.cs" />
+    <Compile Remove="Controllers\NBCocktailsBarController.cs" />
+    <Compile Remove="Controllers\PopCornController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\EditRequest.cshtml" />
+    <Content Remove="Views\Home\Requests.cshtml" />
+    <Content Remove="Views\Shared\FestivalLayout.cshtml" />
+    <Content Remove="Views\Shared\NBLayout.cshtml" />
+    <Content Remove="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Net.Compilers" Version="2.10.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
@@ -21,36 +50,6 @@
     <Reference Include="Aspose.Cells">
       <HintPath>Dlls\Aspose.Cells.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Views\Festival\Post.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Festival\Posts.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\NBCocktailsBar\Ingredients.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\NBCocktailsBar\Ingredient.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\NBCocktailsBar\Cocktail.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\NBCocktailsBar\IngredientCategory.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\NBCocktailsBar\Cocktails.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Shared\FestivalLayout.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Shared\NBLayout.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,66 @@
+﻿@using TelegramBots.Helpers
+@{
+    ViewBag.Title = "iDrink";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+    </environment>
+    @Html.RenderStyleLink("/DataTables/datatables.min.css")
+    @Html.RenderStyleLink("/css/site.css")
+    @Html.RenderStyleLink("/css/jquery.datetimepicker.min.css")
+</head>
+<body>
+    <!--<nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="@Url.Action("Index", "Festival")">Главная</a></li>
+                    <li><a href="@Url.Action("Festivals", "Festival")">Фестивали</a></li>
+                    <li><a href="@Url.Action("Stages", "Festival")">Сцены</a></li>
+                    <li><a href="@Url.Action("Artists", "Festival")">Артисты</a></li>
+                    <li><a href="@Url.Action("Schedule", "Festival")">Расписание</a></li>
+                    <li><a href="@Url.Action("Posts", "Festival")">Новости</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+    </environment>
+
+    @Html.RenderScriptLink("/js/site.js")
+    @Html.RenderScriptLink("/DataTables/datatables.min.js")
+    @Html.RenderScriptLink("/js/datetimepicker.min.js")
+</body>
+</html>

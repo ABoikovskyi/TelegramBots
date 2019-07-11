@@ -2,7 +2,7 @@
 {
 	public class Links
 	{
-		//public const string AppLink = "https://playzone.ua";
-		public const string AppLink = "https://45d3a755.ngrok.io";
+		public const string AppLink = "https://idrink.com.ua";
+		//public const string AppLink = "https://b4921c01.ngrok.io";
 	}
 }
