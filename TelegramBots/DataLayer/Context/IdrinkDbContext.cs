@@ -10,7 +10,7 @@ namespace DataLayer.Context
         }
 
         public virtual DbSet<User> Users { get; set; }
-        //public virtual DbSet<Subscription> Subscriptions { get; set; }
+        public virtual DbSet<Subscription> Subscriptions { get; set; }
 		public virtual DbSet<DrinkHistory> DrinkHistory { get; set; }
 	}
 }

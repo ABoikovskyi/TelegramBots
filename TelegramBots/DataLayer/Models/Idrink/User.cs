@@ -11,7 +11,5 @@ namespace DataLayer.Models.Idrink
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public virtual List<DrinkHistory> DrinkHistory { get; set; }
-		/*public virtual List<Subscription> Subscribers { get; set; }
-		public virtual List<Subscription> SubscribedsOn { get; set; }*/
 	}
 }
