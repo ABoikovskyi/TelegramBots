@@ -7,6 +7,7 @@ using BusinessLayer.Helpers;
 using DataLayer.Context;
 using DataLayer.Models.DTO;
 using DataLayer.Models.Idrink;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -17,7 +18,7 @@ namespace BusinessLayer.Services.Idrink
 	public class IdrinkBotService
 	{
 		public static readonly CultureInfo CurrentCultureInfo = new CultureInfo("ru");
-		private readonly IdrinkDbContext _context;
+		private readonly IdrinkDbContext _repository;
 		public static string[][] MainKeyboard;
 		public static TelegramBotClient Client;
 
@@ -26,13 +27,14 @@ namespace BusinessLayer.Services.Idrink
 			MainKeyboard = new[]
 			{
 				new[] {PhraseHelper.Idrink},
-				new[] {PhraseHelper.DrinkHistory}
+				new[] {PhraseHelper.DrinkHistory},
+				new[] {PhraseHelper.SubscribeToFriend}
 			};
 		}
 
-		public IdrinkBotService(IdrinkDbContext context)
+		public IdrinkBotService(IdrinkDbContext repository)
 		{
-			_context = context;
+			_repository = repository;
 		}
 
 		public static void Init()
@@ -73,7 +75,52 @@ namespace BusinessLayer.Services.Idrink
 			var userLastName = message.Chat.LastName;
 			try
 			{
-				if (messageText == null && message.Type == MessageType.Location)
+				if (message.Type == MessageType.Contact)
+				{
+					var contact = message.Contact;
+					if (chatId == contact.UserId)
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.SubscribeToYouself,
+							MainKeyboard));
+						return;
+					}
+
+					if (_repository.Subscriptions
+						.Any(s => s.Subscriber.ChatId == chatId && s.SubscribedOn.ChatId == contact.UserId))
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.AlreadySubscribed,
+							MainKeyboard));
+						return;
+					}
+
+					var user = _repository.Users.FirstOrDefault(u => u.ChatId == contact.UserId);
+					if (user == null)
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId,
+							string.Format(PhraseHelper.ContactDoesntUseBot, contact.FirstName,contact.LastName),
+							MainKeyboard));
+						return;
+					}
+
+					var currentUserId = _repository.Users.First(u => u.ChatId == chatId).Id;
+					_repository.Subscriptions.Add(new Subscription
+					{
+						SubscriberId = currentUserId,
+						SubscribedOnId = user.Id
+					});
+					_repository.SaveChanges();
+
+					await SendTextMessage(new AnswerMessageBase(chatId,
+						string.Format(PhraseHelper.SuccessfullySubscribe, contact.FirstName, contact.LastName),
+						MainKeyboard));
+
+					await SendTextMessage(new AnswerMessageBase(user.ChatId,
+						string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName),
+						MainKeyboard));
+					return;
+				}
+
+				if (message.Type == MessageType.Location)
 				{
 					messageText = PhraseHelper.Location;
 				}
@@ -111,21 +158,20 @@ namespace BusinessLayer.Services.Idrink
 					case PhraseHelper.SetGeolocation:
 					case PhraseHelper.NoLocation:
 					{
-						var lastDrink = _context.DrinkHistory.Where(h => h.User.ChatId == chatId)
+						var lastDrink = _repository.DrinkHistory.Where(h => h.User.ChatId == chatId)
 							.OrderByDescending(h => h.DrinkTime).FirstOrDefault()?.DrinkTime;
 						var currentDate = DateTime.Now;
 
-						var userId = _context.Users.FirstOrDefault(u => u.ChatId == chatId)?.Id ??
-						             InsertNewUser(chatId, userFirstName, userLastName);
+						var userId = _repository.Users.First(u => u.ChatId == chatId).Id;
 
-						_context.Add(new DrinkHistory
+						_repository.Add(new DrinkHistory
 						{
 							UserId = userId,
 							DrinkTime = currentDate,
-							Latitude = messageText == PhraseHelper.Location? message.Location.Latitude : (float?)null,
-							Longitude = messageText == PhraseHelper.Location ? message.Location.Longitude : (float?)null
+							Latitude = messageText == PhraseHelper.Location? message.Location?.Latitude : null,
+							Longitude = messageText == PhraseHelper.Location ? message.Location?.Longitude : null
 						});
-						_context.SaveChanges();
+						_repository.SaveChanges();
 
 						await SendTextMessage(new AnswerMessageBase(chatId,
 							lastDrink == null
@@ -134,6 +180,20 @@ namespace BusinessLayer.Services.Idrink
 									Math.Floor((currentDate - lastDrink.Value).TotalDays),
 									(currentDate - lastDrink.Value).Hours, (currentDate - lastDrink.Value).Minutes),
 							MainKeyboard));
+
+						var subscribers = _repository.Subscriptions.Include(s => s.Subscriber)
+							.Where(s => s.SubscribedOn.ChatId == chatId).ToList();
+						foreach (var subscriber in subscribers)
+						{
+							await SendTextMessage(new AnswerMessageBase(subscriber.Subscriber.ChatId,
+								string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName), MainKeyboard));
+							var latitude = message.Location?.Latitude;
+							if (latitude.HasValue)
+							{
+								await Client.SendLocationAsync(subscriber.Subscriber.ChatId, latitude.Value, message.Location.Longitude);
+							}
+						}
+
 						return;
 					}
 					case PhraseHelper.DrinkHistory:
@@ -153,7 +213,7 @@ namespace BusinessLayer.Services.Idrink
 						List<DrinkHistory> data;
 						if (drinkingDay != DateTime.MinValue)
 						{
-							data = _context.DrinkHistory
+							data = _repository.DrinkHistory
 								.Where(h => h.User.ChatId == chatId && h.DrinkTime.Date == drinkingDay.Date).ToList();
 						}
 						else
@@ -161,7 +221,7 @@ namespace BusinessLayer.Services.Idrink
 							var dateLimit = messageText == PhraseHelper.LastWeek
 								? DateTime.Now.AddDays(-7).Date
 								: DateTime.Now.AddMonths(-1).Date;
-							data = _context.DrinkHistory
+							data = _repository.DrinkHistory
 								.Where(h => h.User.ChatId == chatId && h.DrinkTime >= dateLimit).ToList();
 						}
 
@@ -185,6 +245,12 @@ namespace BusinessLayer.Services.Idrink
 
 						return;
 					}
+					case PhraseHelper.SubscribeToFriend:
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId,
+							PhraseHelper.HowToSubscribeToFriend, MainKeyboard));
+							return;
+					}
 					default:
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand, MainKeyboard));
@@ -199,7 +265,7 @@ namespace BusinessLayer.Services.Idrink
 
 		private int InsertNewUser(long chatId, string userFirstName, string userLastName)
 		{
-			if (_context.Users.Any(u => u.ChatId == chatId))
+			if (_repository.Users.Any(u => u.ChatId == chatId))
 			{
 				return 0;
 			}
@@ -210,8 +276,8 @@ namespace BusinessLayer.Services.Idrink
 				FirstName = userFirstName,
 				LastName = userLastName
 			};
-			_context.Add(user);
-			_context.SaveChanges();
+			_repository.Add(user);
+			_repository.SaveChanges();
 
 			return user.Id;
 		}

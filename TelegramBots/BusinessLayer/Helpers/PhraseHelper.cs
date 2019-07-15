@@ -43,13 +43,13 @@
         public const string Skip = "Пропустить";
 	    public const string ChooseMore = "Выбрать ещё";
 
-	    public const string IdrinkHelloText = "Вас приветствует telegram-бот \"Я пью\"";
+	    public const string IdrinkHelloText = "Вас приветствует telegram-бот \"Я пью\". Отмечайте когда и где вы пьете, подписывайтесь на друзей!\r\n\r\nОбратная связь: info@idrink.com.ua";
 	    public const string Idrink = "Я пью";
 	    public const string DrinkHistory = "История выпиваний";
 	    public const string SubscribeToFriend = "Подписаться на друга";
 		public const string SetGeolocationQuestion = "Укажете геолокацию?";
 		public const string IdrinkCongrats = "Поздравляем! Вы пьёте впервые";
-		public const string IdrinkCongratsWithDate = "Поздравляем! Вы пьёте впервые за {0} дней {1} часов {2} минут";
+		public const string IdrinkCongratsWithDate = "Поздравляем! Вы продержались без алкоголя {0} дней {1} часов {2} минут 🎉🎉🎉\r\nСчетчик сброшен 🍺🍷🥃🍹";
 		public const string SetGeolocation = "Отправить геолокацию";
 		public const string NoLocation = "Не отправлять";
 		public const string Location = "Локация";
@@ -58,5 +58,12 @@
 		public const string LastMonth = "Последний месяц";
 		public const string CustomDay = "Конкретный день";
 		public const string YouDrinkAt = "Употребление алкоголя началось в {0}";
+		public const string HowToSubscribeToFriend = "Отправьте боту контакт друга, на которого вы хотите подписаться";
+		public const string AlreadySubscribed = "Вы уже подписаны этого пользователя";
+		public const string SubscribeToYouself = "Вы не можете подписаться сами на себя";
+		public const string ContactDoesntUseBot = "{0} {1} еще не пользуется ботом";
+		public const string SuccessfullySubscribe = "Вы успешно подписаны на {0} {1}";
+		public const string YouHaveNewSubscriber = "На вас подписался {0} {1}";
+		public const string DrinkingNow = "{0} {1} пьёт";
 	}
 }
