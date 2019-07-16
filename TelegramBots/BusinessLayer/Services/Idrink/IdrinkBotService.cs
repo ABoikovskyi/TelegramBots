@@ -55,17 +55,17 @@ namespace BusinessLayer.Services.Idrink
 		{
 			await Client.SendTextMessage(message);
 		}
-		
+
 		public async Task ProcessCallbackMessage(CallbackQuery callback)
 		{
 			var message = callback.Message;
 
-			await ProcessMessageBase(message,callback.Data);
+			await ProcessMessageBase(message, callback.Data);
 		}
 
 		public async Task ProcessMessage(Message message)
 		{
-			await ProcessMessageBase(message,message.Text);
+			await ProcessMessageBase(message, message.Text);
 		}
 
 		public async Task ProcessMessageBase(Message message, string messageText)
@@ -73,6 +73,7 @@ namespace BusinessLayer.Services.Idrink
 			var chatId = message.Chat.Id;
 			var userFirstName = message.Chat.FirstName;
 			var userLastName = message.Chat.LastName;
+			var userName = message.Chat.Username;
 			try
 			{
 				if (message.Type == MessageType.Contact)
@@ -97,7 +98,7 @@ namespace BusinessLayer.Services.Idrink
 					if (user == null)
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId,
-							string.Format(PhraseHelper.ContactDoesntUseBot, contact.FirstName,contact.LastName),
+							string.Format(PhraseHelper.ContactDoesntUseBot, contact.FirstName, contact.LastName),
 							MainKeyboard));
 						return;
 					}
@@ -115,7 +116,7 @@ namespace BusinessLayer.Services.Idrink
 						MainKeyboard));
 
 					await SendTextMessage(new AnswerMessageBase(user.ChatId,
-						string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName),
+						string.Format(PhraseHelper.YouHaveNewSubscriber, userName, userFirstName, userLastName),
 						MainKeyboard));
 					return;
 				}
@@ -129,16 +130,13 @@ namespace BusinessLayer.Services.Idrink
 				{
 					messageText = PhraseHelper.CustomDay;
 				}
-				
+
 				switch (messageText)
 				{
 					case PhraseHelper.Start:
 					case PhraseHelper.MainMenu:
 					{
-						if (messageText == PhraseHelper.Start)
-						{
-							InsertNewUser(chatId, userFirstName, userLastName);
-						}
+						InsertNewUser(chatId, userFirstName, userLastName, userName);
 
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.IdrinkHelloText,
 							MainKeyboard));
@@ -168,7 +166,7 @@ namespace BusinessLayer.Services.Idrink
 						{
 							UserId = userId,
 							DrinkTime = currentDate,
-							Latitude = messageText == PhraseHelper.Location? message.Location?.Latitude : null,
+							Latitude = messageText == PhraseHelper.Location ? message.Location?.Latitude : null,
 							Longitude = messageText == PhraseHelper.Location ? message.Location?.Longitude : null
 						});
 						_repository.SaveChanges();
@@ -190,7 +188,8 @@ namespace BusinessLayer.Services.Idrink
 							var latitude = message.Location?.Latitude;
 							if (latitude.HasValue)
 							{
-								await Client.SendLocationAsync(subscriber.Subscriber.ChatId, latitude.Value, message.Location.Longitude);
+								await Client.SendLocationAsync(subscriber.Subscriber.ChatId, latitude.Value,
+									message.Location.Longitude);
 							}
 						}
 
@@ -249,7 +248,7 @@ namespace BusinessLayer.Services.Idrink
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId,
 							PhraseHelper.HowToSubscribeToFriend, MainKeyboard));
-							return;
+						return;
 					}
 					default:
 					{
@@ -263,21 +262,33 @@ namespace BusinessLayer.Services.Idrink
 			}
 		}
 
-		private int InsertNewUser(long chatId, string userFirstName, string userLastName)
+		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)
 		{
-			if (_repository.Users.Any(u => u.ChatId == chatId))
+			var user = _repository.Users.FirstOrDefault(u => u.ChatId == chatId);
+			if (user == null)
 			{
-				return 0;
+				user = new User
+				{
+					ChatId = chatId,
+					FirstName = userFirstName,
+					LastName = userLastName,
+					UserName = userName
+				};
+				_repository.Add(user);
+				_repository.SaveChanges();
 			}
-
-			var user = new User
+			else
 			{
-				ChatId = chatId,
-				FirstName = userFirstName,
-				LastName = userLastName
-			};
-			_repository.Add(user);
-			_repository.SaveChanges();
+				if (!string.IsNullOrEmpty(user.UserName))
+				{
+					return user.Id;
+				}
+
+				user.UserName = userName;
+				_repository.SaveChanges();
+
+				return user.Id;
+			}
 
 			return user.Id;
 		}

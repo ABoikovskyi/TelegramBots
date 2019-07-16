@@ -63,7 +63,7 @@
 		public const string SubscribeToYouself = "Вы не можете подписаться сами на себя";
 		public const string ContactDoesntUseBot = "{0} {1} еще не пользуется ботом";
 		public const string SuccessfullySubscribe = "Вы успешно подписаны на {0} {1}";
-		public const string YouHaveNewSubscriber = "На вас подписался {0} {1}";
+		public const string YouHaveNewSubscriber = "На вас подписался <a href=\"https://t.me/{0}\"> {1} {2}</a>";
 		public const string DrinkingNow = "{0} {1} пьёт";
 	}
 }
