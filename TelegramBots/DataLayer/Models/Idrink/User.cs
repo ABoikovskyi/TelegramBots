@@ -10,7 +10,6 @@ namespace DataLayer.Models.Idrink
 		public long ChatId { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
-		public string UserName { get; set; }
 		public virtual List<DrinkHistory> DrinkHistory { get; set; }
 	}
 }

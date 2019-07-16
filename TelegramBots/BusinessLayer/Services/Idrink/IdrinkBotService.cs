@@ -60,6 +60,28 @@ namespace BusinessLayer.Services.Idrink
 		{
 			var message = callback.Message;
 
+			if (callback.Data.Contains(PhraseHelper.SubscribeTo))
+			{
+				var subscribeToId = Convert.ToInt32(callback.Data.Replace(PhraseHelper.SubscribeTo, ""));
+				var subscribeTo = _repository.Users.First(u => u.Id == subscribeToId);
+				var currentUser = _repository.Users.First(u => u.ChatId == message.Chat.Id);
+				_repository.Subscriptions.Add(new Subscription
+				{
+					SubscriberId = currentUser.Id,
+					SubscribedOnId = subscribeToId
+				});
+				_repository.SaveChanges();
+
+				await SendTextMessage(new AnswerMessageBase(message.Chat.Id,
+					string.Format(PhraseHelper.SuccessfullySubscribe, subscribeTo.FirstName, subscribeTo.LastName),
+					MainKeyboard));
+
+				await SendTextMessage(new AnswerMessageBase(subscribeTo.ChatId,
+					string.Format(PhraseHelper.YouHaveNewSubscriber, currentUser.FirstName, currentUser.LastName)));
+
+				return;
+			}
+
 			await ProcessMessageBase(message, callback.Data);
 		}
 
@@ -73,7 +95,6 @@ namespace BusinessLayer.Services.Idrink
 			var chatId = message.Chat.Id;
 			var userFirstName = message.Chat.FirstName;
 			var userLastName = message.Chat.LastName;
-			var userName = message.Chat.Username;
 			try
 			{
 				if (message.Type == MessageType.Contact)
@@ -115,9 +136,24 @@ namespace BusinessLayer.Services.Idrink
 						string.Format(PhraseHelper.SuccessfullySubscribe, contact.FirstName, contact.LastName),
 						MainKeyboard));
 
-					await SendTextMessage(new AnswerMessageBase(user.ChatId,
-						string.Format(PhraseHelper.YouHaveNewSubscriber, userName, userFirstName, userLastName),
-						MainKeyboard));
+					if (_repository.Subscriptions
+						.Any(s => s.Subscriber.ChatId == user.ChatId && s.SubscribedOn.ChatId == chatId))
+					{
+						await SendTextMessage(new AnswerMessageBase(user.ChatId,
+							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName)));
+					}
+					else
+					{
+						await SendTextMessage(new AnswerMessageBase(user.ChatId,
+							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName))
+						{
+							InlineKeyboard = new Dictionary<string, string>
+							{
+								{PhraseHelper.SubscribeTo, $"{PhraseHelper.SubscribeTo}{currentUserId}"}
+							}
+						});
+					}
+
 					return;
 				}
 
@@ -136,7 +172,7 @@ namespace BusinessLayer.Services.Idrink
 					case PhraseHelper.Start:
 					case PhraseHelper.MainMenu:
 					{
-						InsertNewUser(chatId, userFirstName, userLastName, userName);
+						InsertNewUser(chatId, userFirstName, userLastName);
 
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.IdrinkHelloText,
 							MainKeyboard));
@@ -262,7 +298,7 @@ namespace BusinessLayer.Services.Idrink
 			}
 		}
 
-		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)
+		private int InsertNewUser(long chatId, string userFirstName, string userLastName)
 		{
 			var user = _repository.Users.FirstOrDefault(u => u.ChatId == chatId);
 			if (user == null)
@@ -271,22 +307,13 @@ namespace BusinessLayer.Services.Idrink
 				{
 					ChatId = chatId,
 					FirstName = userFirstName,
-					LastName = userLastName,
-					UserName = userName
+					LastName = userLastName
 				};
 				_repository.Add(user);
 				_repository.SaveChanges();
 			}
 			else
 			{
-				if (!string.IsNullOrEmpty(user.UserName))
-				{
-					return user.Id;
-				}
-
-				user.UserName = userName;
-				_repository.SaveChanges();
-
 				return user.Id;
 			}
 

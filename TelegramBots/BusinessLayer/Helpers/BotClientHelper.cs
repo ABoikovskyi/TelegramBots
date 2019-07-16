@@ -31,12 +31,12 @@ namespace BusinessLayer.Helpers
                         : new InputOnlineFile(message.Text),
                     replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard));
             }
-            else if (message.Image != null)
+            /*else if (message.Image != null)
             {
                 var iof = new InputOnlineFile(new MemoryStream(message.Image)) {FileName = "festival-map.jpg"};
                 await client.SendDocumentAsync(message.UserId, iof, "Карта фестиваля",
                     replyMarkup: KeyboardHelper.GetKeyboardTelegram(message.Keyboard));
-            }
+            }*/
             else if (message.Keyboard != null)
             {
                 await client.SendTextMessageAsync(message.UserId, message.Text,
