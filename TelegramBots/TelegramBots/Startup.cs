@@ -1,5 +1,4 @@
-﻿using BusinessLayer.Helpers;
-using BusinessLayer.Services;
+﻿using BusinessLayer.Services;
 using BusinessLayer.Services.Idrink;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,8 +32,8 @@ namespace TelegramBots
 				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
             services.AddDbContext<FestivalDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));*/
-            services.AddDbContext<IdrinkDbContext>(options =>
-	            options.UseSqlServer(Configuration.GetConnectionString("IdrinkConnection")));
+			services.AddDbContext<IdrinkDbContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("IdrinkConnection")));
 			/*services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
 			services.AddScoped<ExportService, ExportService>();*/
 			/*services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
@@ -60,8 +60,8 @@ namespace TelegramBots
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            //QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
-        }
+			//QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
+		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
@@ -75,8 +75,10 @@ namespace TelegramBots
 			    app.UseHsts();
 		    }*/
 			app.UseDeveloperExceptionPage();
-
+			
 			app.UseHttpsRedirection();
+			app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
+			
 			app.UseStaticFiles();
 			app.UseCookiePolicy();
 			app.UseAuthentication();
@@ -89,13 +91,13 @@ namespace TelegramBots
 			});
 
 			QuartzService.StartSiteWorkJob().Wait();
-            /*PopCornBotServiceTelegram.Init();
+			/*PopCornBotServiceTelegram.Init();
 			PopCornBotServiceViber.Init();
 			PlayZoneBotServiceTelegram.Init();
 			PlayZoneBotServiceViber.Init();
 			NBCocktailsBarBotServiceTelegram.Init();
-            FestivalBotService.Init();*/
-            IdrinkBotService.Init();
+			FestivalBotService.Init();*/
+			IdrinkBotService.Init();
 		}
 	}
 }

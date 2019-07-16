@@ -28,7 +28,8 @@ namespace BusinessLayer.Services.Idrink
 			{
 				new[] {PhraseHelper.Idrink},
 				new[] {PhraseHelper.DrinkHistory},
-				new[] {PhraseHelper.SubscribeToFriend}
+				new[] {PhraseHelper.SubscribeToFriend},
+				new[] {PhraseHelper.Settings}
 			};
 		}
 
@@ -51,9 +52,9 @@ namespace BusinessLayer.Services.Idrink
 			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/idrinkupdate");
 		}
 
-		public async Task SendTextMessage(AnswerMessageBase message)
+		public async Task<Message> SendTextMessage(AnswerMessageBase message)
 		{
-			await Client.SendTextMessage(message);
+			return await Client.SendTextMessage(message);
 		}
 
 		public async Task ProcessCallbackMessage(CallbackQuery callback)
@@ -249,7 +250,8 @@ namespace BusinessLayer.Services.Idrink
 						if (drinkingDay != DateTime.MinValue)
 						{
 							data = _repository.DrinkHistory
-								.Where(h => h.User.ChatId == chatId && h.DrinkTime.Date == drinkingDay.Date).ToList();
+								.Where(h => h.User.ChatId == chatId && h.DrinkTime.Date == drinkingDay.Date)
+								.OrderBy(h => h.DrinkTime).ToList();
 						}
 						else
 						{
@@ -257,9 +259,10 @@ namespace BusinessLayer.Services.Idrink
 								? DateTime.Now.AddDays(-7).Date
 								: DateTime.Now.AddMonths(-1).Date;
 							data = _repository.DrinkHistory
-								.Where(h => h.User.ChatId == chatId && h.DrinkTime >= dateLimit).ToList();
+								.Where(h => h.User.ChatId == chatId && h.DrinkTime >= dateLimit)
+								.OrderBy(h => h.DrinkTime).ToList();
 						}
-
+						
 						foreach (var drink in data)
 						{
 							var latitude = drink.Latitude;
@@ -284,6 +287,26 @@ namespace BusinessLayer.Services.Idrink
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId,
 							PhraseHelper.HowToSubscribeToFriend, MainKeyboard));
+						return;
+					}
+					case PhraseHelper.Settings:
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.Settings,
+							new[]
+							{
+								new[] {PhraseHelper.SubscribedToList},
+								new[] {PhraseHelper.MainMenu}
+							}));
+						return;
+					}
+					case PhraseHelper.SubscribedToList:
+					{
+						var result = _repository.Subscriptions.Where(s => s.Subscriber.ChatId == chatId)
+							.Select(s => $"{s.SubscribedOn.Id} - {s.SubscribedOn.FirstName} {s.SubscribedOn.LastName}")
+							.ToList();
+
+						await SendTextMessage(new AnswerMessageBase(chatId,
+							string.Join("\r\n", result), MainKeyboard));
 						return;
 					}
 					default:

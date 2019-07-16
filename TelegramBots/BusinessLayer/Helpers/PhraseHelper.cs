@@ -47,6 +47,8 @@
 	    public const string Idrink = "Я пью";
 	    public const string DrinkHistory = "История выпиваний";
 	    public const string SubscribeToFriend = "Подписаться на друга";
+	    public const string Settings = "Настройки";
+	    public const string SubscribedToList = "На кого я подписан";
 		public const string SetGeolocationQuestion = "Укажете геолокацию?";
 		public const string IdrinkCongrats = "Поздравляем! Вы пьёте впервые";
 		public const string IdrinkCongratsWithDate = "Поздравляем! Вы продержались без алкоголя {0} дней {1} часов {2} минут 🎉🎉🎉\r\nСчетчик сброшен 🍺🍷🥃🍹";
