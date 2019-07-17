@@ -20,6 +20,7 @@ namespace BusinessLayer.Services.Idrink
 		public static readonly CultureInfo CurrentCultureInfo = new CultureInfo("ru");
 		private readonly IdrinkDbContext _repository;
 		public static string[][] MainKeyboard;
+		public static string[][] SettingsKeyboard;
 		public static TelegramBotClient Client;
 
 		static IdrinkBotService()
@@ -30,6 +31,13 @@ namespace BusinessLayer.Services.Idrink
 				new[] {PhraseHelper.DrinkHistory},
 				new[] {PhraseHelper.SubscribeToFriend},
 				new[] {PhraseHelper.Settings}
+			};
+
+			SettingsKeyboard = new[]
+			{
+				new[] {PhraseHelper.SubscribedToList},
+				new[] {PhraseHelper.MySubscribers},
+				new[] {PhraseHelper.MainMenu}
 			};
 		}
 
@@ -66,6 +74,15 @@ namespace BusinessLayer.Services.Idrink
 				var subscribeToId = Convert.ToInt32(callback.Data.Replace(PhraseHelper.SubscribeTo, ""));
 				var subscribeTo = _repository.Users.First(u => u.Id == subscribeToId);
 				var currentUser = _repository.Users.First(u => u.ChatId == message.Chat.Id);
+
+				if (_repository.Subscriptions
+					.Any(s => s.SubscriberId == currentUser.Id && s.SubscribedOn.ChatId == subscribeToId))
+				{
+					await SendTextMessage(new AnswerMessageBase(message.Chat.Id, PhraseHelper.AlreadySubscribed,
+						MainKeyboard));
+					return;
+				}
+
 				_repository.Subscriptions.Add(new Subscription
 				{
 					SubscriberId = currentUser.Id,
@@ -76,6 +93,8 @@ namespace BusinessLayer.Services.Idrink
 				await SendTextMessage(new AnswerMessageBase(message.Chat.Id,
 					string.Format(PhraseHelper.SuccessfullySubscribe, subscribeTo.FirstName, subscribeTo.LastName),
 					MainKeyboard));
+
+				await Client.DeleteMessageAsync(message.Chat.Id, message.MessageId);
 
 				await SendTextMessage(new AnswerMessageBase(subscribeTo.ChatId,
 					string.Format(PhraseHelper.YouHaveNewSubscriber, currentUser.FirstName, currentUser.LastName)));
@@ -96,6 +115,8 @@ namespace BusinessLayer.Services.Idrink
 			var chatId = message.Chat.Id;
 			var userFirstName = message.Chat.FirstName;
 			var userLastName = message.Chat.LastName;
+			var userId = _repository.Users.First(u => u.ChatId == chatId).Id;
+
 			try
 			{
 				if (message.Type == MessageType.Contact)
@@ -125,10 +146,9 @@ namespace BusinessLayer.Services.Idrink
 						return;
 					}
 
-					var currentUserId = _repository.Users.First(u => u.ChatId == chatId).Id;
 					_repository.Subscriptions.Add(new Subscription
 					{
-						SubscriberId = currentUserId,
+						SubscriberId = userId,
 						SubscribedOnId = user.Id
 					});
 					_repository.SaveChanges();
@@ -150,7 +170,7 @@ namespace BusinessLayer.Services.Idrink
 						{
 							InlineKeyboard = new Dictionary<string, string>
 							{
-								{PhraseHelper.SubscribeTo, $"{PhraseHelper.SubscribeTo}{currentUserId}"}
+								{PhraseHelper.SubscribeTo, $"{PhraseHelper.SubscribeTo}{userId}"}
 							}
 						});
 					}
@@ -163,9 +183,54 @@ namespace BusinessLayer.Services.Idrink
 					messageText = PhraseHelper.Location;
 				}
 
-				if (DateTime.TryParse(messageText, CurrentCultureInfo, DateTimeStyles.None, out var drinkingDay))
+				if (messageText.Contains(PhraseHelper.UnSubscribe))
 				{
-					messageText = PhraseHelper.CustomDay;
+					var number = messageText.Replace(PhraseHelper.UnSubscribe, "");
+					if (string.IsNullOrEmpty(number) || !int.TryParse(number, out var numberInt))
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand, SettingsKeyboard));
+						return;
+					}
+
+					var subscription = _repository.Subscriptions.FirstOrDefault(s =>
+						s.SubscriberId == userId && s.SubscribedOnId == numberInt);
+					if (subscription == null)
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.YouAreNowSubscribed, SettingsKeyboard));
+						return;
+					}
+
+					_repository.Remove(subscription);
+					_repository.SaveChanges();
+
+					await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.SuccessfullyUnSubscribe, SettingsKeyboard));
+
+					return;
+				}
+
+				if (messageText.Contains(PhraseHelper.UnSubscribeFromMe))
+				{
+					var number = messageText.Replace(PhraseHelper.UnSubscribeFromMe, "");
+					if (string.IsNullOrEmpty(number) || !int.TryParse(number, out var numberInt))
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand, SettingsKeyboard));
+						return;
+					}
+
+					var subscription = _repository.Subscriptions.FirstOrDefault(s =>
+						s.SubscriberId == numberInt && s.SubscribedOnId == userId);
+					if (subscription == null)
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.ThisUserNotSubscribedOnYou, SettingsKeyboard));
+						return;
+					}
+
+					_repository.Remove(subscription);
+					_repository.SaveChanges();
+
+					await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.SuccessfullyRemoveSubscriber, SettingsKeyboard));
+
+					return;
 				}
 
 				switch (messageText)
@@ -196,8 +261,6 @@ namespace BusinessLayer.Services.Idrink
 						var lastDrink = _repository.DrinkHistory.Where(h => h.User.ChatId == chatId)
 							.OrderByDescending(h => h.DrinkTime).FirstOrDefault()?.DrinkTime;
 						var currentDate = DateTime.Now;
-
-						var userId = _repository.Users.First(u => u.ChatId == chatId).Id;
 
 						_repository.Add(new DrinkHistory
 						{
@@ -244,24 +307,13 @@ namespace BusinessLayer.Services.Idrink
 					}
 					case PhraseHelper.LastWeek:
 					case PhraseHelper.LastMonth:
-					case PhraseHelper.CustomDay:
 					{
-						List<DrinkHistory> data;
-						if (drinkingDay != DateTime.MinValue)
-						{
-							data = _repository.DrinkHistory
-								.Where(h => h.User.ChatId == chatId && h.DrinkTime.Date == drinkingDay.Date)
-								.OrderBy(h => h.DrinkTime).ToList();
-						}
-						else
-						{
-							var dateLimit = messageText == PhraseHelper.LastWeek
-								? DateTime.Now.AddDays(-7).Date
-								: DateTime.Now.AddMonths(-1).Date;
-							data = _repository.DrinkHistory
-								.Where(h => h.User.ChatId == chatId && h.DrinkTime >= dateLimit)
-								.OrderBy(h => h.DrinkTime).ToList();
-						}
+						var dateLimit = messageText == PhraseHelper.LastWeek
+							? DateTime.Now.AddDays(-7).Date
+							: DateTime.Now.AddMonths(-1).Date;
+						var data = _repository.DrinkHistory
+							.Where(h => h.User.ChatId == chatId && h.DrinkTime >= dateLimit)
+							.OrderBy(h => h.DrinkTime).ToList();
 						
 						foreach (var drink in data)
 						{
@@ -292,23 +344,29 @@ namespace BusinessLayer.Services.Idrink
 					case PhraseHelper.Settings:
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.Settings,
-							new[]
-							{
-								new[] {PhraseHelper.SubscribedToList},
-								new[] {PhraseHelper.MainMenu}
-							}));
+							SettingsKeyboard));
 						return;
 					}
 					case PhraseHelper.SubscribedToList:
 					{
 						var result = _repository.Subscriptions.Where(s => s.Subscriber.ChatId == chatId)
+							.OrderBy(s=>s.SubscribedOn.FirstName).ThenBy(s => s.SubscribedOn.LastName)
 							.Select(s => $"{s.SubscribedOn.Id} - {s.SubscribedOn.FirstName} {s.SubscribedOn.LastName}")
 							.ToList();
-
 						await SendTextMessage(new AnswerMessageBase(chatId,
-							string.Join("\r\n", result), MainKeyboard));
+							$"{string.Join("\r\n", result)}\r\n\r\nДля отписки отправьте сообщение\r\n\"{PhraseHelper.UnSubscribe}НОМЕР\"", SettingsKeyboard));
 						return;
 					}
+					case PhraseHelper.MySubscribers:
+					{
+						var result = _repository.Subscriptions.Where(s => s.SubscribedOn.ChatId == chatId)
+							.OrderBy(s => s.Subscriber.FirstName).ThenBy(s => s.Subscriber.LastName)
+							.Select(s => $"{s.Subscriber.Id} - {s.Subscriber.FirstName} {s.Subscriber.LastName}")
+							.ToList();
+						await SendTextMessage(new AnswerMessageBase(chatId,
+							$"{string.Join("\r\n", result)}\r\n\r\nЧто бы отписать от себя пользователя отправьте сообщение\r\n\"{PhraseHelper.UnSubscribeFromMe}НОМЕР\"", SettingsKeyboard));
+						return;
+						}
 					default:
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand, MainKeyboard));

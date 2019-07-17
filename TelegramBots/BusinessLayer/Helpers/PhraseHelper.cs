@@ -49,13 +49,14 @@
 	    public const string SubscribeToFriend = "Подписаться на друга";
 	    public const string Settings = "Настройки";
 	    public const string SubscribedToList = "На кого я подписан";
+	    public const string MySubscribers = "Мои подписчики";
 		public const string SetGeolocationQuestion = "Укажете геолокацию?";
 		public const string IdrinkCongrats = "Поздравляем! Вы пьёте впервые";
 		public const string IdrinkCongratsWithDate = "Поздравляем! Вы продержались без алкоголя {0} дней {1} часов {2} минут 🎉🎉🎉\r\nСчетчик сброшен 🍺🍷🥃🍹";
 		public const string SetGeolocation = "Отправить геолокацию";
 		public const string NoLocation = "Не отправлять";
 		public const string Location = "Локация";
-		public const string DrinkHistoryQuestion = "Введите дату в формате 31-01-2000 или выберите период";
+		public const string DrinkHistoryQuestion = "Выберите период";
 		public const string LastWeek = "Последняя неделя";
 		public const string LastMonth = "Последний месяц";
 		public const string CustomDay = "Конкретный день";
@@ -65,8 +66,14 @@
 		public const string SubscribeToYouself = "Вы не можете подписаться сами на себя";
 		public const string ContactDoesntUseBot = "{0} {1} еще не пользуется ботом";
 		public const string SuccessfullySubscribe = "Вы успешно подписаны на {0} {1}";
-		public const string YouHaveNewSubscriber = "На вас подписался {0} {1}";
+		public const string SuccessfullyUnSubscribe = "Вы успешно отписались";
+		public const string SuccessfullyRemoveSubscriber = "Вы успешно удалили подписчика";
+		public const string YouHaveNewSubscriber = "На вас подписался пользователь {0} {1}";
 		public const string DrinkingNow = "{0} {1} пьёт";
 		public const string SubscribeTo = "Подписаться в ответ";
+		public const string UnSubscribe = "/отписаться";
+		public const string UnSubscribeFromMe = "/отписать";
+		public const string YouAreNowSubscribed = "Вы не подписаны на этого пользователя";
+		public const string ThisUserNotSubscribedOnYou = "Данный пользователь не подписан на вас";
 	}
 }
