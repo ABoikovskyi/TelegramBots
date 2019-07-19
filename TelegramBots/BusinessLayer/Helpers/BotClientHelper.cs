@@ -15,10 +15,10 @@ namespace BusinessLayer.Helpers
         public static async Task<Message> SendTextMessage(this TelegramBotClient client, AnswerMessageBase message)
         {
 	        Message tgMessage;
-            if (string.IsNullOrEmpty(message.Text))
+            /*if (string.IsNullOrEmpty(message.Text))
             {
 	            return null;
-            }
+            }*/
 
             if (message.IsHtml)
             {
@@ -52,7 +52,7 @@ namespace BusinessLayer.Helpers
             else if (message.InlineKeyboard != null)
             {
                 var inlineKeyboard = new InlineKeyboardMarkup(message.InlineKeyboard
-                    .Select(d => new[] {InlineKeyboardButton.WithCallbackData(d.Key, d.Value)}).ToArray());
+                    .Select(d => InlineKeyboardButton.WithCallbackData(d.Key, d.Value)).ToArray());
                 tgMessage = await client.SendTextMessageAsync(message.UserId, message.Text,
                     replyMarkup: inlineKeyboard);
             }

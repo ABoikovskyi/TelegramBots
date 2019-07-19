@@ -49,17 +49,16 @@
 	    public const string SubscribeToFriend = "Подписаться на друга";
 	    public const string Settings = "Настройки";
 	    public const string SubscribedToList = "На кого я подписан";
-	    public const string MySubscribers = "Мои подписчики";
+	    public const string MySubscribersList = "Мои подписчики";
 		public const string SetGeolocationQuestion = "Укажете геолокацию?";
 		public const string IdrinkCongrats = "Поздравляем! Вы пьёте впервые";
 		public const string IdrinkCongratsWithDate = "Поздравляем! Вы продержались без алкоголя {0} дней {1} часов {2} минут 🎉🎉🎉\r\nСчетчик сброшен 🍺🍷🥃🍹";
-		public const string SetGeolocation = "Отправить геолокацию";
-		public const string NoLocation = "Не отправлять";
+		public const string SetGeolocation = "SetLocation";
+		public const string NoLocation = "NoLocation";
 		public const string Location = "Локация";
 		public const string DrinkHistoryQuestion = "Выберите период";
 		public const string LastWeek = "Последняя неделя";
 		public const string LastMonth = "Последний месяц";
-		public const string CustomDay = "Конкретный день";
 		public const string YouDrinkAt = "Употребление алкоголя началось в {0}";
 		public const string HowToSubscribeToFriend = "Отправьте боту контакт друга, на которого вы хотите подписаться";
 		public const string AlreadySubscribed = "Вы уже подписаны этого пользователя";
@@ -71,9 +70,16 @@
 		public const string YouHaveNewSubscriber = "На вас подписался пользователь {0} {1}";
 		public const string DrinkingNow = "{0} {1} пьёт";
 		public const string SubscribeTo = "Подписаться в ответ";
-		public const string UnSubscribe = "/отписаться";
-		public const string UnSubscribeFromMe = "/отписать";
+		public const string SubscribeToCode = "subscribeTo";
+		public const string ForUnsubscribe = "Для отписки от пользователя отправьте его номер ";
+		public const string ForUnsubscribeFromMe = "Что бы отписать от себя пользователя отправьте его номер";
 		public const string YouAreNowSubscribed = "Вы не подписаны на этого пользователя";
 		public const string ThisUserNotSubscribedOnYou = "Данный пользователь не подписан на вас";
+		public const string AreYouInterested = "Интересуетесь?";
+		public const string Yes = "Да";
+		public const string YesCode = "Да";
+		public const string No = "Нет";
+		public const string NoCode = "Нет";
+		public const string InterestedToDrinkWithYou = "{0} {1} интересуется вашим времяпрепровождением";
 	}
 }

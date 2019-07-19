@@ -76,11 +76,7 @@ namespace TelegramBots
 		    }*/
 			app.UseDeveloperExceptionPage();
 			app.UseHttpsRedirection();
-
-#if !DEBUG
-			app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
-#endif
-
+			//app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 			app.UseStaticFiles();
 			app.UseCookiePolicy();
 			app.UseAuthentication();

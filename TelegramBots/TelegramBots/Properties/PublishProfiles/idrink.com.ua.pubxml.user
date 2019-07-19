@@ -20,10 +20,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="BusinessLayer.dll">
-      <publishTime>07/16/2019 17:16:57</publishTime>
+      <publishTime>07/18/2019 00:26:15</publishTime>
     </File>
     <File Include="BusinessLayer.pdb">
-      <publishTime>07/16/2019 17:16:57</publishTime>
+      <publishTime>07/18/2019 00:26:15</publishTime>
     </File>
     <File Include="DataLayer.dll">
       <publishTime>07/16/2019 13:29:51</publishTime>
@@ -176,28 +176,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/03/2018 22:30:08</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>07/16/2019 17:17:03</publishTime>
+      <publishTime>07/18/2019 00:26:21</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>07/16/2019 17:16:59</publishTime>
+      <publishTime>07/18/2019 00:26:16</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>07/16/2019 17:16:59</publishTime>
+      <publishTime>07/18/2019 00:26:16</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
-      <publishTime>07/16/2019 17:17:03</publishTime>
+      <publishTime>07/18/2019 00:26:21</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>07/16/2019 17:17:01</publishTime>
+      <publishTime>07/18/2019 00:26:19</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>07/16/2019 17:17:01</publishTime>
+      <publishTime>07/18/2019 00:26:19</publishTime>
     </File>
     <File Include="Viber.Bot.dll">
       <publishTime>04/26/2018 18:13:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/16/2019 17:17:03</publishTime>
+      <publishTime>07/18/2019 00:26:21</publishTime>
     </File>
     <File Include="wwwroot/audio/audio.ogg">
       <publishTime>07/11/2019 15:02:00</publishTime>

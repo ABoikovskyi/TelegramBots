@@ -30,7 +30,7 @@
     <PackageReference Include="Quartz" Version="3.0.7" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
     <PackageReference Include="TaskScheduler" Version="2.8.7" />
-    <PackageReference Include="Telegram.Bot" Version="14.10.0" />
+    <PackageReference Include="Telegram.Bot" Version="14.12.0" />
   </ItemGroup>
 
   <ItemGroup>
