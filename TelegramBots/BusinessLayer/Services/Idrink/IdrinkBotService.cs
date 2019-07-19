@@ -233,63 +233,6 @@ namespace BusinessLayer.Services.Idrink
 					messageText = PhraseHelper.Location;
 				}
 
-				if (SubscribedToList.Contains(chatId))
-				{
-					if (!int.TryParse(messageText, out var number))
-					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand,
-							SettingsKeyboard));
-						return;
-					}
-
-					var subscription = _repository.Subscriptions.FirstOrDefault(s =>
-						s.SubscriberId == userId && s.SubscribedOnId == number);
-					if (subscription == null)
-					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.YouAreNowSubscribed,
-							SettingsKeyboard));
-						return;
-					}
-
-					_repository.Remove(subscription);
-					_repository.SaveChanges();
-
-					await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.SuccessfullyUnSubscribe,
-						SettingsKeyboard));
-
-					return;
-				}
-
-				if (MySubscribersList.Contains(chatId))
-				{
-					if (!int.TryParse(messageText, out var number))
-					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand,
-							SettingsKeyboard));
-						return;
-					}
-
-					var subscription = _repository.Subscriptions.FirstOrDefault(s =>
-						s.SubscriberId == number && s.SubscribedOnId == userId);
-					if (subscription == null)
-					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.ThisUserNotSubscribedOnYou,
-							SettingsKeyboard));
-						return;
-					}
-
-					_repository.Remove(subscription);
-					_repository.SaveChanges();
-
-					await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.SuccessfullyRemoveSubscriber,
-						SettingsKeyboard));
-
-					return;
-				}
-
-				SubscribedToList.Remove(chatId);
-				MySubscribersList.Remove(chatId);
-
 				switch (messageText)
 				{
 					case PhraseHelper.Start:
@@ -416,7 +359,10 @@ namespace BusinessLayer.Services.Idrink
 							.Select(s => $"{s.SubscribedOn.Id} - {s.SubscribedOn.FirstName} {s.SubscribedOn.LastName}")
 							.ToList();
 						await SendTextMessage(new AnswerMessageBase(chatId,
-							$"{string.Join("\r\n", result)}\r\n\r\n{PhraseHelper.ForUnsubscribe}", SettingsKeyboard));
+							result.Count == 0
+								? PhraseHelper.YouDontSubscriberToAnyone
+								: $"{string.Join("\r\n", result)}\r\n\r\n{PhraseHelper.ForUnsubscribe}",
+							SettingsKeyboard));
 						return;
 					}
 					case PhraseHelper.MySubscribersList:
@@ -427,12 +373,64 @@ namespace BusinessLayer.Services.Idrink
 							.Select(s => $"{s.Subscriber.Id} - {s.Subscriber.FirstName} {s.Subscriber.LastName}")
 							.ToList();
 						await SendTextMessage(new AnswerMessageBase(chatId,
-							$"{string.Join("\r\n", result)}\r\n\r\n{PhraseHelper.ForUnsubscribeFromMe}",
+							result.Count == 0
+								? PhraseHelper.NoSubscribers
+								: $"{string.Join("\r\n", result)}\r\n\r\n{PhraseHelper.ForUnsubscribeFromMe}",
 							SettingsKeyboard));
 						return;
 					}
 					default:
 					{
+						if (SubscribedToList.Contains(chatId) && int.TryParse(messageText, out var number))
+						{
+							var subscription = _repository.Subscriptions.FirstOrDefault(s =>
+								s.SubscriberId == userId && s.SubscribedOnId == number);
+							if (subscription == null)
+							{
+								await SendTextMessage(new AnswerMessageBase(chatId,
+									PhraseHelper.YouAreNowSubscribed,
+									SettingsKeyboard));
+								return;
+							}
+
+							_repository.Remove(subscription);
+							_repository.SaveChanges();
+
+							await SendTextMessage(new AnswerMessageBase(chatId,
+								PhraseHelper.SuccessfullyUnSubscribe,
+								SettingsKeyboard));
+
+							SubscribedToList.Remove(chatId);
+
+							return;
+						}
+
+						if (MySubscribersList.Contains(chatId) && int.TryParse(messageText, out number))
+						{
+							await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand,
+								SettingsKeyboard));
+							var subscription = _repository.Subscriptions.FirstOrDefault(s =>
+								s.SubscriberId == number && s.SubscribedOnId == userId);
+							if (subscription == null)
+							{
+								await SendTextMessage(new AnswerMessageBase(chatId,
+									PhraseHelper.ThisUserNotSubscribedOnYou,
+									SettingsKeyboard));
+								return;
+							}
+
+							_repository.Remove(subscription);
+							_repository.SaveChanges();
+
+							await SendTextMessage(new AnswerMessageBase(chatId,
+								PhraseHelper.SuccessfullyRemoveSubscriber,
+								SettingsKeyboard));
+
+							MySubscribersList.Remove(chatId);
+
+							return;
+						}
+
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand, MainKeyboard));
 						return;
 					}

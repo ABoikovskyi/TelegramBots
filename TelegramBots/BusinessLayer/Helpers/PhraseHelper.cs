@@ -72,7 +72,9 @@
 		public const string SubscribeTo = "Подписаться в ответ";
 		public const string SubscribeToCode = "subscribeTo";
 		public const string ForUnsubscribe = "Для отписки от пользователя отправьте его номер ";
+		public const string YouDontSubscriberToAnyone = "Вы ни на кого не подписаны";
 		public const string ForUnsubscribeFromMe = "Что бы отписать от себя пользователя отправьте его номер";
+		public const string NoSubscribers = "У вас нету подписчиков";
 		public const string YouAreNowSubscribed = "Вы не подписаны на этого пользователя";
 		public const string ThisUserNotSubscribedOnYou = "Данный пользователь не подписан на вас";
 		public const string AreYouInterested = "Интересуетесь?";
