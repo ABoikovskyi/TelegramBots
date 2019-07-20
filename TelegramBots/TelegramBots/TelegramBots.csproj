@@ -82,6 +82,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Admin\Log.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Dlls\Aspose.Cells.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

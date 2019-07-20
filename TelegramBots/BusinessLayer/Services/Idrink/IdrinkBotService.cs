@@ -59,14 +59,14 @@ namespace BusinessLayer.Services.Idrink
 		{
 			if (Client == null)
 			{
-				Client = new TelegramBotClient(Links.TelegramKey);
+				Client = new TelegramBotClient(ConfigData.TelegramKey);
 			}
 		}
 
 		public static async Task SetWebHook()
 		{
 			await Client.DeleteWebhookAsync();
-			await Client.SetWebhookAsync($"{Links.AppLink}/api/message/idrinkupdate");
+			await Client.SetWebhookAsync($"{ConfigData.AppLink}/api/message/idrinkupdate");
 		}
 
 		public async Task<Message> SendTextMessage(AnswerMessageBase message)
@@ -244,6 +244,15 @@ namespace BusinessLayer.Services.Idrink
 					}
 					case PhraseHelper.Idrink:
 					{
+						var lastDrinkTime = _repository.DrinkHistory.Where(h => h.UserId == userId)
+							.OrderByDescending(h => h.DrinkTime).FirstOrDefault()?.DrinkTime;
+						if (lastDrinkTime.HasValue && DateTime.Now.Subtract(lastDrinkTime.Value).TotalMinutes < 30)
+						{
+							await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.YouDrinkTooMuch,
+								MainKeyboard));
+							return;
+						}
+
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.SetGeolocationQuestion,
 							new[]
 							{
@@ -444,8 +453,20 @@ namespace BusinessLayer.Services.Idrink
 					LogDate = DateTime.Now,
 					Message = ex.Message,
 					StackTrace = ex.StackTrace
-				});
+				}); 
 				_repository.SaveChanges();
+			}
+		}
+
+		public async Task SendGlobalMessageWithDateCondition(string message, DateTime lastDrinkTime)
+		{
+			var drinkingTodayUsers = _repository.DrinkHistory.Where(h => h.DrinkTime >= lastDrinkTime)
+				.Select(h => h.UserId).ToList();
+			var neededUsers = _repository.Users.Select(u => new {u.Id, u.ChatId}).ToList()
+				.Where(u => !drinkingTodayUsers.Contains(u.Id)).ToList();
+			foreach (var user in neededUsers)
+			{
+				await SendTextMessage(new AnswerMessageBase(user.ChatId, message));
 			}
 		}
 

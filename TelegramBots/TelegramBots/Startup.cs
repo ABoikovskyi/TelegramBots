@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Services;
+﻿using BusinessLayer.Helpers;
+using BusinessLayer.Services;
 using BusinessLayer.Services.Idrink;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -59,6 +60,11 @@ namespace TelegramBots
 			});
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+			ConfigData.AppLink = Configuration.GetSection("ConfigData")["AppLink"];
+			ConfigData.TelegramKey = Configuration.GetSection("ConfigData")["TelegramKey"];
+			ConfigData.AdminLogin = Configuration.GetSection("ConfigData")["AdminLogin"];
+			ConfigData.AdminPass = Configuration.GetSection("ConfigData")["AdminPass"];
 
 			//QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
 		}

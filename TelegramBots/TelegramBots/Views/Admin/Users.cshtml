@@ -1,0 +1,9 @@
+﻿@model List<DataLayer.Models.Idrink.User>
+<ul>
+    @foreach (var user in Model)
+    {
+        <li>
+            @user.FirstName @user.LastName
+        </li>
+    }
+</ul>

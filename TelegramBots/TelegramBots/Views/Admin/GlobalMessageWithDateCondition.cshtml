@@ -1,0 +1,16 @@
+﻿<form asp-action="SendGlobalMessageForThoseWhoDiNoDrinkToday" asp-controller="Admin" id="data-form">
+    <div class="data-field">
+        <label for="lastDrinkTime" class="data-label">Условие даты (отправить всем, кто не пил после указанного времени)</label>
+
+        <input id="lastDrinkTime" name="lastDrinkTime" type="text" class="datetime-input data-input" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label for="message" class="data-label">Сообщение</label>
+        <textarea id="message" name="message" class="data-input big-textarea"></textarea>
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Отправить" />
+</form>

@@ -123,7 +123,7 @@ namespace BusinessLayer.Services
         public async Task Execute(IJobExecutionContext context)
         {
             var postId = Convert.ToInt32(context.JobDetail.JobDataMap["postId"]);
-            var request = WebRequest.Create($"{Links.AppLink}/popcorn/PublishPost?postId={postId}");
+            var request = WebRequest.Create($"{ConfigData.AppLink}/popcorn/PublishPost?postId={postId}");
             request.Method = "GET";
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
@@ -137,7 +137,7 @@ namespace BusinessLayer.Services
         public async Task Execute(IJobExecutionContext context)
         {
             var postId = Convert.ToInt32(context.JobDetail.JobDataMap["postId"]);
-            var request = WebRequest.Create($"{Links.AppLink}/festival/PublishPost?postId={postId}");
+            var request = WebRequest.Create($"{ConfigData.AppLink}/festival/PublishPost?postId={postId}");
             request.Method = "GET";
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
@@ -151,7 +151,7 @@ namespace BusinessLayer.Services
         public async Task Execute(IJobExecutionContext context)
         {
             var notifyId = Convert.ToInt32(context.JobDetail.JobDataMap["notifyId"]);
-            var request = WebRequest.Create($"{Links.AppLink}/festival/NotifyUser?notifyId={notifyId}");
+            var request = WebRequest.Create($"{ConfigData.AppLink}/festival/NotifyUser?notifyId={notifyId}");
             request.Method = "GET";
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
@@ -164,7 +164,7 @@ namespace BusinessLayer.Services
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            var request = WebRequest.Create($"{Links.AppLink}/home/index");
+            var request = WebRequest.Create($"{ConfigData.AppLink}/home/index");
             request.Method = "GET";
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {

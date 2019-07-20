@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BusinessLayer.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +23,11 @@ namespace TelegramBots.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				if (model.Login.ToLower() == "mitya" && model.Password.ToLower() == "kulibaba")
+				if (model.Login.ToLower() == ConfigData.AdminLogin && model.Password.ToLower() == ConfigData.AdminPass)
 				{
 					await Authenticate(model.Login.ToLower());
 
-					return RedirectToAction("StartPage", "PopCorn");
+					return RedirectToAction("Users", "Admin");
 				}
 
 				ModelState.AddModelError("", "Некорректные логин и(или) пароль");
