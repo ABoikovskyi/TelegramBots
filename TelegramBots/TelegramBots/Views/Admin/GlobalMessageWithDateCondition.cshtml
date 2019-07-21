@@ -1,16 +1,23 @@
-﻿<form asp-action="SendGlobalMessageWithDateCondition" asp-controller="Admin" id="data-form">
-    <div class="data-field">
-        <label for="lastDrinkTime" class="data-label">Условие даты (отправить всем, кто не пил после указанного времени)</label>
+﻿@model DataLayer.Models.DTO.IdrinkMessage
 
-        <input id="lastDrinkTime" name="lastDrinkTime" type="text" class="datetime-input data-input" />
+<form asp-action="SendGlobalMessageWithDateCondition" asp-controller="Admin" id="data-form">
+    <div class="data-field">
+        <label asp-for="DateCondition" class="data-label">Условие даты</label>
+        <input id="DateCondition" name="DateCondition" type="text" class="datetime-input data-input" />
     </div>
     <div class="clear"></div>
 
     <div class="data-field">
-        <label for="message" class="data-label">Сообщение</label>
-        <textarea id="message" name="message" class="data-input big-textarea"></textarea>
+        <label asp-for="IsDrank" class="data-label">Всем кто пил?</label>
+        <input asp-for="IsDrank"/>
     </div>
     <div class="clear"></div>
 
-    <input type="submit" class="save-data" value="Отправить" onclick="return confirm('Отправить?')"  />
+    <div class="data-field">
+        <label asp-for="Body" class="data-label">Сообщение</label>
+        <textarea asp-for="Body" class="data-input big-textarea"></textarea>
+    </div>
+    <div class="clear"></div>
+
+    <input type="submit" class="save-data" value="Отправить" onclick="return confirm('Отправить?')" />
 </form>

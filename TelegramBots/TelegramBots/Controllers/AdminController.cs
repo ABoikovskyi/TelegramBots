@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using BusinessLayer.Services.Idrink;
 using DataLayer.Context;
+using DataLayer.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,13 +32,13 @@ namespace TelegramBots.Controllers
 
 		public IActionResult GlobalMessageWithDateCondition()
 		{
-			return View();
+			return View(new IdrinkMessage());
 		}
 
 		[HttpPost]
-		public async Task SendGlobalMessageWithDateCondition(string message, DateTime lastDrinkTime)
+		public async Task SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
-			await _botService.SendGlobalMessageWithDateCondition(message, lastDrinkTime);
+			await _botService.SendGlobalMessageWithDateCondition(message);
 		}
 	}
 }

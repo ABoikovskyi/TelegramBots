@@ -29,8 +29,8 @@
     });
     $('input.datetime-input').datetimepicker();
 
-    $(document).click(function (e) {
+    /*$(document).click(function (e) {
         var player = $('.music')[0];
         player.play();
-    });
+    });*/
 });

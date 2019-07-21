@@ -163,7 +163,8 @@ namespace BusinessLayer.Services.Idrink
 				var chatId = message.Chat.Id;
 				var userFirstName = message.Chat.FirstName;
 				var userLastName = message.Chat.LastName;
-				var userId = InsertNewUser(chatId, userFirstName, userLastName);
+				var userName = message.Chat.Username;
+				var userId = InsertNewUser(chatId, userFirstName, userLastName, userName);
 
 				if (message.Type == MessageType.Contact)
 				{
@@ -453,24 +454,25 @@ namespace BusinessLayer.Services.Idrink
 					LogDate = DateTime.Now,
 					Message = ex.Message,
 					StackTrace = ex.StackTrace
-				}); 
+				});
 				_repository.SaveChanges();
 			}
 		}
 
-		public async Task SendGlobalMessageWithDateCondition(string message, DateTime lastDrinkTime)
+		public async Task SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
-			var drinkingTodayUsers = _repository.DrinkHistory.Where(h => h.DrinkTime >= lastDrinkTime)
-				.Select(h => h.UserId).ToList();
-			var neededUsers = _repository.Users.Select(u => new {u.Id, u.ChatId}).ToList()
-				.Where(u => !drinkingTodayUsers.Contains(u.Id)).ToList();
+			var neededUsers = _repository.Users
+				.Where(u => message.IsDrank
+					? u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)
+					: !u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition))
+				.Select(u => new {u.Id, u.ChatId}).ToList();
 			foreach (var user in neededUsers)
 			{
-				await SendTextMessage(new AnswerMessageBase(user.ChatId, message));
+				await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body));
 			}
 		}
 
-		private int InsertNewUser(long chatId, string userFirstName, string userLastName)
+		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)
 		{
 			var user = _repository.Users.FirstOrDefault(u => u.ChatId == chatId);
 			if (user == null)
@@ -479,14 +481,16 @@ namespace BusinessLayer.Services.Idrink
 				{
 					ChatId = chatId,
 					FirstName = userFirstName,
-					LastName = userLastName
+					LastName = userLastName,
+					UserName = userName
 				};
 				_repository.Add(user);
 				_repository.SaveChanges();
 			}
-			else
+			else if (string.IsNullOrEmpty(user.UserName) && !string.IsNullOrEmpty(userName))
 			{
-				return user.Id;
+				user.UserName = userName;
+				_repository.SaveChanges();
 			}
 
 			return user.Id;
