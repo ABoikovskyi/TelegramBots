@@ -107,7 +107,8 @@ namespace BusinessLayer.Services.Idrink
 					await Client.DeleteMessageAsync(message.Chat.Id, message.MessageId);
 
 					await SendTextMessage(new AnswerMessageBase(subscribeTo.ChatId,
-						string.Format(PhraseHelper.YouHaveNewSubscriber, currentUser.FirstName, currentUser.LastName)));
+						string.Format(PhraseHelper.YouHaveNewSubscriber, currentUser.FirstName, currentUser.LastName,
+							string.IsNullOrEmpty(currentUser.UserName) ? "" : $" (@{currentUser.UserName})")));
 
 					return;
 				}
@@ -121,7 +122,8 @@ namespace BusinessLayer.Services.Idrink
 					await Client.DeleteMessageAsync(message.Chat.Id, message.MessageId);
 					await SendTextMessage(new AnswerMessageBase(drinking.ChatId,
 						string.Format(PhraseHelper.InterestedToDrinkWithYou, currentUser.FirstName,
-							currentUser.LastName)));
+							currentUser.LastName,
+							string.IsNullOrEmpty(currentUser.UserName) ? "" : $" (@{currentUser.UserName})")));
 					return;
 				}
 
@@ -210,12 +212,14 @@ namespace BusinessLayer.Services.Idrink
 						.Any(s => s.Subscriber.ChatId == user.ChatId && s.SubscribedOn.ChatId == chatId))
 					{
 						await SendTextMessage(new AnswerMessageBase(user.ChatId,
-							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName)));
+							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName,
+								string.IsNullOrEmpty(userName) ? "" : $" (@{userName})")));
 					}
 					else
 					{
 						await SendTextMessage(new AnswerMessageBase(user.ChatId,
-							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName))
+							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName,
+								string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"))
 						{
 							InlineKeyboard = new Dictionary<string, string>
 							{
@@ -292,7 +296,9 @@ namespace BusinessLayer.Services.Idrink
 						foreach (var subscriber in subscribers)
 						{
 							await SendTextMessage(new AnswerMessageBase(subscriber.Subscriber.ChatId,
-								string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName), MainKeyboard));
+								string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName,
+									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"),
+								MainKeyboard));
 							var latitude = message.Location?.Latitude;
 							if (latitude.HasValue)
 							{
@@ -366,7 +372,9 @@ namespace BusinessLayer.Services.Idrink
 						SubscribedToList.Add(chatId);
 						var result = _repository.Subscriptions.Where(s => s.Subscriber.ChatId == chatId)
 							.OrderBy(s => s.SubscribedOn.FirstName).ThenBy(s => s.SubscribedOn.LastName)
-							.Select(s => $"{s.SubscribedOn.Id} - {s.SubscribedOn.FirstName} {s.SubscribedOn.LastName}")
+							.Select(s =>
+								$"{s.SubscribedOn.Id} - {s.SubscribedOn.FirstName} {s.SubscribedOn.LastName}" +
+								(string.IsNullOrEmpty(s.SubscribedOn.UserName) ? "" : $" @{s.SubscribedOn.UserName}"))
 							.ToList();
 						await SendTextMessage(new AnswerMessageBase(chatId,
 							result.Count == 0
@@ -380,7 +388,9 @@ namespace BusinessLayer.Services.Idrink
 						MySubscribersList.Add(chatId);
 						var result = _repository.Subscriptions.Where(s => s.SubscribedOn.ChatId == chatId)
 							.OrderBy(s => s.Subscriber.FirstName).ThenBy(s => s.Subscriber.LastName)
-							.Select(s => $"{s.Subscriber.Id} - {s.Subscriber.FirstName} {s.Subscriber.LastName}")
+							.Select(s =>
+								$"{s.Subscriber.Id} - {s.Subscriber.FirstName} {s.Subscriber.LastName}" +
+								(string.IsNullOrEmpty(s.Subscriber.UserName) ? "" : $" @{s.Subscriber.UserName}"))
 							.ToList();
 						await SendTextMessage(new AnswerMessageBase(chatId,
 							result.Count == 0
@@ -459,7 +469,7 @@ namespace BusinessLayer.Services.Idrink
 			}
 		}
 
-		public async Task SendGlobalMessageWithDateCondition(IdrinkMessage message)
+		public async Task<string> SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
 			var neededUsers = _repository.Users
 				.Where(u => message.IsDrank
@@ -470,6 +480,8 @@ namespace BusinessLayer.Services.Idrink
 			{
 				await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body));
 			}
+
+			return string.Join(",", neededUsers.Select(u => u.Id));
 		}
 
 		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)

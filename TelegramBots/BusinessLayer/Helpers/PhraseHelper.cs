@@ -67,8 +67,8 @@
 		public const string SuccessfullySubscribe = "Вы успешно подписаны на {0} {1}";
 		public const string SuccessfullyUnSubscribe = "Вы успешно отписались";
 		public const string SuccessfullyRemoveSubscriber = "Вы успешно удалили подписчика";
-		public const string YouHaveNewSubscriber = "На вас подписался пользователь {0} {1}";
-		public const string DrinkingNow = "{0} {1} пьёт";
+		public const string YouHaveNewSubscriber = "На вас подписался пользователь {0} {1}{2}";
+		public const string DrinkingNow = "{0} {1}{2} пьёт";
 		public const string SubscribeTo = "Подписаться в ответ";
 		public const string SubscribeToCode = "subscribeTo";
 		public const string ForUnsubscribe = "Для отписки от пользователя отправьте его номер ";
@@ -82,7 +82,7 @@
 		public const string YesCode = "Да";
 		public const string No = "Нет";
 		public const string NoCode = "Нет";
-		public const string InterestedToDrinkWithYou = "{0} {1} интересуется вашим времяпрепровождением";
+		public const string InterestedToDrinkWithYou = "{0} {1}{2} интересуется вашим времяпрепровождением";
 		public const string YouDrinkTooMuch = "С момента последнего употребления алкоголя прошло менее 30 минут. Успокойтесь, попейте водички 😉";
 	}
 }

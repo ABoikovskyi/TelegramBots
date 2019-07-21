@@ -36,9 +36,9 @@ namespace TelegramBots.Controllers
 		}
 
 		[HttpPost]
-		public async Task SendGlobalMessageWithDateCondition(IdrinkMessage message)
+		public async Task<string> SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
-			await _botService.SendGlobalMessageWithDateCondition(message);
+			return await _botService.SendGlobalMessageWithDateCondition(message);
 		}
 	}
 }
