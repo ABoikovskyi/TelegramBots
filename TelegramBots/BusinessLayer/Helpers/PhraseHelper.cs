@@ -43,12 +43,14 @@
         public const string Skip = "Пропустить";
 	    public const string ChooseMore = "Выбрать ещё";
 
-	    public const string IdrinkHelloText = "Вас приветствует telegram-бот \"Я пью\". Отмечайте когда и где вы пьете, подписывайтесь на друзей!\r\n\r\nОбратная связь: info@idrink.com.ua";
+	    public const string MainMenuText = "🥃";
 	    public const string Idrink = "Я пью";
 	    public const string DrinkHistory = "История выпиваний";
 	    public const string SubscribeToFriend = "Подписаться на друга";
 	    public const string Settings = "Настройки";
-	    public const string SubscribedToList = "На кого я подписан";
+	    public const string AboutBot = "О боте";
+	    public const string AboutBotText = "Вас приветствует telegram-бот \"Я пью\". Отмечайте когда и где вы пьете, подписывайтесь на друзей!\r\n\r\nОбратная связь: info@idrink.com.ua";
+		public const string SubscribedToList = "Мои подписки";
 	    public const string MySubscribersList = "Мои подписчики";
 		public const string SetGeolocationQuestion = "Укажете геолокацию?";
 		public const string IdrinkCongrats = "Поздравляем! Вы пьёте впервые";
@@ -71,7 +73,7 @@
 		public const string DrinkingNow = "{0} {1}{2} пьёт";
 		public const string SubscribeTo = "Подписаться в ответ";
 		public const string SubscribeToCode = "subscribeTo";
-		public const string ForUnsubscribe = "Для отписки от пользователя отправьте его номер ";
+		public const string ForUnsubscribe = "Для отписки от пользователя отправьте его номер";
 		public const string YouDontSubscriberToAnyone = "Вы ни на кого не подписаны";
 		public const string ForUnsubscribeFromMe = "Что бы отписать от себя пользователя отправьте его номер";
 		public const string NoSubscribers = "У вас нету подписчиков";
@@ -84,5 +86,6 @@
 		public const string NoCode = "Нет";
 		public const string InterestedToDrinkWithYou = "{0} {1}{2} интересуется вашим времяпрепровождением";
 		public const string YouDrinkTooMuch = "С момента последнего употребления алкоголя прошло менее 30 минут. Успокойтесь, попейте водички 😉";
+		public const string ManageYourSettings = "Управляйте личными настройками";
 	}
 }

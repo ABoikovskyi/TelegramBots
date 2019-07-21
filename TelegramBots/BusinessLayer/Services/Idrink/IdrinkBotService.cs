@@ -31,15 +31,13 @@ namespace BusinessLayer.Services.Idrink
 			MainKeyboard = new[]
 			{
 				new[] {PhraseHelper.Idrink},
-				new[] {PhraseHelper.DrinkHistory},
-				new[] {PhraseHelper.SubscribeToFriend},
-				new[] {PhraseHelper.Settings}
+				new[] {PhraseHelper.DrinkHistory, PhraseHelper.SubscribeToFriend},
+				new[] {PhraseHelper.Settings, PhraseHelper.AboutBot}
 			};
 
 			SettingsKeyboard = new[]
 			{
-				new[] {PhraseHelper.SubscribedToList},
-				new[] {PhraseHelper.MySubscribersList},
+				new[] {PhraseHelper.SubscribedToList, PhraseHelper.MySubscribersList},
 				new[] {PhraseHelper.MainMenu}
 			};
 
@@ -241,9 +239,15 @@ namespace BusinessLayer.Services.Idrink
 				switch (messageText)
 				{
 					case PhraseHelper.Start:
+					case PhraseHelper.AboutBot:
+					{
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.AboutBotText,
+							MainKeyboard));
+						return;
+					}
 					case PhraseHelper.MainMenu:
 					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.IdrinkHelloText,
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.MainMenuText,
 							MainKeyboard));
 						return;
 					}
@@ -363,7 +367,7 @@ namespace BusinessLayer.Services.Idrink
 					}
 					case PhraseHelper.Settings:
 					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.Settings,
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.ManageYourSettings,
 							SettingsKeyboard));
 						return;
 					}
