@@ -9,7 +9,13 @@
 
     <div class="data-field">
         <label asp-for="IsDrank" class="data-label">Всем кто пил?</label>
-        <input asp-for="IsDrank"/>
+        <input asp-for="IsDrank" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
+        <label asp-for="Users" class="data-label">Конкретным людям</label>
+        <select asp-for="Users" asp-items="ViewBag.Users" size="20" multiple="multiple"></select>
     </div>
     <div class="clear"></div>
 

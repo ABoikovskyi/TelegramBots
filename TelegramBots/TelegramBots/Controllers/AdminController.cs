@@ -5,6 +5,7 @@ using DataLayer.Context;
 using DataLayer.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TelegramBots.Controllers
 {
@@ -32,6 +33,9 @@ namespace TelegramBots.Controllers
 
 		public IActionResult GlobalMessageWithDateCondition()
 		{
+			ViewBag.Users = _repository.Users.Select(c =>
+					new SelectListItem {Value = c.Id.ToString(), Text = $"{c.FirstName} - {c.LastName} ({c.UserName})"})
+				.ToList();
 			return View(new IdrinkMessage());
 		}
 

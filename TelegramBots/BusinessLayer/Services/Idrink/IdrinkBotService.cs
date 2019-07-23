@@ -476,9 +476,9 @@ namespace BusinessLayer.Services.Idrink
 		public async Task<string> SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
 			var neededUsers = _repository.Users
-				.Where(u => message.IsDrank
+				.Where(u => (message.Users == null || message.Users.Contains(u.Id)) && (message.IsDrank
 					? u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)
-					: !u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition))
+					: !u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)))
 				.Select(u => new {u.Id, u.ChatId}).ToList();
 			foreach (var user in neededUsers)
 			{
