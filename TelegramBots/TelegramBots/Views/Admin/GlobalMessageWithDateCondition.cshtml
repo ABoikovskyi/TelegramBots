@@ -2,6 +2,12 @@
 
 <form asp-action="SendGlobalMessageWithDateCondition" asp-controller="Admin" id="data-form">
     <div class="data-field">
+        <label asp-for="IsGlobal" class="data-label">Всем?</label>
+        <input asp-for="IsGlobal" />
+    </div>
+    <div class="clear"></div>
+
+    <div class="data-field">
         <label asp-for="DateCondition" class="data-label">Условие даты</label>
         <input id="DateCondition" name="DateCondition" type="text" class="datetime-input data-input" />
     </div>
