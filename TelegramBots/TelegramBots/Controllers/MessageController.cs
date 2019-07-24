@@ -157,23 +157,23 @@ namespace TelegramBots.Controllers
 		}
 
 		[HttpPost]
-		public async Task<OkResult> Post([FromBody] Update update)
+		public async Task<int> Post([FromBody] Update update)
 		{
 			if (update == null)
 			{
-				return Ok();
+				return 1;
 			}
 
 			if (update.CallbackQuery != null)
 			{
 				await _botService.ProcessCallbackMessage(update.CallbackQuery);
 			}
-			else
+			else if(update.Message != null)
 			{
 				await _botService.ProcessMessage(update.Message);
 			}
 
-			return Ok();
+			return 1;
 		}
 	}
 }

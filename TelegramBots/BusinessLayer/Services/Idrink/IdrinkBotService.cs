@@ -484,7 +484,21 @@ namespace BusinessLayer.Services.Idrink
 					.Select(u => new {u.Id, u.ChatId}).ToList();
 			foreach (var user in neededUsers)
 			{
-				await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body));
+				try
+				{
+					await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body));
+				}
+				catch (Exception ex)
+				{
+					_repository.Add(new Log
+					{
+						ChatId = user.Id,
+						LogDate = DateTime.Now,
+						Message = ex.Message,
+						StackTrace = ex.StackTrace
+					});
+					_repository.SaveChanges();
+				}
 			}
 
 			return string.Join(",", neededUsers.Select(u => u.Id));
