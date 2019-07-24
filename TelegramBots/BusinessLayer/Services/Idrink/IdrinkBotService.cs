@@ -155,6 +155,11 @@ namespace BusinessLayer.Services.Idrink
 		{
 			try
 			{
+				if (string.IsNullOrEmpty(messageText))
+				{
+					return;
+				}
+
 				if (DateTime.UtcNow.Subtract(message.Date).TotalMinutes > 3)
 				{
 					return;
