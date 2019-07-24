@@ -155,11 +155,6 @@ namespace BusinessLayer.Services.Idrink
 		{
 			try
 			{
-				if (string.IsNullOrEmpty(messageText))
-				{
-					return;
-				}
-
 				if (DateTime.UtcNow.Subtract(message.Date).TotalMinutes > 3)
 				{
 					return;
@@ -239,6 +234,11 @@ namespace BusinessLayer.Services.Idrink
 					SubscribedToList.Remove(chatId);
 					MySubscribersList.Remove(chatId);
 					messageText = PhraseHelper.Location;
+				}
+
+				if (string.IsNullOrEmpty(messageText))
+				{
+					return;
 				}
 
 				switch (messageText)
