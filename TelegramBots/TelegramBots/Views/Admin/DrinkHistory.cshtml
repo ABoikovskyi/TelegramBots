@@ -1,0 +1,9 @@
+﻿@model List<DataLayer.Models.Idrink.DrinkHistory>
+<ul>
+    @foreach (var data in Model)
+    {
+        <li>
+            @data.DrinkTime <a href="https://maps.google.com/?q=@data.Latitude,@data.Longitude" target="_blank">локация</a>
+        </li>
+    }
+</ul>

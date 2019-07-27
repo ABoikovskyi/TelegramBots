@@ -153,6 +153,7 @@ namespace BusinessLayer.Services.Idrink
 
 		public async Task ProcessMessageBase(Message message, string messageText)
 		{
+			long errorUserId = 0;
 			try
 			{
 				if (DateTime.UtcNow.Subtract(message.Date).TotalMinutes > 3)
@@ -161,10 +162,12 @@ namespace BusinessLayer.Services.Idrink
 				}
 
 				var chatId = message.Chat.Id;
+				errorUserId = chatId;
 				var userFirstName = message.Chat.FirstName;
 				var userLastName = message.Chat.LastName;
 				var userName = message.Chat.Username;
 				var userId = InsertNewUser(chatId, userFirstName, userLastName, userName);
+				errorUserId = userId;
 
 				if (message.Type == MessageType.Contact)
 				{
@@ -206,6 +209,7 @@ namespace BusinessLayer.Services.Idrink
 						string.Format(PhraseHelper.SuccessfullySubscribe, contact.FirstName, contact.LastName),
 						MainKeyboard));
 
+					errorUserId = user.Id;
 					if (_repository.Subscriptions
 						.Any(s => s.Subscriber.ChatId == user.ChatId && s.SubscribedOn.ChatId == chatId))
 					{
@@ -241,6 +245,7 @@ namespace BusinessLayer.Services.Idrink
 					return;
 				}
 
+				errorUserId = userId;
 				switch (messageText)
 				{
 					case PhraseHelper.Start:
@@ -304,26 +309,41 @@ namespace BusinessLayer.Services.Idrink
 							.Where(s => s.SubscribedOn.ChatId == chatId).ToList();
 						foreach (var subscriber in subscribers)
 						{
-							await SendTextMessage(new AnswerMessageBase(subscriber.Subscriber.ChatId,
-								string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName,
-									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"),
-								MainKeyboard));
-							var latitude = message.Location?.Latitude;
-							if (latitude.HasValue)
+							try
 							{
-								await Client.SendLocationAsync(subscriber.Subscriber.ChatId, latitude.Value,
-									message.Location.Longitude);
-							}
-
-							await SendTextMessage(
-								new AnswerMessageBase(subscriber.Subscriber.ChatId, PhraseHelper.AreYouInterested)
+								errorUserId = subscriber.Subscriber.Id;
+								await SendTextMessage(new AnswerMessageBase(subscriber.Subscriber.ChatId,
+									string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName,
+										string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"),
+									MainKeyboard));
+								var latitude = message.Location?.Latitude;
+								if (latitude.HasValue)
 								{
-									InlineKeyboard = new Dictionary<string, string>
+									await Client.SendLocationAsync(subscriber.Subscriber.ChatId, latitude.Value,
+										message.Location.Longitude);
+								}
+
+								await SendTextMessage(
+									new AnswerMessageBase(subscriber.Subscriber.ChatId, PhraseHelper.AreYouInterested)
 									{
-										{PhraseHelper.Yes, $"{PhraseHelper.YesCode}{userId}"},
-										{PhraseHelper.No, $"{PhraseHelper.NoCode}"}
-									}
+										InlineKeyboard = new Dictionary<string, string>
+										{
+											{PhraseHelper.Yes, $"{PhraseHelper.YesCode}{userId}"},
+											{PhraseHelper.No, $"{PhraseHelper.NoCode}"}
+										}
+									});
+							}
+							catch (Exception ex)
+							{
+								_repository.Add(new Log
+								{
+									ChatId = errorUserId,
+									LogDate = DateTime.Now,
+									Message = ex.Message,
+									StackTrace = ex.StackTrace
 								});
+								_repository.SaveChanges();
+							}
 						}
 
 						return;
@@ -469,7 +489,7 @@ namespace BusinessLayer.Services.Idrink
 			{
 				_repository.Add(new Log
 				{
-					ChatId = message.Chat.Id,
+					ChatId = errorUserId,
 					LogDate = DateTime.Now,
 					Message = ex.Message,
 					StackTrace = ex.StackTrace
@@ -497,7 +517,7 @@ namespace BusinessLayer.Services.Idrink
 				{
 					_repository.Add(new Log
 					{
-						ChatId = user.Id,
+						ChatId = user.ChatId,
 						LogDate = DateTime.Now,
 						Message = ex.Message,
 						StackTrace = ex.StackTrace

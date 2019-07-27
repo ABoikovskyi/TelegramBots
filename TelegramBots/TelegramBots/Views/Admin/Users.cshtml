@@ -1,9 +1,10 @@
 ﻿@model List<DataLayer.Models.Idrink.User>
+Количество: @Model.Count
 <ul>
     @foreach (var user in Model)
     {
         <li>
-            @user.FirstName @user.LastName (@user.UserName)
+            @user.FirstName @user.LastName (@user.UserName) <a href="@Url.Action("DrinkHistory", new {userId = user.Id})">история</a>
         </li>
     }
 </ul>

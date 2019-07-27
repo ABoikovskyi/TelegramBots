@@ -151,17 +151,15 @@ namespace TelegramBots.Controllers
 		[HttpGet]
 		public async Task<string> Get()
 		{
-			/*await _botService.ProcessMessage(new Message
-				{Text = PhraseHelper.LastWeek, Chat = new Chat {Id = 117425216}});*/
 			return "Method GET unavailable";
 		}
 
 		[HttpPost]
-		public async Task<int> Post([FromBody] Update update)
+		public async Task<OkResult> Post([FromBody] Update update)
 		{
 			if (update == null)
 			{
-				return 1;
+				return Ok();
 			}
 
 			if (update.CallbackQuery != null)
@@ -173,7 +171,7 @@ namespace TelegramBots.Controllers
 				await _botService.ProcessMessage(update.Message);
 			}
 
-			return 1;
+			return Ok();
 		}
 	}
 }

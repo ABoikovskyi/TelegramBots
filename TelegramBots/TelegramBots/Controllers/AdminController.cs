@@ -26,6 +26,11 @@ namespace TelegramBots.Controllers
             return View(_repository.Users.ToList());
 		}
 
+		public IActionResult DrinkHistory(int userId)
+		{
+			return View(_repository.DrinkHistory.Where(h=>h.UserId == userId).ToList());
+		}
+
 		public IActionResult Log()
 		{
 			return View(_repository.Log.ToList());
