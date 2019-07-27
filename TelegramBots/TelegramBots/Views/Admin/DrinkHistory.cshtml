@@ -3,7 +3,7 @@
     @foreach (var data in Model)
     {
         <li>
-            @data.DrinkTime <a href="https://maps.google.com/?q=@data.Latitude,@data.Longitude" target="_blank">локация</a>
+            @data.DrinkTime <a href="https://maps.google.com/?q=@(data.Latitude.ToString().Replace(",",".")),@(data.Longitude.ToString().Replace(",","."))" target="_blank">локация</a>
         </li>
     }
 </ul>
