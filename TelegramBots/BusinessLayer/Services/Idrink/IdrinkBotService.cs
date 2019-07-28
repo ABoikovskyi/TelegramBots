@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BusinessLayer.Helpers;
@@ -17,13 +16,13 @@ namespace BusinessLayer.Services.Idrink
 {
 	public class IdrinkBotService
 	{
-		public static readonly CultureInfo CurrentCultureInfo = new CultureInfo("ru");
 		private readonly IdrinkDbContext _repository;
 		public static string[][] MainKeyboard;
 		public static string[][] SettingsKeyboard;
 		public static string[][] HistoryKeyboard;
-		public static HashSet<long> SubscribedToList = new HashSet<long>();
-		public static HashSet<long> MySubscribersList = new HashSet<long>();
+		public static HashSet<int> SubscribedToList = new HashSet<int>();
+		public static HashSet<int> MySubscribersList = new HashSet<int>();
+		public static HashSet<int> PhotoStepList = new HashSet<int>();
 		public static TelegramBotClient Client;
 
 		static IdrinkBotService()
@@ -169,10 +168,83 @@ namespace BusinessLayer.Services.Idrink
 				var userId = InsertNewUser(chatId, userFirstName, userLastName, userName);
 				errorUserId = userId;
 
+				if (PhotoStepList.Contains(userId))
+				{
+					var drinkingRecords = _repository.DrinkHistory.Where(h => h.User.ChatId == chatId)
+						.OrderByDescending(h => h.DrinkTime).Take(2).ToList();
+					var currentDrinking = drinkingRecords[0];
+					var prevDrinking = drinkingRecords.Count == 1 ? null : drinkingRecords[1];
+					await SendTextMessage(new AnswerMessageBase(chatId,
+						prevDrinking == null
+							? PhraseHelper.IdrinkCongrats
+							: string.Format(PhraseHelper.IdrinkCongratsWithDate,
+								Math.Floor((currentDrinking.DrinkTime - prevDrinking.DrinkTime).TotalDays),
+								(currentDrinking.DrinkTime - prevDrinking.DrinkTime).Hours,
+								(currentDrinking.DrinkTime - prevDrinking.DrinkTime).Minutes),
+						MainKeyboard));
+					
+					var subscribers = _repository.Subscriptions.Include(s => s.Subscriber)
+						.Where(s => s.SubscribedOn.ChatId == chatId).ToList();
+					foreach (var subscriber in subscribers)
+					{
+						try
+						{
+							errorUserId = subscriber.Subscriber.Id;
+							var subscriberChatId = subscriber.Subscriber.ChatId;
+							await SendTextMessage(new AnswerMessageBase(subscriberChatId,
+								string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName,
+									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"),
+								MainKeyboard));
+							if (currentDrinking.Latitude.HasValue && currentDrinking.Longitude.HasValue)
+							{
+								await Client.SendLocationAsync(subscriberChatId, currentDrinking.Latitude.Value,
+									currentDrinking.Longitude.Value);
+							}
+
+							if (message.Type == MessageType.Photo)
+							{
+								var photoId = message.Photo.Last().FileId;
+								var photoInfo = await Client.GetFileAsync(photoId);
+								var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(
+									$"https://api.telegram.org/file/bot{ConfigData.TelegramKey}/{photoInfo.FilePath}");
+								webRequest.AllowWriteStreamBuffering = true;
+								var webResponse = webRequest.GetResponse();
+								var stream = webResponse.GetResponseStream();
+								await Client.SendPhotoAsync(chatId, stream);
+							}
+
+							await SendTextMessage(
+								new AnswerMessageBase(subscriberChatId, PhraseHelper.AreYouInterested)
+								{
+									InlineKeyboard = new Dictionary<string, string>
+									{
+										{PhraseHelper.Yes, $"{PhraseHelper.YesCode}{userId}"},
+										{PhraseHelper.No, $"{PhraseHelper.NoCode}"}
+									}
+								});
+						}
+						catch (Exception ex)
+						{
+							_repository.Add(new Log
+							{
+								ChatId = errorUserId,
+								LogDate = DateTime.Now,
+								Message = ex.Message,
+								StackTrace = ex.StackTrace
+							});
+							_repository.SaveChanges();
+						}
+					}
+
+					PhotoStepList.Remove(userId);
+
+					return;
+				}
+
 				if (message.Type == MessageType.Contact)
 				{
-					SubscribedToList.Remove(chatId);
-					MySubscribersList.Remove(chatId);
+					SubscribedToList.Remove(userId);
+					MySubscribersList.Remove(userId);
 					var contact = message.Contact;
 					if (chatId == contact.UserId)
 					{
@@ -235,8 +307,8 @@ namespace BusinessLayer.Services.Idrink
 
 				if (message.Type == MessageType.Location)
 				{
-					SubscribedToList.Remove(chatId);
-					MySubscribersList.Remove(chatId);
+					SubscribedToList.Remove(userId);
+					MySubscribersList.Remove(userId);
 					messageText = PhraseHelper.Location;
 				}
 
@@ -284,67 +356,19 @@ namespace BusinessLayer.Services.Idrink
 					case PhraseHelper.SetGeolocation:
 					case PhraseHelper.NoLocation:
 					{
-						var lastDrink = _repository.DrinkHistory.Where(h => h.User.ChatId == chatId)
-							.OrderByDescending(h => h.DrinkTime).FirstOrDefault()?.DrinkTime;
-						var currentDate = DateTime.Now;
-
 						_repository.Add(new DrinkHistory
 						{
 							UserId = userId,
-							DrinkTime = currentDate,
+							DrinkTime = DateTime.Now,
 							Latitude = messageText == PhraseHelper.Location ? message.Location?.Latitude : null,
 							Longitude = messageText == PhraseHelper.Location ? message.Location?.Longitude : null
 						});
 						_repository.SaveChanges();
 
-						await SendTextMessage(new AnswerMessageBase(chatId,
-							lastDrink == null
-								? PhraseHelper.IdrinkCongrats
-								: string.Format(PhraseHelper.IdrinkCongratsWithDate,
-									Math.Floor((currentDate - lastDrink.Value).TotalDays),
-									(currentDate - lastDrink.Value).Hours, (currentDate - lastDrink.Value).Minutes),
-							MainKeyboard));
+						PhotoStepList.Add(userId);
 
-						var subscribers = _repository.Subscriptions.Include(s => s.Subscriber)
-							.Where(s => s.SubscribedOn.ChatId == chatId).ToList();
-						foreach (var subscriber in subscribers)
-						{
-							try
-							{
-								errorUserId = subscriber.Subscriber.Id;
-								await SendTextMessage(new AnswerMessageBase(subscriber.Subscriber.ChatId,
-									string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName,
-										string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"),
-									MainKeyboard));
-								var latitude = message.Location?.Latitude;
-								if (latitude.HasValue)
-								{
-									await Client.SendLocationAsync(subscriber.Subscriber.ChatId, latitude.Value,
-										message.Location.Longitude);
-								}
-
-								await SendTextMessage(
-									new AnswerMessageBase(subscriber.Subscriber.ChatId, PhraseHelper.AreYouInterested)
-									{
-										InlineKeyboard = new Dictionary<string, string>
-										{
-											{PhraseHelper.Yes, $"{PhraseHelper.YesCode}{userId}"},
-											{PhraseHelper.No, $"{PhraseHelper.NoCode}"}
-										}
-									});
-							}
-							catch (Exception ex)
-							{
-								_repository.Add(new Log
-								{
-									ChatId = errorUserId,
-									LogDate = DateTime.Now,
-									Message = ex.Message,
-									StackTrace = ex.StackTrace
-								});
-								_repository.SaveChanges();
-							}
-						}
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.WouldYouLikeToAddPhoto,
+							new[] {new[] {PhraseHelper.Skip}}));
 
 						return;
 					}
@@ -366,8 +390,7 @@ namespace BusinessLayer.Services.Idrink
 
 						foreach (var drink in data)
 						{
-							var latitude = drink.Latitude;
-							if (!latitude.HasValue)
+							if (!drink.Latitude.HasValue || !drink.Longitude.HasValue)
 							{
 								await SendTextMessage(new AnswerMessageBase(chatId,
 									string.Format(PhraseHelper.YouDrinkAt,
@@ -398,7 +421,7 @@ namespace BusinessLayer.Services.Idrink
 					}
 					case PhraseHelper.SubscribedToList:
 					{
-						SubscribedToList.Add(chatId);
+						SubscribedToList.Add(userId);
 						var result = _repository.Subscriptions.Where(s => s.Subscriber.ChatId == chatId)
 							.OrderBy(s => s.SubscribedOn.FirstName).ThenBy(s => s.SubscribedOn.LastName)
 							.Select(s =>
@@ -414,7 +437,7 @@ namespace BusinessLayer.Services.Idrink
 					}
 					case PhraseHelper.MySubscribersList:
 					{
-						MySubscribersList.Add(chatId);
+						MySubscribersList.Add(userId);
 						var result = _repository.Subscriptions.Where(s => s.SubscribedOn.ChatId == chatId)
 							.OrderBy(s => s.Subscriber.FirstName).ThenBy(s => s.Subscriber.LastName)
 							.Select(s =>
@@ -430,7 +453,7 @@ namespace BusinessLayer.Services.Idrink
 					}
 					default:
 					{
-						if (SubscribedToList.Contains(chatId) && int.TryParse(messageText, out var number))
+						if (SubscribedToList.Contains(userId) && int.TryParse(messageText, out var number))
 						{
 							var subscription = _repository.Subscriptions.FirstOrDefault(s =>
 								s.SubscriberId == userId && s.SubscribedOnId == number);
@@ -449,12 +472,12 @@ namespace BusinessLayer.Services.Idrink
 								PhraseHelper.SuccessfullyUnSubscribe,
 								SettingsKeyboard));
 
-							SubscribedToList.Remove(chatId);
+							SubscribedToList.Remove(userId);
 
 							return;
 						}
 
-						if (MySubscribersList.Contains(chatId) && int.TryParse(messageText, out number))
+						if (MySubscribersList.Contains(userId) && int.TryParse(messageText, out number))
 						{
 							await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InvalidCommand,
 								SettingsKeyboard));
@@ -475,7 +498,7 @@ namespace BusinessLayer.Services.Idrink
 								PhraseHelper.SuccessfullyRemoveSubscriber,
 								SettingsKeyboard));
 
-							MySubscribersList.Remove(chatId);
+							MySubscribersList.Remove(userId);
 
 							return;
 						}
