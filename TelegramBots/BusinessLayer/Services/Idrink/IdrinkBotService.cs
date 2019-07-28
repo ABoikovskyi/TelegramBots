@@ -210,7 +210,7 @@ namespace BusinessLayer.Services.Idrink
 								webRequest.AllowWriteStreamBuffering = true;
 								var webResponse = webRequest.GetResponse();
 								var stream = webResponse.GetResponseStream();
-								await Client.SendPhotoAsync(chatId, stream);
+								await Client.SendPhotoAsync(subscriberChatId, stream);
 							}
 
 							await SendTextMessage(
