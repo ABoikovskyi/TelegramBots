@@ -171,6 +171,11 @@ namespace BusinessLayer.Services.Idrink
 				}
 
 				var chatId = message.Chat.Id;
+				if (chatId < 0)
+				{
+					await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.BotDontWorkWithGroups));
+				}
+
 				errorUserId = chatId;
 				var userFirstName = message.Chat.FirstName;
 				var userLastName = message.Chat.LastName;
