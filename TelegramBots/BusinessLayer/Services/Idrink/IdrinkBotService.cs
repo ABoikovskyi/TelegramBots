@@ -79,8 +79,13 @@ namespace BusinessLayer.Services.Idrink
 				if (callback.Data.Contains(PhraseHelper.SubscribeToCode))
 				{
 					var subscribeToId = Convert.ToInt32(callback.Data.Replace(PhraseHelper.SubscribeToCode, ""));
-					var subscribeTo = _repository.Users.First(u => u.Id == subscribeToId);
-					var currentUser = _repository.Users.First(u => u.ChatId == message.Chat.Id);
+					var subscribeTo = _repository.Users.FirstOrDefault(u => u.Id == subscribeToId);
+					var currentUser = _repository.Users.FirstOrDefault(u => u.ChatId == message.Chat.Id);
+
+					if (subscribeTo == null || currentUser == null)
+					{
+						return;
+					}
 
 					if (_repository.Subscriptions
 						.Any(s => s.SubscriberId == currentUser.Id && s.SubscribedOn.ChatId == subscribeToId))
@@ -112,9 +117,14 @@ namespace BusinessLayer.Services.Idrink
 
 				if (callback.Data.Contains(PhraseHelper.YesCode))
 				{
-					var currentUser = _repository.Users.First(u => u.ChatId == message.Chat.Id);
+					var currentUser = _repository.Users.FirstOrDefault(u => u.ChatId == message.Chat.Id);
 					var drinkingId = Convert.ToInt32(callback.Data.Replace(PhraseHelper.YesCode, ""));
-					var drinking = _repository.Users.First(u => u.Id == drinkingId);
+					var drinking = _repository.Users.FirstOrDefault(u => u.Id == drinkingId);
+
+					if (currentUser == null || drinking == null)
+					{
+						return;
+					}
 
 					await Client.DeleteMessageAsync(message.Chat.Id, message.MessageId);
 					await SendTextMessage(new AnswerMessageBase(drinking.ChatId,
@@ -182,9 +192,9 @@ namespace BusinessLayer.Services.Idrink
 								(currentDrinking.DrinkTime - prevDrinking.DrinkTime).Hours,
 								(currentDrinking.DrinkTime - prevDrinking.DrinkTime).Minutes),
 						MainKeyboard));
-					
+
 					var subscribers = _repository.Subscriptions.Include(s => s.Subscriber)
-						.Where(s => s.SubscribedOn.ChatId == chatId).ToList();
+						.Where(s => s.Subscriber.IsActive && s.SubscribedOn.ChatId == chatId).ToList();
 					foreach (var subscriber in subscribers)
 					{
 						try
@@ -282,24 +292,28 @@ namespace BusinessLayer.Services.Idrink
 						MainKeyboard));
 
 					errorUserId = user.Id;
-					if (_repository.Subscriptions
-						.Any(s => s.Subscriber.ChatId == user.ChatId && s.SubscribedOn.ChatId == chatId))
+
+					if (user.IsActive)
 					{
-						await SendTextMessage(new AnswerMessageBase(user.ChatId,
-							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName,
-								string.IsNullOrEmpty(userName) ? "" : $" (@{userName})")));
-					}
-					else
-					{
-						await SendTextMessage(new AnswerMessageBase(user.ChatId,
-							string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName,
-								string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"))
+						if (_repository.Subscriptions
+							.Any(s => s.Subscriber.ChatId == user.ChatId && s.SubscribedOn.ChatId == chatId))
 						{
-							InlineKeyboard = new Dictionary<string, string>
+							await SendTextMessage(new AnswerMessageBase(user.ChatId,
+								string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName,
+									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})")));
+						}
+						else
+						{
+							await SendTextMessage(new AnswerMessageBase(user.ChatId,
+								string.Format(PhraseHelper.YouHaveNewSubscriber, userFirstName, userLastName,
+									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"))
 							{
-								{PhraseHelper.SubscribeTo, $"{PhraseHelper.SubscribeToCode}{userId}"}
-							}
-						});
+								InlineKeyboard = new Dictionary<string, string>
+								{
+									{PhraseHelper.SubscribeTo, $"{PhraseHelper.SubscribeToCode}{userId}"}
+								}
+							});
+						}
 					}
 
 					return;
@@ -524,12 +538,14 @@ namespace BusinessLayer.Services.Idrink
 		public async Task<string> SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
 			var neededUsers = message.IsGlobal
-				? _repository.Users.Select(u => new {u.Id, u.ChatId}).ToList()
+				? _repository.Users.Where(u => u.IsActive).Select(u => new {u.Id, u.ChatId}).ToList()
 				: _repository.Users
-					.Where(u => (message.Users == null || message.Users.Contains(u.Id)) && (message.IsDrank
+					.Where(u => u.IsActive && (message.Users == null || message.Users.Contains(u.Id)) &&
+					            (message.IsDrank
 						            ? u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)
 						            : !u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)))
 					.Select(u => new {u.Id, u.ChatId}).ToList();
+
 			foreach (var user in neededUsers)
 			{
 				try
@@ -562,15 +578,25 @@ namespace BusinessLayer.Services.Idrink
 					ChatId = chatId,
 					FirstName = userFirstName,
 					LastName = userLastName,
-					UserName = userName
+					UserName = userName,
+					IsActive = true
 				};
 				_repository.Add(user);
 				_repository.SaveChanges();
 			}
-			else if (string.IsNullOrEmpty(user.UserName) && !string.IsNullOrEmpty(userName))
+			else
 			{
-				user.UserName = userName;
-				_repository.SaveChanges();
+				if (string.IsNullOrEmpty(user.UserName) && !string.IsNullOrEmpty(userName))
+				{
+					user.UserName = userName;
+					_repository.SaveChanges();
+				}
+
+				if (!user.IsActive)
+				{
+					user.IsActive = true;
+					_repository.SaveChanges();
+				}
 			}
 
 			return user.Id;

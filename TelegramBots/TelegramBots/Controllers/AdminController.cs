@@ -38,7 +38,7 @@ namespace TelegramBots.Controllers
 
 		public IActionResult GlobalMessageWithDateCondition()
 		{
-			ViewBag.Users = _repository.Users.Select(c =>
+			ViewBag.Users = _repository.Users.Where(u => u.IsActive).Select(c =>
 					new SelectListItem {Value = c.Id.ToString(), Text = $"{c.FirstName} - {c.LastName} ({c.UserName})"})
 				.ToList();
 			return View(new IdrinkMessage());
