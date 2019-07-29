@@ -540,7 +540,7 @@ namespace BusinessLayer.Services.Idrink
 			}
 		}
 
-		public async Task<string> SendGlobalMessageWithDateCondition(IdrinkMessage message)
+		public async Task SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
 			var neededUsers = message.IsGlobal
 				? _repository.Users.Where(u => u.IsActive).Select(u => new {u.Id, u.ChatId}).ToList()
@@ -561,16 +561,14 @@ namespace BusinessLayer.Services.Idrink
 				{
 					_repository.Add(new Log
 					{
-						ChatId = user.ChatId,
+						ChatId = user.Id,
 						LogDate = DateTime.Now,
 						Message = ex.Message,
 						StackTrace = ex.StackTrace
 					});
 					_repository.SaveChanges();
 				}
-			}
-
-			return string.Join(",", neededUsers.Select(u => u.Id));
+			};
 		}
 
 		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)
@@ -584,7 +582,8 @@ namespace BusinessLayer.Services.Idrink
 					FirstName = userFirstName,
 					LastName = userLastName,
 					UserName = userName,
-					IsActive = true
+					IsActive = true,
+					JoinDate = DateTime.Now
 				};
 				_repository.Add(user);
 				_repository.SaveChanges();

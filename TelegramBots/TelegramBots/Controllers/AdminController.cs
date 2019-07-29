@@ -10,25 +10,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace TelegramBots.Controllers
 {
 	[Authorize]
-    public class AdminController : Controller
-    {
-	    private readonly IdrinkBotService _botService;
+	public class AdminController : Controller
+	{
+		private readonly IdrinkBotService _botService;
 		private readonly IdrinkDbContext _repository;
 
-	    public AdminController(IdrinkDbContext repository, IdrinkBotService botService)
+		public AdminController(IdrinkDbContext repository, IdrinkBotService botService)
 		{
-		    _repository = repository;
-		    _botService = botService;
+			_repository = repository;
+			_botService = botService;
 		}
 
 		public IActionResult Users()
-        {
-            return View(_repository.Users.ToList());
+		{
+			return View(_repository.Users.ToList());
 		}
 
 		public IActionResult DrinkHistory(int userId)
 		{
-			return View(_repository.DrinkHistory.Where(h=>h.UserId == userId).ToList());
+			return View(_repository.DrinkHistory.Where(h => h.UserId == userId).ToList());
 		}
 
 		public IActionResult Log()
@@ -45,9 +45,10 @@ namespace TelegramBots.Controllers
 		}
 
 		[HttpPost]
-		public async Task<string> SendGlobalMessageWithDateCondition(IdrinkMessage message)
+		public async Task<IActionResult> SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
-			return await _botService.SendGlobalMessageWithDateCondition(message);
+			await _botService.SendGlobalMessageWithDateCondition(message);
+			return View("GlobalMessageWithDateCondition", new IdrinkMessage());
 		}
 	}
 }
