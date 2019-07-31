@@ -555,7 +555,7 @@ namespace BusinessLayer.Services.Idrink
 			{
 				try
 				{
-					await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body));
+					await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body, MainKeyboard));
 				}
 				catch (Exception ex)
 				{
