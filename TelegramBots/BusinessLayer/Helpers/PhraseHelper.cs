@@ -60,10 +60,10 @@
 		public const string LastWeek = "Последняя неделя";
 		public const string LastMonth = "Последний месяц";
 		public const string YouDrinkAt = "🕒 Употребление алкоголя началось в {0}";
-		public const string HowToSubscribeToFriend = "Отправьте боту контакт друга, на которого вы хотите подписаться 👋";
+		public const string HowToSubscribeToFriend = "Что бы подписаться на выпивающего друга, вы можете отправить контакт через 📎 -> Контакт или отправив имя пользователя (@username) 👋.";
 		public const string AlreadySubscribed = "Вы уже подписаны этого пользователя";
 		public const string SubscribeToYouself = "Вы не можете подписаться сами на себя 🤔";
-		public const string ContactDoesntUseBot = "{0} {1} еще не пользуется ботом 😔\r\nМожет стоит ему рассказать? 😏";
+		public const string ContactDoesntUseBot = "{0} {1} еще не пользуется ботом 😔\r\nМожет стоит поделиться? 😏";
 		public const string SuccessfullySubscribe = "Вы успешно подписаны на {0} {1} 🙌";
 		public const string SuccessfullyUnSubscribe = "Вы успешно отписались ✔️";
 		public const string SuccessfullyRemoveSubscriber = "Вы успешно удалили подписчика ✔️";
