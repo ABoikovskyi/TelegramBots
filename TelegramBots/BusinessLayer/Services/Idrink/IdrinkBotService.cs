@@ -208,8 +208,7 @@ namespace BusinessLayer.Services.Idrink
 							var subscriberChatId = subscriber.Subscriber.ChatId;
 							await SendTextMessage(new AnswerMessageBase(subscriberChatId,
 								string.Format(PhraseHelper.DrinkingNow, userFirstName, userLastName,
-									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})"),
-								MainKeyboard));
+									string.IsNullOrEmpty(userName) ? "" : $" (@{userName})")));
 							if (currentDrinking.Latitude.HasValue && currentDrinking.Longitude.HasValue)
 							{
 								await Client.SendLocationAsync(subscriberChatId, currentDrinking.Latitude.Value,
