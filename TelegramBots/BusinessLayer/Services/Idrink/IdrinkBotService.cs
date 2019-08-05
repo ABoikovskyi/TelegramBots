@@ -571,7 +571,15 @@ namespace BusinessLayer.Services.Idrink
 			{
 				try
 				{
-					await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body, MainKeyboard));
+					if (!string.IsNullOrEmpty(message.Body))
+					{
+						await SendTextMessage(new AnswerMessageBase(user.ChatId, message.Body));
+					}
+
+					if (!string.IsNullOrEmpty(message.Sticker))
+					{
+						await Client.SendStickerAsync(user.ChatId, message.Sticker);
+					}
 				}
 				catch (Exception ex)
 				{
@@ -584,7 +592,7 @@ namespace BusinessLayer.Services.Idrink
 					});
 					_repository.SaveChanges();
 				}
-			};
+			}
 		}
 
 		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)
