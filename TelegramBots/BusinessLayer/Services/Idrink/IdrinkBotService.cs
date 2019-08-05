@@ -8,6 +8,7 @@ using DataLayer.Models.DTO;
 using DataLayer.Models.Idrink;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using User = DataLayer.Models.Idrink.User;
@@ -559,13 +560,13 @@ namespace BusinessLayer.Services.Idrink
 		public async Task SendGlobalMessageWithDateCondition(IdrinkMessage message)
 		{
 			var neededUsers = message.IsGlobal
-				? _repository.Users.Where(u => u.IsActive).Select(u => new {u.Id, u.ChatId}).ToList()
+				? _repository.Users.Where(u => u.IsActive).ToList()
 				: _repository.Users
 					.Where(u => u.IsActive && (message.Users == null || message.Users.Contains(u.Id)) &&
 					            (message.IsDrank
 						            ? u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)
 						            : !u.DrinkHistory.Any(h => h.DrinkTime >= message.DateCondition)))
-					.Select(u => new {u.Id, u.ChatId}).ToList();
+					.ToList();
 
 			foreach (var user in neededUsers)
 			{
@@ -590,9 +591,16 @@ namespace BusinessLayer.Services.Idrink
 						Message = ex.Message,
 						StackTrace = ex.StackTrace
 					});
-					_repository.SaveChanges();
+
+					if (ex is ForbiddenException)
+					{
+						user.IsActive = false;
+						_repository.Update(user);
+					}
 				}
 			}
+
+			_repository.SaveChanges();
 		}
 
 		private int InsertNewUser(long chatId, string userFirstName, string userLastName, string userName)
