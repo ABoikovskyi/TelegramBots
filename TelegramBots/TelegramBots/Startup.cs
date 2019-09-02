@@ -1,13 +1,13 @@
 ﻿using BusinessLayer.Helpers;
 using BusinessLayer.Services;
 using BusinessLayer.Services.Idrink;
+using BusinessLayer.Services.OrangeClub;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +35,8 @@ namespace TelegramBots
                 options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));*/
 			services.AddDbContext<IdrinkDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("IdrinkConnection")));
+			services.AddDbContext<OrangeClubDbContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("OrangeClubConnection")));
 			/*services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
 			services.AddScoped<ExportService, ExportService>();*/
 			/*services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
@@ -45,6 +47,7 @@ namespace TelegramBots
             services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
             services.AddScoped<FestivalBotService, FestivalBotService>();*/
 			services.AddScoped<IdrinkBotService, IdrinkBotService>();
+			services.AddScoped<OrangeClubService, OrangeClubService>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
