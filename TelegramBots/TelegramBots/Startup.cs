@@ -66,7 +66,8 @@ namespace TelegramBots
 			services.AddCors(options =>
 			{
 				options.AddPolicy("My",
-					builder => builder.WithOrigins("https://orangeclub.ua/"));
+					builder => builder.WithOrigins("https://orangeclub.ua/")
+						.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 			});
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
