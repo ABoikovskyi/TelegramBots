@@ -14,22 +14,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/28/2019 16:58:35</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>08/01/2019 14:33:48</publishTime>
+      <publishTime>09/02/2019 10:37:16</publishTime>
     </File>
     <File Include="Aspose.Cells.dll">
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="BusinessLayer.dll">
-      <publishTime>08/05/2019 17:51:49</publishTime>
+      <publishTime>09/02/2019 12:49:47</publishTime>
     </File>
     <File Include="BusinessLayer.pdb">
-      <publishTime>08/05/2019 17:51:49</publishTime>
+      <publishTime>09/02/2019 12:49:47</publishTime>
     </File>
     <File Include="DataLayer.dll">
-      <publishTime>08/05/2019 14:13:09</publishTime>
+      <publishTime>09/02/2019 12:49:30</publishTime>
     </File>
     <File Include="DataLayer.pdb">
-      <publishTime>08/05/2019 14:13:09</publishTime>
+      <publishTime>09/02/2019 12:49:30</publishTime>
     </File>
     <File Include="de/Microsoft.Win32.TaskScheduler.resources.dll">
       <publishTime>01/02/2019 17:56:12</publishTime>
@@ -176,28 +176,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/10/2019 20:34:20</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>08/05/2019 17:51:57</publishTime>
+      <publishTime>09/02/2019 12:49:54</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>08/05/2019 17:51:50</publishTime>
+      <publishTime>09/02/2019 12:49:49</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>08/05/2019 17:51:50</publishTime>
+      <publishTime>09/02/2019 12:49:49</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
-      <publishTime>08/05/2019 17:51:57</publishTime>
+      <publishTime>09/02/2019 12:49:54</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>08/05/2019 17:51:55</publishTime>
+      <publishTime>09/02/2019 12:49:52</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>08/05/2019 17:51:55</publishTime>
+      <publishTime>09/02/2019 12:49:52</publishTime>
     </File>
     <File Include="Viber.Bot.dll">
       <publishTime>04/26/2018 18:13:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>08/05/2019 17:51:57</publishTime>
+      <publishTime>09/02/2019 12:49:54</publishTime>
     </File>
     <File Include="wwwroot/audio/audio.ogg">
       <publishTime>07/11/2019 15:02:00</publishTime>
@@ -657,6 +657,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="wwwroot/js/datetimepicker.min.js">
       <publishTime>02/26/2019 12:56:33</publishTime>
+    </File>
+    <File Include="wwwroot/js/jquery.cookie.js">
+      <publishTime>09/02/2019 12:20:41</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>07/21/2019 13:03:41</publishTime>

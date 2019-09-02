@@ -81,7 +81,7 @@ namespace TelegramBots.Controllers
 			return "Method GET unavailable";
 		}
 
-		public string GetPostCode()
+		public string GetPromoCode()
 		{
 			return _orangeClubService.GetPromoCode();
 		}
