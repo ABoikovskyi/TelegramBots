@@ -5,6 +5,7 @@ using BusinessLayer.Services.OrangeClub;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,12 @@ namespace TelegramBots
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
+			services.AddCors(options =>
+			{
+				options.AddPolicy("My",
+					builder => builder.WithOrigins("https://orangeclub.ua/"));
+			});
+
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
 			ConfigData.AppLink = Configuration.GetSection("ConfigData")["AppLink"];
@@ -85,6 +92,7 @@ namespace TelegramBots
 		    }*/
 			app.UseDeveloperExceptionPage();
 			app.UseHttpsRedirection();
+			app.UseCors("My");
 			//app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 			app.UseStaticFiles();
 			app.UseCookiePolicy();
