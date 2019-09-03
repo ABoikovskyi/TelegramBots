@@ -18,7 +18,7 @@ namespace BusinessLayer.Services.OrangeClub
 			var code = _repository.PromoCodes.FirstOrDefault(c => !c.InUse);
 			if (code == null)
 			{
-				return "Извините, Вы не успели";
+				return "Вибачте, промо-коди закінчилися!";
 			}
 
 			code.IssueData = DateTime.Now;
