@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BusinessLayer.Services.Idrink;
 using BusinessLayer.Services.OrangeClub;
+using BusinessLayer.Services.Prozorro;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,10 @@ namespace TelegramBots.Controllers
 	public class HomeController : Controller
 	{
 		private readonly IdrinkDbContext _context;
-		private readonly OrangeClubService _orangeClubService;
 
-		public HomeController(IdrinkDbContext context, OrangeClubService orangeClubService)
+		public HomeController(IdrinkDbContext context)
 		{
 			_context = context;
-			_orangeClubService = orangeClubService;
 		}
 
 		public ActionResult Index()
@@ -71,8 +70,9 @@ namespace TelegramBots.Controllers
 			await PopCornBotServiceTelegram.SetWebHook();
 			await PopCornBotServiceViber.SetWebHook();
 			await NBCocktailsBarBotServiceTelegram.SetWebHook();
-			await FestivalBotService.SetWebHook();*/
-			await IdrinkBotService.SetWebHook();
+			await FestivalBotService.SetWebHook();
+			await IdrinkBotService.SetWebHook();*/
+			await ProzorroBotService.SetWebHook();
 		}
 
 		[HttpGet]
@@ -80,10 +80,6 @@ namespace TelegramBots.Controllers
 		{
 			return "Method GET unavailable";
 		}
-
-		public string GetPromoCode()
-		{
-			return _orangeClubService.GetPromoCode();
-		}
+		
 	}
 }

@@ -95,9 +95,24 @@ namespace BusinessLayer.Services
                 .Build();
 
             await scheduler.ScheduleJob(job, trigger);
+		}
+
+        public static async Task StartTendersMonitoringJob()
+        {
+	        var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+	        await scheduler.Start();
+
+	        var job = JobBuilder.Create<TendersMonitoringJob>().WithIdentity("TendersMonitoring").Build();
+	        var trigger = TriggerBuilder.Create()
+		        .WithSimpleSchedule(x => x
+			        .WithIntervalInMinutes(15)
+			        .RepeatForever())
+		        .Build();
+
+	        await scheduler.ScheduleJob(job, trigger);
         }
 
-        /*public static void ResetFestivalJobs(FestivalDbContext dbContext)
+		/*public static void ResetFestivalJobs(FestivalDbContext dbContext)
         {
             var now = DateTime.Now;
             var scheduledPosts = dbContext.Posts
@@ -116,7 +131,7 @@ namespace BusinessLayer.Services
                 Task.Run(() => StartNotifyUserJob(notify.Id, notify.ScheduleDate.AddMinutes(-10))).Wait();
             }
         }*/
-    }
+	}
 
     public class PostPublisherJob : IJob
     {
@@ -171,5 +186,18 @@ namespace BusinessLayer.Services
                 response.GetResponseStream();
             }
         }
+	}
+
+    public class TendersMonitoringJob : IJob
+    {
+	    public async Task Execute(IJobExecutionContext context)
+	    {
+		    var request = WebRequest.Create($"{ConfigData.AppLink}/prozorro/monitoring");
+		    request.Method = "GET";
+		    using (var response = (HttpWebResponse)await request.GetResponseAsync())
+		    {
+			    response.GetResponseStream();
+		    }
+	    }
     }
 }

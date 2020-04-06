@@ -47,7 +47,7 @@
 	    public const string SubscribeToFriend = "Подписаться на друга 🔔";
 	    public const string Settings = "Настройки ⚙️";
 	    public const string AboutBot = "О боте ℹ️";
-	    public const string AboutBotText = "Вас приветствует telegram-бот \"Я пью\". Отмечайте когда и где вы пьете, подписывайтесь на друзей!\r\n\r\nОбратная связь: info@idrink.com.ua";
+	    public const string IdrinkAboutBotText = "Вас приветствует telegram-бот \"Я пью\". Отмечайте когда и где вы пьете, подписывайтесь на друзей!\r\n\r\nОбратная связь: info@idrink.com.ua";
 		public const string SubscribedToList = "Мои подписки 📝";
 	    public const string MySubscribersList = "Мои подписчики 📝";
 		public const string SetGeolocationQuestion = "Укажете геолокацию? 📍";
@@ -88,5 +88,22 @@
 		public const string WouldYouLikeToAddPhoto = "Добавите фото? 📷";
 		public const string BotDontWorkWithGroups = "Бот не работает с группами или супергруппами 🤷";
 		public const string Skip = "Пропустить ⏭️";
+
+		public const string Register = "Регистрация";
+		public const string FindTender = "Найти тендер";
+		public const string MySubscriptions = "Мои подписки";
+		public const string SubscribeToTender = "Подписаться на обновления тендера";
+		public const string ProzorroAboutBotText =
+			"Привет. Это бот для мониторинга тендров Prozorro. Пожалуйста, пройдите регистрацию для получения доступа к функциям";
+		public const string RegistrationSuccess = "Поздравляю! Вы успешно зарегестрировавились. " + HowToFindTender;
+		public const string YouAlreadyRegistered = "Вы уже зарегистрированы";
+		public const string HowToFindTender =
+			"Для получения информации о тендере, введите его номер (например UA-2020-04-01-000977-b)";
+		public const string SubscribeOnTender = "Подписаться на тендер ";
+		public const string SuccessfullySubscribeOnTender = "Вы успешно подписались на тендер";
+		public const string Unsubscribe = "Отписаться";
+		public const string UnsubscribeCode = "Unsubscribe";
+		public const string SuccessfullyUnsubscribeFromTender = "Вы успешно отписались от обновлений тендера";
+		public const string InvalidTender = "Некорректная индентификатор тендера";
 	}
 }

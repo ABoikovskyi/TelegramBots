@@ -38,7 +38,10 @@ namespace BusinessLayer.Helpers
 	        return new ReplyKeyboardMarkup
 	        {
 		        Keyboard = keyboard.Select(k => k.Select(kk => new KeyboardButton(kk)
-			        {RequestLocation = kk.ToString() == PhraseHelper.SetGeolocation}).ToArray()).ToArray(),
+		        {
+			        RequestLocation = kk.ToString() == PhraseHelper.SetGeolocation,
+			        RequestContact = kk.ToString() == PhraseHelper.Register
+		        }).ToArray()).ToArray(),
 		        ResizeKeyboard = true,
 		        OneTimeKeyboard = isOneTimeKeyboard
 	        };

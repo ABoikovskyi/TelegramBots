@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BusinessLayer.Services.Idrink;
+using BusinessLayer.Services.Prozorro;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
@@ -167,6 +168,43 @@ namespace TelegramBots.Controllers
 				await _botService.ProcessCallbackMessage(update.CallbackQuery);
 			}
 			else if(update.Message != null)
+			{
+				await _botService.ProcessMessage(update.Message);
+			}
+
+			return Ok();
+		}
+	}
+
+	[Route("api/message/prozorroupdate")]
+	public class ProzorroMessageController : Controller
+	{
+		private readonly ProzorroBotService _botService;
+
+		public ProzorroMessageController(ProzorroBotService botService)
+		{
+			_botService = botService;
+		}
+
+		[HttpGet]
+		public async Task<string> Get()
+		{
+			return "Method GET unavailable";
+		}
+
+		[HttpPost]
+		public async Task<OkResult> Post([FromBody] Update update)
+		{
+			if (update == null)
+			{
+				return Ok();
+			}
+
+			if (update.CallbackQuery != null)
+			{
+				await _botService.ProcessCallbackMessage(update.CallbackQuery);
+			}
+			else if (update.Message != null)
 			{
 				await _botService.ProcessMessage(update.Message);
 			}

@@ -57,7 +57,7 @@ namespace BusinessLayer.Services.Idrink
 		{
 			if (Client == null)
 			{
-				Client = new TelegramBotClient(ConfigData.TelegramKey);
+				Client = new TelegramBotClient(ConfigData.TelegramIdrinkKey);
 			}
 		}
 
@@ -221,7 +221,7 @@ namespace BusinessLayer.Services.Idrink
 								var photoId = message.Photo.Last().FileId;
 								var photoInfo = await Client.GetFileAsync(photoId);
 								var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(
-									$"https://api.telegram.org/file/bot{ConfigData.TelegramKey}/{photoInfo.FilePath}");
+									$"https://api.telegram.org/file/bot{ConfigData.TelegramIdrinkKey}/{photoInfo.FilePath}");
 								webRequest.AllowWriteStreamBuffering = true;
 								var webResponse = webRequest.GetResponse();
 								var stream = webResponse.GetResponseStream();
@@ -409,7 +409,7 @@ namespace BusinessLayer.Services.Idrink
 					case PhraseHelper.Start:
 					case PhraseHelper.AboutBot:
 					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.AboutBotText,
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.IdrinkAboutBotText,
 							MainKeyboard));
 						return;
 					}
