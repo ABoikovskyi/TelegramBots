@@ -14,3 +14,4 @@
 /TelegramBots/BusinessLayer/obj
 /TelegramBots/BusinessLayer/bin
 *.json
+/TelegramBots/TelegramBots/wwwroot/log.txt

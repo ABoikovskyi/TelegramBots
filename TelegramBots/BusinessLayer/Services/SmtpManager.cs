@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using BusinessLayer.Helpers;
 
@@ -7,9 +6,9 @@ namespace BusinessLayer.Services
 {
 	public static class SmtpManager
 	{
-		public static bool CreateAndSendEmail(string body, string subject, string emailTo, Attachment at = null)
+		public static void CreateAndSendEmail(string body, string subject, string emailTo, Attachment at = null)
 		{
-			return SendEmail(CreateEmail(body, subject, emailTo, at));
+			SendEmail(CreateEmail(body, subject, emailTo, at));
 		}
 
 		public static MailMessage CreateEmail(string body, string subject, string emailTo, Attachment at = null)
@@ -25,26 +24,16 @@ namespace BusinessLayer.Services
 			{
 				result.Attachments.Add(at);
 			}
+
 			result.To.Add(new MailAddress(emailTo));
 
 			return result;
 		}
 
-		private static bool SendEmail(MailMessage email)
+		private static void SendEmail(MailMessage email)
 		{
-			var result = false;
-			try
-			{
-				using var smtp = GetSmtp();
-				smtp.Send(email);
-				result = true;
-			}
-			catch (Exception)
-			{
-				// ignored
-			}
-
-			return result;
+			using var smtp = GetSmtp();
+			smtp.Send(email);
 		}
 
 		private static SmtpClient GetSmtp()
