@@ -1,10 +1,12 @@
-﻿using BusinessLayer.Helpers;
+﻿using System;
+using BusinessLayer.Helpers;
 using DataLayer.Models.DTO;
 using DataLayer.Models.Insurance;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DataLayer.Models.Enums;
@@ -176,7 +178,8 @@ namespace BusinessLayer.Services.Insurance
 						}));
 
 					return;
-				} else if (userInfo.Step == InsuranceStep.Operation3Step1)
+				}
+				else if (userInfo.Step == InsuranceStep.Operation3Step1)
 				{
 					try
 					{
@@ -210,8 +213,15 @@ namespace BusinessLayer.Services.Insurance
 					SendStartMessage(chatId);
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
+				await using (var fs = System.IO.File.Open(Path.Combine(WebRootPath, "log.txt"), FileMode.OpenOrCreate))
+				{
+					var info = new UTF8Encoding(true).GetBytes(
+						$"\r\n{DateTime.Now}\r\n{ex.Message}\r\n{ex.StackTrace}\r\n");
+					fs.Write(info, 0, info.Length);
+				}
+
 				ClearUserInfo(userInfo);
 				SendStartMessage(chatId);
 			}
