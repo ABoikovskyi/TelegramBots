@@ -2,21 +2,15 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/TelegramBots/v15
+/.vs/TelegramBots
 /.vs
 /TelegramBots/.vs/TelegramBots/v15
 /TelegramBots/DataLayer/bin
 /TelegramBots/DataLayer/obj
 /TelegramBots/TelegramBots/bin
 /TelegramBots/TelegramBots/obj
-*.json
-/TelegramBots/packages/Microsoft.Net.Compilers.2.10.0
-/TelegramBots/PostPublisher/bin/Debug
-/TelegramBots/PostPublisher/obj/Debug
-/TelegramBots/PostPublisher/bin/Release
-/TelegramBots/PostPublisher/obj/Release
-/TelegramBots/BusinessLayer/bin/Debug/netcoreapp2.1
+/TelegramBots/PostPublisher/bin
+/TelegramBots/PostPublisher/obj
 /TelegramBots/BusinessLayer/obj
-/TelegramBots/BusinessLayer/bin/Release/netcoreapp2.1
-/TelegramBots/BusinessLayer/Helpers/Links.cs
-/TelegramBots/BusinessLayer/Helpers/Links.cs
+/TelegramBots/BusinessLayer/bin
+*.json

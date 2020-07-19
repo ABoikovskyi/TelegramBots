@@ -1,21 +1,11 @@
 ﻿using System.Threading.Tasks;
-using BusinessLayer.Services.Idrink;
-using BusinessLayer.Services.OrangeClub;
-using BusinessLayer.Services.Prozorro;
-using DataLayer.Context;
+using BusinessLayer.Services.Insurance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TelegramBots.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly IdrinkDbContext _context;
-
-		public HomeController(IdrinkDbContext context)
-		{
-			_context = context;
-		}
-
 		public ActionResult Index()
 		{
 			return View();
@@ -71,8 +61,9 @@ namespace TelegramBots.Controllers
 			await PopCornBotServiceViber.SetWebHook();
 			await NBCocktailsBarBotServiceTelegram.SetWebHook();
 			await FestivalBotService.SetWebHook();
-			await IdrinkBotService.SetWebHook();*/
-			await ProzorroBotService.SetWebHook();
+			await IdrinkBotService.SetWebHook();
+			await ProzorroBotService.SetWebHook();*/
+			await InsuranceBotService.SetWebHook();
 		}
 
 		[HttpGet]

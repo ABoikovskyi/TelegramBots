@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BusinessLayer.Services.Idrink;
-using BusinessLayer.Services.Prozorro;
+using BusinessLayer.Services.Insurance;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
@@ -138,7 +139,45 @@ namespace TelegramBots.Controllers
 
             return Ok();
         }
-    }*/
+    }
+	
+	 [Route("api/message/prozorroupdate")]
+	public class ProzorroMessageController : Controller
+	{
+		private readonly ProzorroBotService _botService;
+
+		public ProzorroMessageController(ProzorroBotService botService)
+		{
+			_botService = botService;
+		}
+
+		[HttpGet]
+		public async Task<string> Get()
+		{
+			return "Method GET unavailable";
+		}
+
+		[HttpPost]
+		public async Task<OkResult> Post([FromBody] Update update)
+		{
+			if (update == null)
+			{
+				return Ok();
+			}
+
+			if (update.CallbackQuery != null)
+			{
+				await _botService.ProcessCallbackMessage(update.CallbackQuery);
+			}
+			else if (update.Message != null)
+			{
+				await _botService.ProcessMessage(update.Message);
+			}
+
+			return Ok();
+		}
+	}*/
+
 	[Route("api/message/idrinkupdate")]
 	public class IdrinkMessageController : Controller
 	{
@@ -176,14 +215,15 @@ namespace TelegramBots.Controllers
 		}
 	}
 
-	[Route("api/message/prozorroupdate")]
-	public class ProzorroMessageController : Controller
+	[Route("api/message/insuranceupdate")]
+	public class InsuranceMessageController : Controller
 	{
-		private readonly ProzorroBotService _botService;
+		private readonly InsuranceBotService _botService;
 
-		public ProzorroMessageController(ProzorroBotService botService)
+		public InsuranceMessageController(InsuranceBotService botService, IWebHostEnvironment appEnvironment)
 		{
 			_botService = botService;
+			_botService.WebRootPath = appEnvironment.WebRootPath;
 		}
 
 		[HttpGet]

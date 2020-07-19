@@ -1,15 +1,13 @@
-﻿using BusinessLayer.Helpers;
+﻿using System;
+using BusinessLayer.Helpers;
 using BusinessLayer.Services;
 using BusinessLayer.Services.Idrink;
-using BusinessLayer.Services.OrangeClub;
-using BusinessLayer.Services.Prozorro;
+using BusinessLayer.Services.Insurance;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,29 +25,16 @@ namespace TelegramBots
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			/*services.AddDbContext<PlayZoneDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("PlayZoneConnection")));
-			services.AddDbContext<PopCornDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("PopCornConnection")));
-			services.AddDbContext<NBCocktailsBarDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("NBCocktailsBarConnection")));
-            services.AddDbContext<FestivalDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("FestivalConnection")));*/
+			services.AddControllersWithViews()
+				.AddNewtonsoftJson(options =>
+					options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+				);
+			services.AddRazorPages();
+
 			services.AddDbContext<IdrinkDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("IdrinkConnection")));
-			services.AddDbContext<ProzorroDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("ProzorroConnection")));
-			/*services.AddScoped<MemoryCacheHelper, MemoryCacheHelper>();
-			services.AddScoped<ExportService, ExportService>();*/
-			/*services.AddScoped<PlayZoneBotServiceBase, PlayZoneBotServiceBase>();
-			services.AddScoped<PlayZoneBotServiceTelegram, PlayZoneBotServiceTelegram>();
-			services.AddScoped<PopCornBotServiceBase, PopCornBotServiceBase>();
-			services.AddScoped<PopCornBotServiceTelegram, PopCornBotServiceTelegram>();
-            services.AddScoped<NBCocktailsBarBotServiceBase, NBCocktailsBarBotServiceBase>();
-            services.AddScoped<NBCocktailsBarBotServiceTelegram, NBCocktailsBarBotServiceTelegram>();
-            services.AddScoped<FestivalBotService, FestivalBotService>();*/
-			services.AddScoped<IdrinkBotService, IdrinkBotService>();
-			services.AddScoped<ProzorroBotService, ProzorroBotService>();
+			services.AddScoped<IdrinkBotService>();
+			services.AddScoped<InsuranceBotService>();
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -64,60 +49,42 @@ namespace TelegramBots
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
-			services.AddCors(options =>
-			{
-				options.AddPolicy("My",
-					builder => builder.WithOrigins("https://orangeclub.ua/")
-						.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-			});
-
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
 			ConfigData.AppLink = Configuration.GetSection("ConfigData")["AppLink"];
 			ConfigData.TelegramIdrinkKey = Configuration.GetSection("ConfigData")["TelegramIdrinkKey"];
 			ConfigData.TelegramProzorroKey = Configuration.GetSection("ConfigData")["TelegramProzorroKey"];
+			ConfigData.TelegramInsuranceKey = Configuration.GetSection("ConfigData")["TelegramInsuranceKey"];
 			ConfigData.AdminLogin = Configuration.GetSection("ConfigData")["AdminLogin"];
 			ConfigData.AdminPass = Configuration.GetSection("ConfigData")["AdminPass"];
 
-			//QuartzService.ResetFestivalJobs(services.BuildServiceProvider().GetService<FestivalDbContext>());
+			ConfigData.EmailSmtp = Configuration.GetSection("ConfigData")["EmailSmtp"];
+			ConfigData.EmailSmtpPort = Convert.ToInt32(Configuration.GetSection("ConfigData")["EmailSmtpPort"]);
+			ConfigData.EmailLogin = Configuration.GetSection("ConfigData")["EmailLogin"];
+			ConfigData.EmailPassword = Configuration.GetSection("ConfigData")["EmailPassword"];
+			ConfigData.EmailSendFrom = Configuration.GetSection("ConfigData")["EmailSendFrom"];
+			ConfigData.EmailSenderName = Configuration.GetSection("ConfigData")["EmailSenderName"];
 		}
 
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			/*if (env.IsDevelopment())
-		    {
-			    app.UseDeveloperExceptionPage();
-		    }
-		    else
-		    {
-			    app.UseExceptionHandler("/Home/Error");
-			    app.UseHsts();
-		    }*/
 			app.UseDeveloperExceptionPage();
 			app.UseHttpsRedirection();
-			app.UseCors("My");
-			//app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 			app.UseStaticFiles();
 			app.UseCookiePolicy();
 			app.UseAuthentication();
 
-			app.UseMvc(routes =>
+			app.UseRouting();
+			app.UseEndpoints(e =>
 			{
-				routes.MapRoute(
+				e.MapRazorPages();
+				e.MapControllerRoute(
 					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
+					pattern: "{controller}/{action}/{id?}",
+					defaults: new { controller = "Home", action = "Index" });
 			});
 
 			QuartzService.StartSiteWorkJob().Wait();
-			QuartzService.StartTendersMonitoringJob().Wait();
-			/*PopCornBotServiceTelegram.Init();
-			PopCornBotServiceViber.Init();
-			PlayZoneBotServiceTelegram.Init();
-			PlayZoneBotServiceViber.Init();
-			NBCocktailsBarBotServiceTelegram.Init();
-			FestivalBotService.Init();*/
 			IdrinkBotService.Init();
-			ProzorroBotService.Init();
+			InsuranceBotService.Init();
 		}
 	}
 }
