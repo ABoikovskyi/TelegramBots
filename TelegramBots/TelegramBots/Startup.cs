@@ -62,6 +62,8 @@ namespace TelegramBots
 			ConfigData.EmailPassword = Configuration.GetSection("ConfigData")["EmailPassword"];
 			ConfigData.EmailSendFrom = Configuration.GetSection("ConfigData")["EmailSendFrom"];
 			ConfigData.EmailSenderName = Configuration.GetSection("ConfigData")["EmailSenderName"];
+			ConfigData.EmailTo = Configuration.GetSection("ConfigData")["EmailTo"];
+			ConfigData.EmailCopy = Configuration.GetSection("ConfigData")["EmailCopy"];
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

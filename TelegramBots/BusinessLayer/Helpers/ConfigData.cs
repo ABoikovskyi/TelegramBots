@@ -14,5 +14,7 @@
 		public static string EmailPassword;
 		public static string EmailSendFrom;
 		public static string EmailSenderName;
+		public static string EmailTo;
+		public static string EmailCopy;
 	}
 }

@@ -188,7 +188,8 @@ namespace BusinessLayer.Services.Insurance
 				}
 				else if (userInfo.Step == InsuranceStep.Operation3Preview)
 				{
-					userInfo.Text += $"<b>{MainStepsKeyboard.FirstOrDefault(s => s.Value == Operation3Code).Key}:</b><br/>";
+					userInfo.Text +=
+						$"<b>{MainStepsKeyboard.FirstOrDefault(s => s.Value == Operation3Code).Key}:</b><br/>";
 
 					await SendTextMessage(new AnswerMessageBase(chatId, phrases.Operation3DocumentsText, MainKeyboard));
 
@@ -234,8 +235,8 @@ namespace BusinessLayer.Services.Insurance
 
 				if (userInfo.Step.ToString().EndsWith("End"))
 				{
-					SmtpManager.CreateAndSendEmail(userInfo.Text, "Message from telegram bot", "aboikovskyi@gmail.com",
-						"aboikovskyi@gmail.com", //"medic@eia.com.ua","sea@eia.com.ua",
+					SmtpManager.CreateAndSendEmail(userInfo.Text, "Message from telegram bot",
+						ConfigData.EmailTo, ConfigData.EmailCopy,
 						userInfo.Photo != null ? new Attachment(userInfo.Photo, userInfo.PhotoName) : null);
 					ClearUserInfo(userInfo);
 					Thread.Sleep(3000);

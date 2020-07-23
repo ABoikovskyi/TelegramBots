@@ -14,16 +14,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/28/2019 16:58:35</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>07/19/2020 11:37:00</publishTime>
+      <publishTime>07/23/2020 12:32:47</publishTime>
     </File>
     <File Include="Aspose.Cells.dll">
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="BusinessLayer.dll">
-      <publishTime>07/19/2020 12:02:56</publishTime>
+      <publishTime>07/23/2020 12:33:22</publishTime>
     </File>
     <File Include="BusinessLayer.pdb">
-      <publishTime>07/19/2020 12:02:56</publishTime>
+      <publishTime>07/23/2020 12:33:22</publishTime>
     </File>
     <File Include="cs/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:08:58</publishTime>
@@ -38,10 +38,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/12/2019 17:08:36</publishTime>
     </File>
     <File Include="DataLayer.dll">
-      <publishTime>07/19/2020 10:56:29</publishTime>
+      <publishTime>07/23/2020 12:33:21</publishTime>
     </File>
     <File Include="DataLayer.pdb">
-      <publishTime>07/19/2020 10:56:29</publishTime>
+      <publishTime>07/23/2020 12:33:21</publishTime>
     </File>
     <File Include="de/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:08:58</publishTime>
@@ -392,25 +392,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/18/2020 17:46:38</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>07/19/2020 12:03:02</publishTime>
+      <publishTime>07/23/2020 12:33:28</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>07/19/2020 12:02:57</publishTime>
+      <publishTime>07/23/2020 12:33:23</publishTime>
     </File>
     <File Include="TelegramBots.exe">
-      <publishTime>07/19/2020 12:02:57</publishTime>
+      <publishTime>07/23/2020 12:33:23</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>07/19/2020 12:02:57</publishTime>
+      <publishTime>07/23/2020 12:33:23</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
       <publishTime>07/19/2020 10:56:31</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>07/19/2020 12:03:01</publishTime>
+      <publishTime>07/23/2020 12:33:27</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>07/19/2020 12:03:01</publishTime>
+      <publishTime>07/23/2020 12:33:27</publishTime>
     </File>
     <File Include="tr/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:09:00</publishTime>
@@ -428,7 +428,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/26/2018 18:13:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/19/2020 12:03:02</publishTime>
+      <publishTime>07/23/2020 12:33:28</publishTime>
     </File>
     <File Include="wwwroot/audio/audio.ogg">
       <publishTime>07/11/2019 15:02:00</publishTime>
@@ -883,6 +883,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="wwwroot/documents/documents.docx">
       <publishTime>07/17/2020 13:24:23</publishTime>
     </File>
+    <File Include="wwwroot/documents/Заява на виплату.doc">
+      <publishTime>07/23/2020 10:46:12</publishTime>
+    </File>
     <File Include="wwwroot/favicon.ico">
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
@@ -986,7 +989,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="wwwroot/log.txt">
-      <publishTime>07/19/2020 11:19:43</publishTime>
+      <publishTime>07/23/2020 11:04:56</publishTime>
+    </File>
+    <File Include="wwwroot/phrases.txt">
+      <publishTime>07/23/2020 12:32:28</publishTime>
     </File>
     <File Include="zh-CN/Microsoft.Win32.TaskScheduler.resources.dll">
       <publishTime>01/02/2019 17:56:14</publishTime>
