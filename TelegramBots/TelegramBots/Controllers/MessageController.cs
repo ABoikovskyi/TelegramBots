@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BusinessLayer.Services.Idrink;
 using BusinessLayer.Services.Insurance;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
@@ -220,10 +219,9 @@ namespace TelegramBots.Controllers
 	{
 		private readonly InsuranceBotService _botService;
 
-		public InsuranceMessageController(InsuranceBotService botService, IWebHostEnvironment appEnvironment)
+		public InsuranceMessageController(InsuranceBotService botService)
 		{
 			_botService = botService;
-			_botService.WebRootPath = appEnvironment.WebRootPath;
 		}
 
 		[HttpGet]

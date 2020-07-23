@@ -46,6 +46,13 @@ namespace DataLayer.Models.DTO
             Keyboard = keyboard;
         }
 
+        public AnswerMessageBase(long userId, string text, Dictionary<string, string> inlineKeyboard)
+        {
+	        UserId = userId;
+	        Text = text;
+	        InlineKeyboard = inlineKeyboard;
+        }
+
         public long UserId { get; set; }
 		public string Text { get; set; }
         public byte[] Image { get; set; }

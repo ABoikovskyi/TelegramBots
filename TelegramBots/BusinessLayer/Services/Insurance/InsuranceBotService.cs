@@ -14,6 +14,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BusinessLayer.Services.Insurance
 {
@@ -21,29 +22,54 @@ namespace BusinessLayer.Services.Insurance
 	{
 		public static TelegramBotClient Client;
 		public static Dictionary<long, UserRequest> RequestsData = new Dictionary<long, UserRequest>();
-		public static string[][] MainKeyboard;
-		public static string[][] MainStepsKeyboard;
-		public string WebRootPath;
+		public static Dictionary<string, string> MainKeyboard;
+		public static Dictionary<string, string> MainStepsKeyboard;
+		public static Dictionary<InsuranceStep, string> InsuranceStepData;
+		public static string WebRootPath;
+		public const string Operation1Code = "operation1";
+		public const string Operation2Code = "operation2";
+		public const string Operation3Code = "operation3";
+		public const string Operation4Code = "operation4";
+		public const string Operation5Code = "operation5";
+		public const string SendDocumentsToEmailCode = "sendDocumentsToEmail";
 
-		static InsuranceBotService()
+		public InsuranceBotService()
 		{
-			MainKeyboard = new[]
+			var phrases = InsurancePhraseHelper.GetPhrases();
+			MainKeyboard = new Dictionary<string, string> {{phrases.StartFromBegining, "/start"}};
+			MainStepsKeyboard = new Dictionary<string, string>
 			{
-				new[] {PhraseHelper.InsuranceStartFromBegining}
+				{phrases.Operation1, Operation1Code},
+				{phrases.Operation2, Operation2Code},
+				{phrases.Operation3, Operation3Code},
+				{phrases.Operation4, Operation4Code},
+				{phrases.Operation5, Operation5Code}
 			};
 
-			MainStepsKeyboard = new[]
+			InsuranceStepData = new Dictionary<InsuranceStep, string>
 			{
-				PhraseHelper.InsuranceMainSteps.Select(d => d.Key.ToString()).ToArray()
+				{InsuranceStep.Operation1Step1, phrases.Operation1Step1},
+				{InsuranceStep.Operation1Step2, phrases.Operation1Step2},
+				{InsuranceStep.Operation1Step3, phrases.Operation1Step3},
+				{InsuranceStep.Operation1Step4, phrases.Operation1Step4},
+				{InsuranceStep.Operation1Step5, phrases.Operation1Step5},
+				{InsuranceStep.Operation1End, phrases.Operation1End},
+				{InsuranceStep.Operation2Step1, phrases.Operation2Step1},
+				{InsuranceStep.Operation2Step2, phrases.Operation2Step2},
+				{InsuranceStep.Operation2Step3, phrases.Operation2Step3},
+				{InsuranceStep.Operation2Step4, phrases.Operation2Step4},
+				{InsuranceStep.Operation2End, phrases.Operation2End},
+				{InsuranceStep.Operation3Step1, phrases.Operation3Step1},
+				{InsuranceStep.Operation3End, phrases.Operation3End},
+				{InsuranceStep.Operation4Step1, phrases.Operation4Step1},
+				{InsuranceStep.Operation4Step2, phrases.Operation4Step2},
+				{InsuranceStep.Operation4End, phrases.Operation4End},
 			};
 		}
 
 		public static void Init()
 		{
-			if (Client == null)
-			{
-				Client = new TelegramBotClient(ConfigData.TelegramInsuranceKey);
-			}
+			Client ??= new TelegramBotClient(ConfigData.TelegramInsuranceKey);
 		}
 
 		public static async Task SetWebHook()
@@ -59,6 +85,8 @@ namespace BusinessLayer.Services.Insurance
 
 		public async Task ProcessCallbackMessage(CallbackQuery callback)
 		{
+			var message = callback.Message;
+			await ProcessMessageBase(message, callback.Data);
 		}
 
 		public async Task ProcessMessage(Message message)
@@ -68,6 +96,7 @@ namespace BusinessLayer.Services.Insurance
 
 		public async Task ProcessMessageBase(Message message, string messageText)
 		{
+			var phrases = InsurancePhraseHelper.GetPhrases();
 			var chatId = message.Chat.Id;
 			if (chatId < 0)
 			{
@@ -89,46 +118,45 @@ namespace BusinessLayer.Services.Insurance
 			{
 				switch (messageText)
 				{
-					case PhraseHelper.InsuranceOperation1:
+					case Operation1Code:
 					{
 						userInfo.Step = InsuranceStep.Operation1Start;
 						break;
 					}
-					case PhraseHelper.InsuranceOperation2:
+					case Operation2Code:
 					{
 						userInfo.Step = InsuranceStep.Operation2Start;
 						break;
 					}
-					case PhraseHelper.InsuranceOperation3:
+					case Operation3Code:
 					{
 						userInfo.Step = InsuranceStep.Operation3Preview;
 						break;
 					}
-					case PhraseHelper.InsuranceSendDocumentsToMail:
+					case SendDocumentsToEmailCode:
 					{
 						userInfo.Step = InsuranceStep.Operation3Start;
-						messageText = PhraseHelper.InsuranceOperation3;
+						messageText = phrases.Operation3;
 						break;
 					}
-					case PhraseHelper.InsuranceOperation4:
+					case Operation4Code:
 					{
 						userInfo.Step = InsuranceStep.Operation4Start;
 						break;
 					}
-					case PhraseHelper.InsuranceOperation5:
+					case Operation5Code:
 					{
 						await SendTextMessage(
-							new AnswerMessageBase(chatId, PhraseHelper.InsuranceContacts, MainKeyboard)
+							new AnswerMessageBase(chatId, phrases.Contacts, MainKeyboard)
 								{IsHtml = true});
 						return;
 					}
 					default:
 					{
-						if (userInfo.Step == InsuranceStep.Start ||
-						    messageText == PhraseHelper.InsuranceStartFromBegining)
+						if (userInfo.Step == InsuranceStep.Start || messageText == PhraseHelper.Start)
 						{
 							ClearUserInfo(userInfo);
-							SendStartMessage(chatId);
+							SendStartMessage(chatId, phrases);
 							return;
 						}
 
@@ -160,21 +188,21 @@ namespace BusinessLayer.Services.Insurance
 				}
 				else if (userInfo.Step == InsuranceStep.Operation3Preview)
 				{
-					await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InsuranceOperation3DocumentsText,
-						MainKeyboard));
+					userInfo.Text += $"<b>{MainStepsKeyboard.FirstOrDefault(s => s.Value == Operation3Code).Key}:</b><br/>";
+
+					await SendTextMessage(new AnswerMessageBase(chatId, phrases.Operation3DocumentsText, MainKeyboard));
 
 					await using var sourceStream =
-						System.IO.File.Open(Path.Combine(WebRootPath, "documents", "documents.docx"), FileMode.Open);
-					await Client.SendDocumentAsync(chatId,
-						new InputOnlineFile(sourceStream, "documents.docx"),
-						replyMarkup: KeyboardHelper.GetKeyboardTelegram(MainKeyboard));
+						System.IO.File.Open(Path.Combine(WebRootPath, "documents", "Заява на виплату.doc"),
+							FileMode.Open);
+					await Client.SendDocumentAsync(chatId, new InputOnlineFile(sourceStream, "Заява на виплату.doc"));
 					Thread.Sleep(3000);
 					await SendTextMessage(new AnswerMessageBase(chatId,
-						PhraseHelper.InsuranceOperation3AddressForDocuments,
-						new[]
+						phrases.Operation3AddressForDocuments,
+						new Dictionary<string, string>
 						{
-							new[] {PhraseHelper.InsuranceSendDocumentsToMail},
-							new[] {PhraseHelper.InsuranceStartFromBegining}
+							{phrases.SendDocumentsToMail, SendDocumentsToEmailCode},
+							{phrases.StartFromBegining, PhraseHelper.Start}
 						}));
 
 					return;
@@ -198,7 +226,7 @@ namespace BusinessLayer.Services.Insurance
 				userInfo.Text += (isFirstStepInOperation
 					                 ? ""
 					                 : $"<b>{PhraseHelper.InsuranceStepsText[userInfo.Step]}:</b> ") +
-				                 $"{(isFirstStepInOperation ? PhraseHelper.InsuranceMainSteps[messageText] : messageText)}<br/>";
+				                 $"{(isFirstStepInOperation ? MainStepsKeyboard.FirstOrDefault(s => s.Value == messageText).Key : messageText)}<br/>";
 
 				userInfo.Step++;
 				var botText = PhraseHelper.InsuranceStepsText[userInfo.Step];
@@ -207,10 +235,11 @@ namespace BusinessLayer.Services.Insurance
 				if (userInfo.Step.ToString().EndsWith("End"))
 				{
 					SmtpManager.CreateAndSendEmail(userInfo.Text, "Message from telegram bot", "aboikovskyi@gmail.com",
+						"aboikovskyi@gmail.com", //"medic@eia.com.ua","sea@eia.com.ua",
 						userInfo.Photo != null ? new Attachment(userInfo.Photo, userInfo.PhotoName) : null);
 					ClearUserInfo(userInfo);
 					Thread.Sleep(3000);
-					SendStartMessage(chatId);
+					SendStartMessage(chatId, phrases);
 				}
 			}
 			catch (Exception ex)
@@ -223,7 +252,7 @@ namespace BusinessLayer.Services.Insurance
 				}
 
 				ClearUserInfo(userInfo);
-				SendStartMessage(chatId);
+				SendStartMessage(chatId, phrases);
 			}
 		}
 
@@ -235,11 +264,10 @@ namespace BusinessLayer.Services.Insurance
 			userInfo.PhotoName = null;
 		}
 
-		private async void SendStartMessage(long chatId)
+		private async void SendStartMessage(long chatId, InsurancePhrases phrases)
 		{
-			await SendTextMessage(new AnswerMessageBase(chatId,
-				$"{PhraseHelper.InsuranceStartText}\r\n\r\n{string.Join("\r\n", PhraseHelper.InsuranceMainSteps.Select(s => s.Value))}",
-				MainStepsKeyboard));
+			await SendTextMessage(new AnswerMessageBase(chatId, phrases.StartText, MainStepsKeyboard)
+				{IsHtml = true});
 		}
 	}
 }

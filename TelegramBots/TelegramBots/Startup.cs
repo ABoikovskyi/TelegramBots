@@ -84,6 +84,8 @@ namespace TelegramBots
 
 			QuartzService.StartSiteWorkJob().Wait();
 			IdrinkBotService.Init();
+			InsuranceBotService.WebRootPath = env.WebRootPath;
+			InsurancePhraseHelper.WebRootPath = env.WebRootPath;
 			InsuranceBotService.Init();
 		}
 	}
