@@ -130,32 +130,38 @@ namespace BusinessLayer.Services.Insurance
 				{
 					case Operation1Code:
 					{
+						ClearUserInfo(userInfo);
 						userInfo.Step = InsuranceStep.Operation1Start;
 						break;
 					}
 					case Operation2Code:
 					{
+						ClearUserInfo(userInfo);
 						userInfo.Step = InsuranceStep.Operation2Start;
 						break;
 					}
 					case Operation3Code:
 					{
+						ClearUserInfo(userInfo);
 						userInfo.Step = InsuranceStep.Operation3Preview;
 						break;
 					}
 					case SendDocumentsToEmailCode:
 					{
+						ClearUserInfo(userInfo);
 						userInfo.Step = InsuranceStep.Operation3Start;
 						messageText = phrases.Operation3;
 						break;
 					}
 					case Operation4Code:
 					{
+						ClearUserInfo(userInfo);
 						userInfo.Step = InsuranceStep.Operation4Start;
 						break;
 					}
 					case Operation5Code:
 					{
+						ClearUserInfo(userInfo);
 						await SendTextMessage(
 							new AnswerMessageBase(chatId, phrases.Contacts, MainKeyboard)
 								{IsHtml = true});
@@ -163,6 +169,7 @@ namespace BusinessLayer.Services.Insurance
 					}
 					case Operation6Code:
 					{
+						ClearUserInfo(userInfo);
 						userInfo.Step = InsuranceStep.Operation6Start;
 						break;
 					}
