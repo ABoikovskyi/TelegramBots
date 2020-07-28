@@ -9,6 +9,7 @@
 		public string Operation3 { get; set; }
 		public string Operation4 { get; set; }
 		public string Operation5 { get; set; }
+		public string Operation6 { get; set; }
 		public string Contacts { get; set; }
 		public string Operation1Step1 { get; set; }
 		public string Operation1Step2 { get; set; }
@@ -26,6 +27,10 @@
 		public string Operation4Step1 { get; set; }
 		public string Operation4Step2 { get; set; }
 		public string Operation4End { get; set; }
+		public string Operation6Step1 { get; set; }
+		public string Operation6Step2 { get; set; }
+		public string Operation6Step3 { get; set; }
+		public string Operation6End { get; set; }
 		public string Operation3DocumentsText { get; set; }
 		public string Operation3AddressForDocuments { get; set; }
 		public string SendDocumentsToMail { get; set; }

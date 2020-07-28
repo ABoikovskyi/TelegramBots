@@ -23,6 +23,11 @@
 		Operation4Start,
 		Operation4Step1,
 		Operation4Step2,
-		Operation4End
+		Operation4End,
+		Operation6Start,
+		Operation6Step1,
+		Operation6Step2,
+		Operation6Step3,
+		Operation6End
 	}
 }

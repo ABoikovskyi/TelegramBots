@@ -21,7 +21,7 @@ namespace BusinessLayer.Services.Insurance
 	{
 		public static TelegramBotClient Client;
 		public static Dictionary<long, UserRequest> RequestsData = new Dictionary<long, UserRequest>();
-		public static Dictionary<string, string> MainKeyboard;
+		public static string[][] MainKeyboard;
 		public static Dictionary<string, string> MainStepsKeyboard;
 		public static Dictionary<InsuranceStep, string> InsuranceStepData;
 		public static string WebRootPath;
@@ -30,19 +30,26 @@ namespace BusinessLayer.Services.Insurance
 		public const string Operation3Code = "operation3";
 		public const string Operation4Code = "operation4";
 		public const string Operation5Code = "operation5";
+		public const string Operation6Code = "operation6";
 		public const string SendDocumentsToEmailCode = "sendDocumentsToEmail";
 
 		public InsuranceBotService()
 		{
 			var phrases = InsurancePhraseHelper.GetPhrases();
-			MainKeyboard = new Dictionary<string, string> {{phrases.StartFromBegining, "/start"}};
+			MainKeyboard = MainKeyboard = new[]
+			{
+				new[] {phrases.StartFromBegining}
+			};
+
 			MainStepsKeyboard = new Dictionary<string, string>
 			{
+				{phrases.StartFromBegining, PhraseHelper.Start},
 				{phrases.Operation1, Operation1Code},
 				{phrases.Operation2, Operation2Code},
 				{phrases.Operation3, Operation3Code},
 				{phrases.Operation4, Operation4Code},
-				{phrases.Operation5, Operation5Code}
+				{phrases.Operation5, Operation5Code},
+				{phrases.Operation6, Operation6Code}
 			};
 
 			InsuranceStepData = new Dictionary<InsuranceStep, string>
@@ -63,6 +70,10 @@ namespace BusinessLayer.Services.Insurance
 				{InsuranceStep.Operation4Step1, phrases.Operation4Step1},
 				{InsuranceStep.Operation4Step2, phrases.Operation4Step2},
 				{InsuranceStep.Operation4End, phrases.Operation4End},
+				{InsuranceStep.Operation6Step1, phrases.Operation6Step1},
+				{InsuranceStep.Operation6Step2, phrases.Operation6Step2},
+				{InsuranceStep.Operation6Step3, phrases.Operation6Step3},
+				{InsuranceStep.Operation6End, phrases.Operation6End},
 			};
 		}
 
@@ -150,9 +161,15 @@ namespace BusinessLayer.Services.Insurance
 								{IsHtml = true});
 						return;
 					}
+					case Operation6Code:
+					{
+						userInfo.Step = InsuranceStep.Operation6Start;
+						break;
+					}
 					default:
 					{
-						if (userInfo.Step == InsuranceStep.Start || messageText == PhraseHelper.Start)
+						if (userInfo.Step == InsuranceStep.Start || messageText == PhraseHelper.Start ||
+						    messageText == phrases.StartFromBegining)
 						{
 							ClearUserInfo(userInfo);
 							SendStartMessage(chatId, phrases);
@@ -180,8 +197,7 @@ namespace BusinessLayer.Services.Insurance
 					}
 					else
 					{
-						await SendTextMessage(new AnswerMessageBase(chatId,
-							PhraseHelper.InsuranceStepsText[userInfo.Step], MainKeyboard));
+						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step], MainKeyboard));
 						return;
 					}
 				}
@@ -217,19 +233,18 @@ namespace BusinessLayer.Services.Insurance
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InsuranceWrondFormat,
 							MainKeyboard));
-						await SendTextMessage(new AnswerMessageBase(chatId,
-							PhraseHelper.InsuranceStepsText[userInfo.Step], MainKeyboard));
+						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step], MainKeyboard));
 						return;
 					}
 				}
 
 				userInfo.Text += (isFirstStepInOperation
 					                 ? ""
-					                 : $"<b>{PhraseHelper.InsuranceStepsText[userInfo.Step]}:</b> ") +
+					                 : $"<b>{InsuranceStepData[userInfo.Step]}:</b> ") +
 				                 $"{(isFirstStepInOperation ? MainStepsKeyboard.FirstOrDefault(s => s.Value == messageText).Key : messageText)}<br/>";
 
 				userInfo.Step++;
-				var botText = PhraseHelper.InsuranceStepsText[userInfo.Step];
+				var botText = InsuranceStepData[userInfo.Step];
 				await SendTextMessage(new AnswerMessageBase(chatId, botText, MainKeyboard));
 
 				if (userInfo.Step.ToString().EndsWith("End"))
