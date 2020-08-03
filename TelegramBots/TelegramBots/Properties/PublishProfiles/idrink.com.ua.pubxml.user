@@ -14,16 +14,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/28/2019 16:58:35</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>07/23/2020 12:44:40</publishTime>
+      <publishTime>07/28/2020 15:39:17</publishTime>
     </File>
     <File Include="Aspose.Cells.dll">
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="BusinessLayer.dll">
-      <publishTime>07/23/2020 12:46:14</publishTime>
+      <publishTime>07/28/2020 15:39:50</publishTime>
     </File>
     <File Include="BusinessLayer.pdb">
-      <publishTime>07/23/2020 12:46:14</publishTime>
+      <publishTime>07/28/2020 15:39:50</publishTime>
     </File>
     <File Include="cs/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:08:58</publishTime>
@@ -38,10 +38,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/12/2019 17:08:36</publishTime>
     </File>
     <File Include="DataLayer.dll">
-      <publishTime>07/23/2020 12:33:21</publishTime>
+      <publishTime>07/28/2020 15:39:49</publishTime>
     </File>
     <File Include="DataLayer.pdb">
-      <publishTime>07/23/2020 12:33:21</publishTime>
+      <publishTime>07/28/2020 15:39:49</publishTime>
     </File>
     <File Include="de/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:08:58</publishTime>
@@ -392,25 +392,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/18/2020 17:46:38</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>07/23/2020 12:46:19</publishTime>
+      <publishTime>07/28/2020 15:39:54</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>07/23/2020 12:46:15</publishTime>
+      <publishTime>07/28/2020 15:39:50</publishTime>
     </File>
     <File Include="TelegramBots.exe">
-      <publishTime>07/23/2020 12:46:15</publishTime>
+      <publishTime>07/28/2020 15:39:50</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>07/23/2020 12:46:15</publishTime>
+      <publishTime>07/28/2020 15:39:50</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
       <publishTime>07/19/2020 10:56:31</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>07/23/2020 12:46:19</publishTime>
+      <publishTime>07/28/2020 15:39:54</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>07/23/2020 12:46:19</publishTime>
+      <publishTime>07/28/2020 15:39:54</publishTime>
     </File>
     <File Include="tr/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:09:00</publishTime>
@@ -428,7 +428,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/26/2018 18:13:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/23/2020 12:46:20</publishTime>
+      <publishTime>07/28/2020 15:39:55</publishTime>
     </File>
     <File Include="wwwroot/audio/audio.ogg">
       <publishTime>07/11/2019 15:02:00</publishTime>
@@ -989,10 +989,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/26/2019 12:56:33</publishTime>
     </File>
     <File Include="wwwroot/log.txt">
-      <publishTime>07/23/2020 11:04:56</publishTime>
+      <publishTime>07/28/2020 15:29:38</publishTime>
     </File>
     <File Include="wwwroot/phrases.txt">
-      <publishTime>07/23/2020 12:32:28</publishTime>
+      <publishTime>07/28/2020 15:19:08</publishTime>
     </File>
     <File Include="zh-CN/Microsoft.Win32.TaskScheduler.resources.dll">
       <publishTime>01/02/2019 17:56:14</publishTime>
