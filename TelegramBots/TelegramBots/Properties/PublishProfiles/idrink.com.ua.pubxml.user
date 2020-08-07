@@ -14,7 +14,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/28/2019 16:58:35</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>07/28/2020 15:39:17</publishTime>
+      <publishTime>08/03/2020 12:57:15</publishTime>
     </File>
     <File Include="Aspose.Cells.dll">
       <publishTime>02/26/2019 12:56:33</publishTime>
@@ -392,25 +392,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/18/2020 17:46:38</publishTime>
     </File>
     <File Include="TelegramBots.deps.json">
-      <publishTime>07/28/2020 15:39:54</publishTime>
+      <publishTime>08/03/2020 12:59:18</publishTime>
     </File>
     <File Include="TelegramBots.dll">
-      <publishTime>07/28/2020 15:39:50</publishTime>
+      <publishTime>08/03/2020 12:59:16</publishTime>
     </File>
     <File Include="TelegramBots.exe">
-      <publishTime>07/28/2020 15:39:50</publishTime>
+      <publishTime>08/03/2020 12:59:16</publishTime>
     </File>
     <File Include="TelegramBots.pdb">
-      <publishTime>07/28/2020 15:39:50</publishTime>
+      <publishTime>08/03/2020 12:59:16</publishTime>
     </File>
     <File Include="TelegramBots.runtimeconfig.json">
       <publishTime>07/19/2020 10:56:31</publishTime>
     </File>
     <File Include="TelegramBots.Views.dll">
-      <publishTime>07/28/2020 15:39:54</publishTime>
+      <publishTime>08/03/2020 12:59:18</publishTime>
     </File>
     <File Include="TelegramBots.Views.pdb">
-      <publishTime>07/28/2020 15:39:54</publishTime>
+      <publishTime>08/03/2020 12:59:18</publishTime>
     </File>
     <File Include="tr/Microsoft.CodeAnalysis.CSharp.resources.dll">
       <publishTime>09/12/2019 17:09:00</publishTime>
@@ -428,7 +428,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/26/2018 18:13:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/28/2020 15:39:55</publishTime>
+      <publishTime>08/03/2020 12:59:19</publishTime>
     </File>
     <File Include="wwwroot/audio/audio.ogg">
       <publishTime>07/11/2019 15:02:00</publishTime>
@@ -992,7 +992,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/28/2020 15:29:38</publishTime>
     </File>
     <File Include="wwwroot/phrases.txt">
-      <publishTime>07/28/2020 15:19:08</publishTime>
+      <publishTime>08/03/2020 12:56:14</publishTime>
     </File>
     <File Include="zh-CN/Microsoft.Win32.TaskScheduler.resources.dll">
       <publishTime>01/02/2019 17:56:14</publishTime>

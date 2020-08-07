@@ -32,6 +32,7 @@ namespace BusinessLayer.Services.Insurance
 		public const string Operation5Code = "operation5";
 		public const string Operation6Code = "operation6";
 		public const string SendDocumentsToEmailCode = "sendDocumentsToEmail";
+		public const string DocumentsFileName = "Заява на виплату.doc";
 
 		public InsuranceBotService()
 		{
@@ -216,9 +217,9 @@ namespace BusinessLayer.Services.Insurance
 					await SendTextMessage(new AnswerMessageBase(chatId, phrases.Operation3DocumentsText, MainKeyboard));
 
 					await using var sourceStream =
-						System.IO.File.Open(Path.Combine(WebRootPath, "documents", "Заява на виплату.doc"),
+						System.IO.File.Open(Path.Combine(WebRootPath, "documents", DocumentsFileName),
 							FileMode.Open);
-					await Client.SendDocumentAsync(chatId, new InputOnlineFile(sourceStream, "Заява на виплату.doc"));
+					await Client.SendDocumentAsync(chatId, new InputOnlineFile(sourceStream, DocumentsFileName));
 					Thread.Sleep(3000);
 					await SendTextMessage(new AnswerMessageBase(chatId,
 						phrases.Operation3AddressForDocuments,
@@ -238,7 +239,7 @@ namespace BusinessLayer.Services.Insurance
 					}
 					catch
 					{
-						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InsuranceWrondFormat,
+						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InsuranceWrongFormat,
 							MainKeyboard));
 						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step], MainKeyboard));
 						return;
@@ -253,6 +254,14 @@ namespace BusinessLayer.Services.Insurance
 				userInfo.Step++;
 				var botText = InsuranceStepData[userInfo.Step];
 				await SendTextMessage(new AnswerMessageBase(chatId, botText, MainKeyboard));
+
+				if (userInfo.Step == InsuranceStep.Operation3End)
+				{
+					await using var sourceStream =
+						System.IO.File.Open(Path.Combine(WebRootPath, "documents", DocumentsFileName), FileMode.Open);
+					SmtpManager.CreateAndSendEmail(phrases.MailMessageWithDocumentsBody, phrases.MailMessageWithDocumentsTitle,
+						messageText, null, new Attachment(sourceStream, DocumentsFileName));
+				}
 
 				if (userInfo.Step.ToString().EndsWith("End"))
 				{

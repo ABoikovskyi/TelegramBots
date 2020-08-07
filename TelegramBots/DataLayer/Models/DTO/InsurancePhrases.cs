@@ -34,5 +34,7 @@
 		public string Operation3DocumentsText { get; set; }
 		public string Operation3AddressForDocuments { get; set; }
 		public string SendDocumentsToMail { get; set; }
+		public string MailMessageWithDocumentsTitle { get; set; }
+		public string MailMessageWithDocumentsBody { get; set; }
 	}
 }

@@ -125,6 +125,6 @@ namespace BusinessLayer.Helpers
 		public const string SuccessfullyUnsubscribeFromTender = "Вы успешно отписались от обновлений тендера";
 		public const string InvalidTender = "Некорректная индентификатор тендера";
 
-		public const string InsuranceWrondFormat = "Некоректний формат вводу";
+		public const string InsuranceWrongFormat = "Некоректний формат вводу";
 	}
 }
