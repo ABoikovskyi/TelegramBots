@@ -14,6 +14,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BusinessLayer.Services.Insurance
 {
@@ -33,6 +34,12 @@ namespace BusinessLayer.Services.Insurance
 		public const string Operation6Code = "operation6";
 		public const string SendDocumentsToEmailCode = "sendDocumentsToEmail";
 		public const string DocumentsFileName = "Заява на виплату.doc";
+
+		public static InsuranceStep[] PhoneSteps = new InsuranceStep[]
+		{
+			InsuranceStep.Operation1Step6, InsuranceStep.Operation2Step5, InsuranceStep.Operation4Step3,
+			InsuranceStep.Operation6Step4
+		};
 
 		public InsuranceBotService()
 		{
@@ -60,20 +67,24 @@ namespace BusinessLayer.Services.Insurance
 				{InsuranceStep.Operation1Step3, phrases.Operation1Step3},
 				{InsuranceStep.Operation1Step4, phrases.Operation1Step4},
 				{InsuranceStep.Operation1Step5, phrases.Operation1Step5},
+				{InsuranceStep.Operation1Step6, phrases.Operation1Step6},
 				{InsuranceStep.Operation1End, phrases.Operation1End},
 				{InsuranceStep.Operation2Step1, phrases.Operation2Step1},
 				{InsuranceStep.Operation2Step2, phrases.Operation2Step2},
 				{InsuranceStep.Operation2Step3, phrases.Operation2Step3},
 				{InsuranceStep.Operation2Step4, phrases.Operation2Step4},
+				{InsuranceStep.Operation2Step5, phrases.Operation2Step5},
 				{InsuranceStep.Operation2End, phrases.Operation2End},
 				{InsuranceStep.Operation3Step1, phrases.Operation3Step1},
 				{InsuranceStep.Operation3End, phrases.Operation3End},
 				{InsuranceStep.Operation4Step1, phrases.Operation4Step1},
 				{InsuranceStep.Operation4Step2, phrases.Operation4Step2},
+				{InsuranceStep.Operation4Step3, phrases.Operation4Step3},
 				{InsuranceStep.Operation4End, phrases.Operation4End},
 				{InsuranceStep.Operation6Step1, phrases.Operation6Step1},
 				{InsuranceStep.Operation6Step2, phrases.Operation6Step2},
 				{InsuranceStep.Operation6Step3, phrases.Operation6Step3},
+				{InsuranceStep.Operation6Step4, phrases.Operation6Step4},
 				{InsuranceStep.Operation6End, phrases.Operation6End},
 			};
 		}
@@ -205,7 +216,8 @@ namespace BusinessLayer.Services.Insurance
 					}
 					else
 					{
-						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step], MainKeyboard));
+						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step],
+							MainKeyboard));
 						return;
 					}
 				}
@@ -241,9 +253,15 @@ namespace BusinessLayer.Services.Insurance
 					{
 						await SendTextMessage(new AnswerMessageBase(chatId, PhraseHelper.InsuranceWrongFormat,
 							MainKeyboard));
-						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step], MainKeyboard));
+						await SendTextMessage(new AnswerMessageBase(chatId, InsuranceStepData[userInfo.Step],
+							MainKeyboard));
 						return;
 					}
+				}
+
+				if (message.Type == MessageType.Contact)
+				{
+					messageText = message.Contact.PhoneNumber;
 				}
 
 				userInfo.Text += (isFirstStepInOperation
@@ -253,13 +271,27 @@ namespace BusinessLayer.Services.Insurance
 
 				userInfo.Step++;
 				var botText = InsuranceStepData[userInfo.Step];
-				await SendTextMessage(new AnswerMessageBase(chatId, botText, MainKeyboard));
+
+				if (PhoneSteps.Contains(userInfo.Step))
+				{
+					await Client.SendTextMessageAsync(chatId, botText, replyMarkup: new ReplyKeyboardMarkup
+					{
+						Keyboard = new[] {new[] {new KeyboardButton(phrases.SendContact) {RequestContact = true}}},
+						ResizeKeyboard = true,
+						OneTimeKeyboard = true
+					});
+				}
+				else
+				{
+					await SendTextMessage(new AnswerMessageBase(chatId, botText, MainKeyboard));
+				}
 
 				if (userInfo.Step == InsuranceStep.Operation3End)
 				{
 					await using var sourceStream =
 						System.IO.File.Open(Path.Combine(WebRootPath, "documents", DocumentsFileName), FileMode.Open);
-					SmtpManager.CreateAndSendEmail(phrases.MailMessageWithDocumentsBody, phrases.MailMessageWithDocumentsTitle,
+					SmtpManager.CreateAndSendEmail(phrases.MailMessageWithDocumentsBody,
+						phrases.MailMessageWithDocumentsTitle,
 						messageText, null, new Attachment(sourceStream, DocumentsFileName));
 				}
 
