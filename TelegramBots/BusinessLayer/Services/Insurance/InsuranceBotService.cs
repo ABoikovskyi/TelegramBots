@@ -292,13 +292,13 @@ namespace BusinessLayer.Services.Insurance
 						System.IO.File.Open(Path.Combine(WebRootPath, "documents", DocumentsFileName), FileMode.Open);
 					SmtpManager.CreateAndSendEmail(phrases.MailMessageWithDocumentsBody,
 						phrases.MailMessageWithDocumentsTitle,
-						messageText, null, new Attachment(sourceStream, DocumentsFileName));
+						messageText, new Attachment(sourceStream, DocumentsFileName));
 				}
 
 				if (userInfo.Step.ToString().EndsWith("End"))
 				{
 					SmtpManager.CreateAndSendEmail(userInfo.Text, "Message from telegram bot",
-						ConfigData.EmailTo, ConfigData.EmailCopy,
+						ConfigData.EmailTo,
 						userInfo.Photo != null ? new Attachment(userInfo.Photo, userInfo.PhotoName) : null);
 					ClearUserInfo(userInfo);
 					Thread.Sleep(3000);
